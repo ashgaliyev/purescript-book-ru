@@ -1,0 +1,28 @@
+{
+  "name": "purescript-book-chapter13",
+  "description": "Generative Testing",
+  "keywords": [
+    "purescript"
+  ],
+  "ignore": [
+    "**/.*",
+    "bower_components",
+    "node_modules",
+    "output",
+    "tests",
+    "js",
+    "tmp",
+    "bower.json",
+    "Gruntfile.js",
+    "package.json"
+  ],
+  "dependencies": {
+    "purescript-arrays": "^3.0.0",
+    "purescript-quickcheck": "^3.1.0",
+    "purescript-functions": "^2.0.0",
+    "purescript-lists": "^3.0.0"
+  },
+  "devDependencies": {
+    "purescript-psci-support": "^2.0.0"
+  }
+}
