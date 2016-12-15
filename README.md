@@ -1,3 +1,2 @@
-# purescript-book
+# purescript-book-ru
 
-Text and exercises for the PureScript book
