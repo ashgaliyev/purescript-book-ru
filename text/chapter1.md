@@ -3,6 +3,7 @@
 ## Функциональный JavaScript
 
 Functional programming techniques have been making appearances in JavaScript for some time now:
+
 Функциональное программирование стало появляться в JavaScript какое-то время назад:
 
 - Libraries such as [UnderscoreJS](http://underscorejs.org) allow the developer to leverage tried-and-trusted functions such as `map`, `filter` and `reduce` to create larger programs from smaller programs by composition:
@@ -62,6 +63,7 @@ iAmANumber =
 ```
 
 A more involved example shows that type-correctness can be confirmed without type annotations, even when there exist types which are _unknown to the compiler_:
+
 Более сложный пример, показывающий что типо-корректность может быть доказана без аннотации типами, даже когда есть типы которые _неизвестны компилятору_:
 
 ```haskell
@@ -70,6 +72,7 @@ iterate f n x = iterate f (n - 1) (f x)
 ```
 
 Here, the type of `x` is unknown, but the compiler can still verify that `iterate` obeys the rules of the type system, no matter what type `x` might have.
+
 Тип `x` неизвестен, но компилятор всё еще может подтвердить подчинение `iterate` правилам системы типов, в не зависимости от того, какой тип может принять `x`.
 
 In this book, I will try to convince you (or reaffirm your belief) that static types are not only a means of gaining confidence in the correctness of your programs, but also an aid to development in their own right. Refactoring a large body of code in JavaScript can be difficult when using any but the simplest of abstractions, but an expressive type system together with a type checker can even make refactoring into an enjoyable, interactive experience.
@@ -84,12 +87,15 @@ In addition, the safety net provided by a type system enables more advanced form
 ## Полиглотное Веб-программирование 
 
 Functional programming has its success stories - applications where it has been particularly successful: data analysis, parsing, compiler implementation, generic programming, parallelism, to name a few.
+
 Функциональное программирование имеет свои истории успешного применения - вот приложения, где оно успешно применялось: анализ данных, парсинг, создание компиляторов, обобщенное программирование, параллелизм и т.д.
 
 It would be possible to practice end-to-end application development in a functional language like PureScript. PureScript provides the ability to import existing JavaScript code, by providing types for its values and functions, and then to use those functions in regular PureScript code. We'll see this approach later in the book.
+
 Можно создать приложение на PureScript от начала и до конца (незнаю как правильно). PureScript предоставляет возможность использовать существующий JavaScript код, через указание типов для его значений и функции, чтобы использовать эти функции в обычном PureScript коде. Мы разберем этот подход далее в книге.
 
 However, one of PureScript's strengths is its interoperability with other languages which target JavaScript. Another approach would be to use PureScript for a subset of your application's development, and to use one or more other languages to write the rest of the JavaScript.
+
 Однако, одна из сильных сторон PureScript это взаимодействие с другими языками, компилируемыми в JavaScript. Другой подход будет использование PureScript для разработки определенных частей приложения, и использование одного или более языков для написания оставшейся части JavaScript
 
 Here are some examples:
@@ -102,32 +108,39 @@ Here are some examples:
 - Приложение написано на JavaScript или другом языке, компилируемом в JS, тесты написаны на PureScript
 
 - PureScript used to automate user interface tests for an existing application.
-- PureScript использован для автоматизирование тестов проверки интерфейса для существующего приложения
+- PureScript использован для автоматизации тестирования интерфейса существующего приложения
 
 In this book, we'll focus on solving small problems with PureScript. The solutions could be integrated into a larger application, but we will also look at how to call PureScript code from JavaScript, and vice versa.
+
 В этой книге я сфокусируюсь на решении небольших проблем при помощи PureScript. Решения могут быть интегрированы в большое приложение, но мы также посмотрим на то, как вызвать PureScript код из JavaScript и так далее.
 
 ## Необходимые требования
 
 The software requirements for this book are minimal: the first chapter will guide you through setting up a development environment from scratch, and the tools we will use are available in the standard repositories of most modern operating systems.
+
 Требования к ПО в данной книге минимальны: первая глава будет посвящена настройке среды разработки с нуля, и те инструменты, которые мы будем использовать доступны в стандартных репозиториях большинства современных операционных систем.
 
 The PureScript compiler itself can be downloaded as a binary distribution, or built from source on any system running an up-to-date installation of the GHC Haskell compiler, and we will walk through this process in the next chapter.
+
 Компилятор PureScript может быть скачан в виде скомпилированного пакета или скомпилирован из исходников на любой системе, где установлена последняя версия компилятора GHC. Мы пройдем этот процесс в следующей главе
 
 The code in this version of the book is compatible with versions `0.10.*` of
 the PureScript compiler.
+
 Код в данной версии книги совместим с версией `0.10.*` компилятора PureScript 
 
 ## О Вас
 
 I will assume that you are familiar with the basics of JavaScript. Any prior familiarity with common tools from the JavaScript ecosystem, such as NPM and Gulp, will be beneficial if you wish to customize the standard setup to your own needs, but such knowledge is not necessary.
+
 Я буду считать что вы знакомы с JavaScript на базовом уровне. Любое знакомство с общими инструментами из экосистемы JavaScript, такими как NPM и Gulp, будет полезно, если вы хотите настроить стандартную установку под свои нужды. Но знание не обязательно. 
 
 No prior knowledge of functional programming is required, but it certainly won't hurt. New ideas will be accompanied by practical examples, so you should be able to form an intuition for the concepts from functional programming that we will use.
+
 Предварительных знаний из функционального программирование не требуется, но это не повредит. Новые идеи будут сопровождены практическими примерами, так что у вас должна будет сформирована интуиция для тех концепций из функционального программирования, что мы будем использовать. 
 
 Readers who are familiar with the Haskell programming language will recognize a lot of the ideas and syntax presented in this book, because PureScript is heavily influenced by Haskell. However, those readers should understand that there are a number of important differences between PureScript and Haskell. It is not necessarily always appropriate to try to apply ideas from one language in the other, although many of the concepts presented here will have some interpretation in Haskell.
+
 Читатели, уже знакомые с языком программирования Haskell увидят много знакомых идей, а также синтакс в данной книге, так как Haskell сильно повлиял на PureScript. Однако, эти читатели должны понять, что тут есть некоторое число важных отличий между PureScript и Haskell. Не всегда целесообразно применять идеи из одного языка в другом, хотя многие концепции, представленные здесь, будут иметь некоторую интерпретацию в Haskell
 
 ## Как читать эту книгу
@@ -141,6 +154,7 @@ Each chapter will focus on a single practical example, providing the motivation 
 Каждая глава сфокусирована на единственном примере, мотивирующая к знакомству с новыми идеями. Код каждой главы доступен в исходных кодах книги в репозитории на [GitHub](http://github.com/paf31/purescript-book). Некоторые главы включают сниппеты, взятые из исходников, но для полного понимания, вам необходимо читать исходники с примерами бок о бок с материалом из книги. Длинные разделы будут содержать небольшие примеры кода, которые вы можете запустить в интерактивном режиме PSCi для проверки своего понимания.
 
 Code samples will appear in a monospaced font, as follows:
+
 Примеры кода будут представлены в моноширинном шрифте, как тут:
 
 ```haskell
@@ -152,6 +166,7 @@ main = log "Hello, World!"
 ```
 
 Commands which should be typed at the command line will be preceded by a dollar symbol:
+
 Команды, которые должны быть запущены в консоли будут со знаком доллара в начале:
 
 ```text
@@ -159,9 +174,11 @@ $ pulp build
 ```
 
 Usually, these commands will be tailored to Linux/Mac OS users, so Windows users may need to make small changes such as modifying the file separator, or replacing shell built-ins with their Windows equivalents.
+
 Эти команды обычно указываются для пользоватлей Linux/MacOS, поэтому пользователям Windows нужно делать небольшие изменения, например - поменять разделитель для директорий или заменить встроенные программы shell на их Windows эквиваленты.
 
 Commands which should be typed at the PSCi interactive mode prompt will be preceded by an angle bracket:
+
 Команды, которые печатаются в интерактивном режиме PSCi будут обозначены угловой скобкой:
 
 ```text
@@ -170,9 +187,11 @@ Commands which should be typed at the PSCi interactive mode prompt will be prece
 ```
 
 Each chapter will contain exercises, labelled with their difficulty level. It is strongly recommended that you attempt the exercises in each chapter to fully understand the material.
+
 Каждая глава будет содержать упражнения, для которых будут выставлены уровни сложности. Строго рекомендуется пытаться решить все упражнения в каждой главе для полного понимания материала.
 
 This book aims to provide an introduction to the PureScript language for beginners, but it is not the sort of book that provides a list of template solutions to problems. For beginners, this book should be a fun challenge, and you will get the most benefit if you read the material, attempt the exercises, and most importantly of all, try to write some code of your own.
+
 Цель данной книги - предоставить введение в язык PureScript для новичков, но это не тот сорт книги, которые дают типичные решения определенных проблем. Для новичков эта книга должна быть увлекательным `вызовом`, и вы получите наибольшую выгоду если читаете материал, решаете упражения и важнее всего - пытаетесь сделать что-нибудь своё. 
 
 ## Получение помощи
@@ -197,23 +216,39 @@ If you get stuck at any point, there are a number of resources available online 
 - [Pursuit](http://pursuit.purescript.org) база данных с функцией поиска по типам и функциям PureScript.
 
 If you prefer to learn by reading examples, the `purescript`, `purescript-node` and `purescript-contrib` GitHub organizations contain plenty of examples of PureScript code.
-Если вы предпочитаете учиться на примерах - организации `purescript`, `purescript-node` и `purescript-contrib` на GitHub содержат много примеров кода на PureScript
+
+Если вы предпочитаете учиться на примерах - организации `purescript`, `purescript-node` и `purescript-contrib` на GitHub содержат много примеров кода на PureScript.
 
 ## Об авторе
 
 I am the original developer of the PureScript compiler. I'm based in Los Angeles, California, and started programming at an early age in BASIC on an 8-bit personal computer, the Amstrad CPC. Since then I have worked professionally in a variety of programming languages (including Java, Scala, C#, F#, Haskell and PureScript).
-Являюсь создателем компилятора языка PureScript. Нахожусь в Лос-Анжелесе, штат Калифорния. Начал программировать в раннем возрасте на BASIC'е, на восьмибитном персональном компьютере Amstrad CPC. В дальнейшем работал c различными языками программирования (включая Java, Scala, C#, F#, Haskell и PureScript).
+
+Я являюсь создателем компилятора языка PureScript. Нахожусь в Лос-Анжелесе, штат Калифорния. Начал программировать в раннем возрасте на BASIC'е, на восьмибитном персональном компьютере Amstrad CPC. В дальнейшем работал c различными языками программирования (включая Java, Scala, C#, F#, Haskell и PureScript).
 
 Not long into my professional career, I began to appreciate functional programming and its connections with mathematics, and enjoyed learning functional concepts using the Haskell programming language.
 
+Не так давно в моей профессиональной карьере, я начал ценить функциональное программирование и его связи с математикой, и начал получать удовольствие, изучая функциональные концепции, используя язык программирования Haskell.
+
 I started working on the PureScript compiler in response to my experience with JavaScript. I found myself using functional programming techniques that I had picked up in languages like Haskell, but wanted a more principled environment in which to apply them. Solutions at the time included various attempts to compile Haskell to JavaScript while preserving its semantics (Fay, Haste, GHCJS), but I was interested to see how successful I could be by approaching the problem from the other side - attempting to keep the semantics of JavaScript, while enjoying the syntax and type system of a language like Haskell.
+
+Я начал работать над компилятором PureScript в ответ на мой опыт с JavaScript. Я обнаружил, что использую функциональные техники, которые приобрел в таких языках, как Haskell, однако хотел более принципиального окружения, в котором можно их применить. Решения к тому времени включали различные попытки компилирования Haskell в JavaScript (Fay, Haste, GHCJS), но сохраняя при этом его семантику. Но мне было интересно, насколько удачно получиться решить проблему с другой стороны - попытаться сохранить семантику JavaScript, наслаждаясь при этом синтаксисом и системой типов языка, похожего на Haskell. 
+
 
 I maintain [a blog](http://blog.functorial.com), and can be [reached on Twitter](http://twitter.com/paf31).
 
-## Acknowledgements
+Я поддерживаю [блог](http://blog.functorial.com), и могу быть доступен через [twitter](http://twitter.com/paf31).
+
+## Благодарности
 
 I would like to thank the many contributors who helped PureScript to reach its current state. Without the huge collective effort which has been made on the compiler, tools, libraries, documentation and tests, the project would certainly have failed.  
 
+Хотелось бы поблагодарить многочисленных участников, которые помогли PureScript достичь его текущего состояния. Без этих огромных коллективных усилий, создавших компилятор, инструменты, библиотеку, документацию и тесты, проект однозначно бы провалился.
+
+
 The PureScript logo which appears on the cover of this book was created by Gareth Hughes, and is gratefully reused here under the terms of the [Creative Commons Attribution 4.0 license](https://creativecommons.org/licenses/by/4.0/).
 
+Логотип PureScript на обложке книги был создан Gareth Hughes, с благодарностью здесь использован под лицензией [Creative Commons Attribution 4.0 license](https://creativecommons.org/licenses/by/4.0/).
+
 Finally, I would like to thank everyone who has given me feedback and corrections on the contents of this book.
+
+Наконец, хотелось бы поблагодарить всех, кто дал мне обратную связь и исправления по содержанию этой книги.
