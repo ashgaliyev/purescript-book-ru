@@ -44,9 +44,7 @@ PureScript is a programming language which aims to address these issues. It feat
 
 PureScript это язык программирования нацеленный на решение этих проблем. Он имеет легковесный синтаксис, позволяющий писать очень выразительный, но в тоже время чистый и читаемый код. Он имеет богатую систему типов для создания мощных абстракций. Он также генерирует быстрый, понятный код, что важно при взаимодействии с JavaScript или другими языками, компилируемыми в JavaScript. В общем, я надеюсь убедить вас в том, что PureScript ударяет в очень практичный баланс между мощью чистого функционального программирования и fast-and-loose стиля программирования на JavaScript.  
 
-## Types and Type Inference
 ## Типы и вывод типов
-
 
 The debate over statically typed languages versus dynamically typed languages is well-documented. PureScript is a _statically typed_ language, meaning that a correct program can be given a _type_ by the compiler which indicates its behavior. Conversely, programs which cannot be given a type are _incorrect programs_, and will be rejected by the compiler. In PureScript, unlike in dynamically typed languages, types exist only at _compile-time_, and have no representation at runtime.
 
@@ -109,7 +107,6 @@ Here are some examples:
 In this book, we'll focus on solving small problems with PureScript. The solutions could be integrated into a larger application, but we will also look at how to call PureScript code from JavaScript, and vice versa.
 В этой книге я сфокусируюсь на решении небольших проблем при помощи PureScript. Решения могут быть интегрированы в большое приложение, но мы также посмотрим на то, как вызвать PureScript код из JavaScript и так далее.
 
-## Prerequisites
 ## Необходимые требования
 
 The software requirements for this book are minimal: the first chapter will guide you through setting up a development environment from scratch, and the tools we will use are available in the standard repositories of most modern operating systems.
@@ -122,7 +119,6 @@ The code in this version of the book is compatible with versions `0.10.*` of
 the PureScript compiler.
 Код в данной версии книги совместим с версией `0.10.*` компилятора PureScript 
 
-## About You
 ## О Вас
 
 I will assume that you are familiar with the basics of JavaScript. Any prior familiarity with common tools from the JavaScript ecosystem, such as NPM and Gulp, will be beneficial if you wish to customize the standard setup to your own needs, but such knowledge is not necessary.
@@ -134,7 +130,6 @@ No prior knowledge of functional programming is required, but it certainly won't
 Readers who are familiar with the Haskell programming language will recognize a lot of the ideas and syntax presented in this book, because PureScript is heavily influenced by Haskell. However, those readers should understand that there are a number of important differences between PureScript and Haskell. It is not necessarily always appropriate to try to apply ideas from one language in the other, although many of the concepts presented here will have some interpretation in Haskell.
 Читатели, уже знакомые с языком программирования Haskell увидят много знакомых идей, а также синтакс в данной книге, так как Haskell сильно повлиял на PureScript. Однако, эти читатели должны понять, что тут есть некоторое число важных отличий между PureScript и Haskell. Не всегда целесообразно применять идеи из одного языка в другом, хотя многие концепции, представленные здесь, будут иметь некоторую интерпретацию в Haskell
 
-## How to Read This Book
 ## Как читать эту книгу
 
 The chapters in this book are largely self contained. A beginner with little functional programming experience would be well-advised, however, to work through the chapters in order. The first few chapters lay the groundwork required to understand the material later on in the book. A reader who is comfortable with the ideas of functional programming (especially one with experience in a strongly-typed language like ML or Haskell) will probably be able to gain a general understanding of the code in the later chapters of the book without reading the preceding chapters.
@@ -180,7 +175,6 @@ Each chapter will contain exercises, labelled with their difficulty level. It is
 This book aims to provide an introduction to the PureScript language for beginners, but it is not the sort of book that provides a list of template solutions to problems. For beginners, this book should be a fun challenge, and you will get the most benefit if you read the material, attempt the exercises, and most importantly of all, try to write some code of your own.
 Цель данной книги - предоставить введение в язык PureScript для новичков, но это не тот сорт книги, которые дают типичные решения определенных проблем. Для новичков эта книга должна быть увлекательным `вызовом`, и вы получите наибольшую выгоду если читаете материал, решаете упражения и важнее всего - пытаетесь сделать что-нибудь своё. 
 
-## Getting Help
 ## Получение помощи
 
 If you get stuck at any point, there are a number of resources available online for learning PureScript:
@@ -203,10 +197,12 @@ If you get stuck at any point, there are a number of resources available online 
 - [Pursuit](http://pursuit.purescript.org) база данных с функцией поиска по типам и функциям PureScript.
 
 If you prefer to learn by reading examples, the `purescript`, `purescript-node` and `purescript-contrib` GitHub organizations contain plenty of examples of PureScript code.
+Если вы предпочитаете учиться на примерах - организации `purescript`, `purescript-node` и `purescript-contrib` на GitHub содержат много примеров кода на PureScript
 
-## About the Author
+## Об авторе
 
 I am the original developer of the PureScript compiler. I'm based in Los Angeles, California, and started programming at an early age in BASIC on an 8-bit personal computer, the Amstrad CPC. Since then I have worked professionally in a variety of programming languages (including Java, Scala, C#, F#, Haskell and PureScript).
+Являюсь создателем компилятора языка PureScript. Нахожусь в Лос-Анжелесе, штат Калифорния. Начал программировать в раннем возрасте на BASIC'е, на восьмибитном персональном компьютере Amstrad CPC. В дальнейшем работал c различными языками программирования (включая Java, Scala, C#, F#, Haskell и PureScript).
 
 Not long into my professional career, I began to appreciate functional programming and its connections with mathematics, and enjoyed learning functional concepts using the Haskell programming language.
 
