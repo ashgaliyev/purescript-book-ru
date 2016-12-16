@@ -1,24 +1,33 @@
-# Getting Started
+# Начало обучения
 
-## Chapter Goals
+## Цели главы
 
 In this chapter, the goal will be to set up a working PureScript development environment, and to write our first PureScript program.
 
+Цели данной главы: настроить рабочее окружение для назработки на PureScript и написать первую программу.
+
 Our first project will be a very simple PureScript library, which will provide a single function which can compute the length of the diagonal in a right-angled triangle.
 
-## Introduction
+Нашим первым проектом будет простая библиотека, предоставляющая простую функцию для вычиcления диагонали прямоугольного треугольника.
+
+## Введение
 
 Here are the tools we will be using to set up our PureScript development environment:
+Вот те инструменты которые мы будем использовать для разработки на PureScript: 
 
-- [`psc`](http://purescript.org) - The PureScript compiler itself.
-- [`npm`](http://npmjs.org) - The Node Package Manager, which will allow us to install the rest of our development tools.
-- [Pulp](https://github.com/bodil/pulp) - A command-line tool which automates many of the tasks associated with managing PureScript projects.
+- [`psc`](http://purescript.org) - сам компилятор PureScript.
+- [`npm`](http://npmjs.org) - менеджер пакетов для nodejs, который позволит установить оставшую часть инструментов.
+- [Pulp](https://github.com/bodil/pulp) - консольное приложение, автоматизирующие множество различных заданий, связанных с управлением PureScript проектов
 
 The rest of the chapter will guide you through installing and configuring these tools.
 
-## Installing PureScript
+Оставшаяся часть главы поможет вам установить и настроить эти инструменты. 
+
+## Установка PureScript
 
 The recommended approach to installing the PureScript compiler is to download a binary release for your platform from the [PureScript website](http://purescript.org).
+
+Рекомендуемый способ установки компилятора PureScript - это скачать бинарный релиз для вашей платформы с сайта [с сайта PureScript](http://purescript.org).
 
 You should verify that the PureScript compiler executables are available on your path. Try running the PureScript compiler on the command line to verify this:
 
