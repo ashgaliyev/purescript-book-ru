@@ -2,47 +2,38 @@
 
 ## Цели главы
 
-In this chapter, the goal will be to set up a working PureScript development environment, and to write our first PureScript program.
+Цели данной главы: настроить рабочее окружение для разработки на PureScript и написать первую программу.
 
-Цели данной главы: настроить рабочее окружение для назработки на PureScript и написать первую программу.
-
-Our first project will be a very simple PureScript library, which will provide a single function which can compute the length of the diagonal in a right-angled triangle.
-
-Нашим первым проектом будет простая библиотека, предоставляющая простую функцию для вычиcления диагонали прямоугольного треугольника.
+Нашим первым проектом будет простая библиотека, предоставляющая единственную функцию для вычиcления диагонали прямоугольного треугольника.
 
 ## Введение
 
-Here are the tools we will be using to set up our PureScript development environment:
 Вот те инструменты которые мы будем использовать для разработки на PureScript: 
 
 - [`psc`](http://purescript.org) - сам компилятор PureScript.
 - [`npm`](http://npmjs.org) - менеджер пакетов для nodejs, который позволит установить оставшую часть инструментов.
 - [Pulp](https://github.com/bodil/pulp) - консольное приложение, автоматизирующие множество различных заданий, связанных с управлением PureScript проектов
 
-The rest of the chapter will guide you through installing and configuring these tools.
-
 Оставшаяся часть главы поможет вам установить и настроить эти инструменты. 
 
 ## Установка PureScript
 
-The recommended approach to installing the PureScript compiler is to download a binary release for your platform from the [PureScript website](http://purescript.org).
+Рекомендуемый способ установки компилятора PureScript - это скачать бинарный релиз для вашей платформы [с сайта PureScript](http://purescript.org).
 
-Рекомендуемый способ установки компилятора PureScript - это скачать бинарный релиз для вашей платформы с сайта [с сайта PureScript](http://purescript.org).
-
-You should verify that the PureScript compiler executables are available on your path. Try running the PureScript compiler on the command line to verify this:
+Вам необходимо убедиться в том, что компилятор PureScript доступен в переменной PATH. Попробуйте запустить его в командной строке для проверки:
 
 ```text
 $ psc
 ```
 
-Other options for installing the PureScript compiler include:
+Другие способы установки компилятора:
 
-- Using a popular package manager, such as NPM or Homebrew (on MacOS).
-- Building the compiler from source. Instructions can be found on the PureScript website.
+- Использовать популярный менеджер пакетов, такой как NPM или Homebrew (на MacOS).
+- Собрать компилятор из исходников. Инструкции можно найти на сайте PureScript.
 
-## Installing Tools
+## Установка инструментов
 
-If you do not have a working installation of [NodeJS](http://nodejs.org/), you should install it. This should also install the `npm` package manager on your system. Make sure you have `npm` installed and available on your path.
+Необходимо установить [NodeJS](http://nodejs.org/), если у вас не установлена эта платформа. Вместе с ней также установится менеджер пакетов `npm`. Убедитесь в том, что `npm` установлен и доступен в PATH.
 
 You will also need to install the Pulp command line tool, and the Bower package manager using `npm`, as follows:
 
