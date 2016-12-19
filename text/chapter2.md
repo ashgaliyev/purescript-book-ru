@@ -35,7 +35,7 @@ $ psc
 
 Необходимо установить [NodeJS](http://nodejs.org/), если у вас не установлена эта платформа. Вместе с ней также установится менеджер пакетов `npm`. Убедитесь в том, что `npm` установлен и доступен в PATH.
 
-You will also need to install the Pulp command line tool, and the Bower package manager using `npm`, as follows:
+Вам также необходимо установить консольную утилиту Pulp и менеджер пакетов Bower, используя `npm`:
 
 ```text
 $ npm install -g pulp bower
@@ -43,11 +43,15 @@ $ npm install -g pulp bower
 
 This will place the `pulp` and `bower` command line tools on your path. At this point, you will have all the tools needed to create your first PureScript project.
 
+Это команда поместит `pulp` и `bower` для доступа через PATH. Теперь, у вас должны быть все необходимые инструменты для создания вашего первого PureScript проекта.
+
 ## Hello, PureScript!
 
 Let's start out simple. We'll use Pulp to compile and run a simple Hello World! program.
+Начнем с простого. Мы будем использовать Pulp для компиляции и запуска простой Hello World! программы.
 
 Begin by creating a project in an empty directory, using the `pulp init` command:
+Начнем с создания проекта в пустой директории, используя команду `pulp init`:
 
 ```text
 $ mkdir my-project
@@ -63,7 +67,9 @@ bower.json	src		test
 
 Pulp has created two directories, `src` and `test`, and a `bower.json` configuration file for us. The `src` directory will contain our source files, and the `test` directory will contain our tests. We will use the `test` directory later in the book.
 
-Modify the `src/Main.purs` file to contain the following content:
+Pulp создала для нас две директории - `src` и `test`, а также конфигурационный файл `bower.json`. Директория `src` будет содержать наши исходники, а `test` - наши тесты. Директорию `test` мы будем использовать позднее в книге.
+
+Измените содержимое файла `src/Main.purs` на это:
 
 ```haskell
 module Main where
@@ -73,13 +79,16 @@ import Control.Monad.Eff.Console
 main = log "Hello, World!"
 ```
 
-This small sample illustrates a few key ideas:
+Этот небольшой пример иллюстрирует несколько ключевых идей:
 
 - Every file begins with a module header. A module name consists of one or more capitalized words separated by dots. In this case, only a single word is used, but `My.First.Module` would be an equally valid module name.
+- Каджый файл начинается с заголовка модуля. Имя модуля состоит из одного или нескольких слов, начинающихся с заглавной буквы, и разделенных точками. В нашем случае используется одно слово, но имя `My.First.Module` тоже будет считаться правильным.
 - Modules are imported using their full names, including dots to separate the parts of the module name. Here, we import the `Control.Monad.Eff.Console` module, which provides the `log` function.
+- Модули импортируются, используя их полные имена, включая точки, разделяющие части имени модуля. Здесь мы импортируем модуль `Control.Monad.Eff.Console`, который предоставляет функцию `log`.
 - The `main` program is defined as a function application. In PureScript, function application is indicated with whitespace separating the function name from its arguments.
+- Программа `main` определена как применение функции (?). В PureScript применение функции отображается как название, отделенное пробельными символами от её аргументов (?)
 
-Let's build and run this code using the following command:
+Давайте соберем и запустим проект, используя следующую команду:
 
 ```text
 $ pulp run
@@ -89,11 +98,14 @@ $ pulp run
 Hello, World!
 ```
 
-Congratulations! You just compiled and executed your first PureScript program.
+Поздравляю! Вы только что скомпилировали и запустили вашу первую PureScript программу!
 
-## Compiling for the Browser
+## Компилирование для браузера
 
 Pulp can be used to turn our PureScript code into Javascript suitable for use in the web browser, by using the `pulp browserify` command:
+
+Pulp может быть использована для создания из PureScript кода на Javascript, подходящего для браузера, через вызов команды `pulp browserify`:
+
 
 ```text
 $ pulp browserify
@@ -106,9 +118,13 @@ $ pulp browserify
 
 Following this, you should see a large amount of Javascript code printed to the console. This is the output of the [Browserify](http://browserify.org/) tool, applied to a standard PureScript library called the _Prelude_, as well as the code in the `src` directory. This Javascript code can be saved to a file, and included in a HTML document. If you try this, you should see the words "Hello, World!" printed to your browser's console.
 
-## Removing Unused Code
+Следуя этому, вы должны увидеть в консоли большой объем кода на Javascript. Это результат работы программы [Browserify](http://browserify.org/), которая была применена к стандартной библиотеке PureScript _Prelude_, а так же к коду в директории `src`. Javascript код может быть сохранен в файл и включен в HTML документ. Если вы это сделаете, то увидите фразу "Hello, World!", выведенную в консоли браузера.
+
+## Удаление неиспользуемого кода
 
 Pulp provides an alternative command, `pulp build`, which can be used with the `-O` option to apply _dead code elimination_, which removes unnecessary Javascript from the output. The result is much smaller:
+
+Pulp предоставляет альтернативную команду - `pulp build`, которая может быть использована с опцией `-O` для удаление неиспользуемого кода (dead code elimination) из вывода. Результирующий код будет гораздо меньше:
 
 ```text
 $ pulp build -O --to output.js
@@ -120,6 +136,8 @@ $ pulp build -O --to output.js
 ```
 
 Again, the generated code can be used in a HTML document. If you open `output.js`, you should see a few compiled modules which look like this:
+
+И опять, генерируемый код может быть использован в HTML документе. Если вы откроете `ouput.js` вы должны увидеть несколько скомпилированных модулей, которые выглядят примерно так:
 
 ```javascript
 (function(exports) {
