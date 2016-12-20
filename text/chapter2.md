@@ -137,7 +137,7 @@ $ pulp build -O --to output.js
 
 Again, the generated code can be used in a HTML document. If you open `output.js`, you should see a few compiled modules which look like this:
 
-И опять, генерируемый код может быть использован в HTML документе. Если вы откроете `ouput.js` вы должны увидеть несколько скомпилированных модулей, которые выглядят примерно так:
+И опять, генерируемый код может быть использован в HTML документе. Если вы откроете `output.js` вы должны увидеть несколько скомпилированных модулей, которые выглядят примерно так:
 
 ```javascript
 (function(exports) {
@@ -154,7 +154,7 @@ This illustrates a few points about the way the PureScript compiler generates Ja
 Это иллюстрирует несколько моментов о том, как PureScript компилятор генерирует Javascript код:
 
 - Every module gets turned into an object, created by a wrapper function, which contains the module's exported members.
-- Каждый модуль становится объетом, оборачиваемый в функцию, который содержит экспортируемые члены модуля.
+- Каждый модуль становится объектом, оборачиваемый в функцию, который содержит экспортируемые члены модуля.
 - PureScript tries to preserve the names of variables wherever possible
 - PureScript пытается сохранить имена переменных где это возможно.
 - Function applications in PureScript get turned into function applications in JavaScript.
@@ -168,11 +168,15 @@ These points are important, since they mean that PureScript generates simple, un
 
 Эти важные моменты показывают то, что PureScript генерирует простой и понятный код. Фактически, процесс кодогенерации представляет собой довольно небольшое преобразование. Требуется сравнительно небольшое понимание языка, чтобы предугадать какой Javascript код будет сгенерирован на определенном входном коде.
 
-## Compiling CommonJS Modules
+## Компилирование модулей CommonJS
 
 Pulp can also be used to generate CommonJS modules from PureScript code. This can be useful when using NodeJS, or just when developing a larger project which uses CommonJS modules to break code into smaller components.
 
+Pulp может быть так-же использован для генерации модулей CommonJS из PureScript кода. Это может быть полезно во время использования NodeJS, или просто для разработки большого проекта, который использует модули CommonJS, для разбиения кода на меньшие компоненты.
+
 To build CommonJS modules, use the `pulp build` command (without the `-O` option):
+
+Чтобы создать модули CommonJS, используйте команду `pulp build` (без опции `-O`):
 
 ```text
 $ pulp build
@@ -183,9 +187,13 @@ $ pulp build
 
 The generated modules will be placed in the `output` directory by default. Each PureScript module will be compiled to its own CommonJS module, in its own subdirectory.
 
-## Tracking Dependencies with Bower
+Сгенерированный код по-умолчанию будет помещен в папку `output`. Каждый модуль PureScript будет скомпилирован в свой собственный модуль CommonJS и помещен в свою собственную поддиректорию.
+
+## Отслеживание зависимостей с Bower
 
 To write the `diagonal` function (the goal of this chapter), we will need to be able to compute square roots. The `purescript-math` package contains type definitions for functions defined on the JavaScript `Math` object, so let's install it:
+
+Чтобы написать функцию `diagonal` (цель данной главы), нам необходимо иметь возможность вычислять квадратные корни. Пакет `purescript-math` содержит определения типов для функций, определенных в JavaScript объекте `Math`, поэтому, давайте установим его:
 
 ```text
 $ bower install purescript-math --save
@@ -193,13 +201,21 @@ $ bower install purescript-math --save
 
 The `--save` option causes the dependency to be added to the `bower.json` configuration file.
 
+Опция `--save` добавляет зависимость в конфигурационный файл `bower.json`
+
 The `purescript-math` library sources should now be available in the `bower_components` subdirectory, and will be included when you compile your project.
 
-## Computing Diagonals
+Исходники библиотеки `purescript-math` должны быть теперь доступны в поддиректории `bower_components`, и будут подключены, когда вы будете компилировать проект.
+
+## Вычисление диагоналей
 
 Let's write the `diagonal` function, which will be an example of using a function from an external library.
 
+Давайте напишем функцию `diagonal`, которая будет примером использования функции из внешней библиотеки.
+
 First, import the `Math` module by adding the following line at the top of the `src/Main.purs` file:
+
+Во-первых, импортируем модуль `Math`, добавив следующие строки в начало файла `src/Main.purs`:
 
 ```haskell
 import Math (sqrt)
@@ -207,25 +223,35 @@ import Math (sqrt)
 
 It's also necessary to import the `Prelude` module, which defines very basic operations such as numeric addition and multiplication:
 
+Также необходимо добавить модуль `Prelude`, который определяет очень базовые операции, такие как числовое сложение и умножение:
+
 ```haskell
 import Prelude
 ```
 
 Now define the `diagonal` function as follows:
 
+Теперь определим функцию `diagonal` следущим образом: 
+
 ```haskell
 diagonal w h = sqrt (w * w + h * h)
 ```
 
-Note that there is no need to define a type for our function. The compiler is able to infer that `diagonal` is a function which takes two numbers and returns a number. In general, however, it is a good practice to provide type annotations as a form of documentation.
+Note that there is no need to define a type for our function. The compiler is able to infer that `diagonal` is a function which takes two numbers and returns a number. In general, however, it is a good practice to provide type annotations as a form of documentation. 
+
+Обратим внимание, что здесь нет необходимости определять тип функции. Компилятор способен сделать вывод что `diagonal` это функция, которая берёт два числа и возвращает число. В целом, однако, это хорошая практика - предоставлять аннотации типами, как форму документации. (?)
 
 Let's also modify the `main` function to use the new `diagonal` function:
+
+Давайте также изменим функцию `main` для использования новой функции `diagonal`:
 
 ```haskell
 main = logShow (diagonal 3.0 4.0)
 ```
 
 Now compile and run the project again, using `pulp run`:
+
+Теперь опять скомпилируем и запустим проект, используя `pulp run`:
 
 ```text
 $ pulp run
@@ -235,9 +261,11 @@ $ pulp run
 5.0
 ```
 
-## Testing Code Using the Interactive Mode
+## Тестирование кода с использованием интерактивного режима
 
 The PureScript compiler also ships with an interactive REPL called PSCi. This can be very useful for testing your code, and experimenting with new ideas. Let's use PSCi to test the `diagonal` function.
+
+Компилятор PureScript поставляется также вместе с интерактивным REPL под названием PSCi. Это может быть очень полезно для тестирование кода и для экспериментирования с новыми идеями. Давате используем PSCi чтобы проверить функцию `diagonal`:
 
 Pulp can load source modules into PSCi automatically, via the `pulp psci` command:
 
