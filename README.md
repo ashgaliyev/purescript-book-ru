@@ -7,9 +7,9 @@
 Статус перевода:
 
 - ~~Глава 1~~
-- __Глава 2__ [@ashgaliyev](https://github.com/ashgaliyev)
+- Глава 2 _ждёт вычитки_
 - __Глава 3__ [@kika](https://github.com/kika)
-- Глава 4
+- __Глава 4__  [@ashgaliyev](https://github.com/ashgaliyev)
 - Глава 5
 - Глава 6
 - Глава 7
