@@ -1,16 +1,27 @@
 # Functions and Records
+# Функции и записи <sup>[1](#1)</sup>
 
 ## Chapter Goals
+## Цели главы
 
 This chapter will introduce two building blocks of PureScript programs: functions and records. In addition, we'll see how to structure PureScript programs, and how to use types as an aid to program development.
 
+Эта глава знакомит с двумя элементами языка PureScript: функциями и записями<sup>[1](#1)</sup>. Кроме того, мы увидим как структурировать программы на PureScript и как использовать типы для помощи в разработке программ.
+
 We will build a simple address book application to manage a list of contacts. This code will introduce some new ideas from the syntax of PureScript.
+
+Мы создадим простую программу для управления записной книжкой контактов. Этот код внесет некоторые новые идеи из ситаксиса PureScript.
 
 The front-end of our application will be the interactive mode PSCi, but it would be possible to build on this code to write a front-end in Javascript. In fact, we will do exactly that in later chapters, adding form validation and save/restore functionality.
 
+В качестве интерфейса к нашему приложению мы будем использовать непосредственно оболочку интерпретатора PSCi в интерактивном режиме, но ничего не мешает написать интерфейс на JavaScript. На самом деле, мы это и сделаем в следующих главах, добавив валидацию форм и возможность сохранения и загрузки.
+
 ## Project Setup
+## Настройки проекта
 
 The source code for this chapter is contained in the file `src/Data/AddressBook.purs`. This file starts with a module declaration and its import list:
+
+Исходники для этой главы находятся в файле `src/Data/AddressBook.purs`. Этот файл начинается с объявления модуля и списка импортов:
 
 ```haskell
 module Data.AddressBook where
@@ -23,14 +34,22 @@ import Data.Maybe (Maybe)
 ```
 
 Here, we import several modules:
+Здесь мы импортируем несколько модулей:
 
 - The `Control.Plus` module, which defines the `empty` value.
+- Модуль `Control.Plus` , который определяет значение `empty`.
 - The `Data.List` module, which is provided by the `purescript-lists` package which can be installed using Bower. It contains a few functions which we will need for working with linked lists.
+- Модуль `Data.List`, который содержится в пакете `purescript-lists` и может быть установлен с использованием Bower. Он содержит несколько функций, которые нам будут нужны для работы со связанными списками.
 - The `Data.Maybe` module, which defines data types and functions for working with optional values.
+- Модуль `Data.Maybe`, который определяет типы данных и функции для работы с опциональными значениями<sup>[2](#2)</sup>. 
 
 Notice that the imports for these modules are listed explicitly in parentheses. This is generally a good practice, as it helps to avoid conflicting imports.
 
+Обратите внимание что импортируемые имена явно перечислены в скобках. Это хорошая, хотя и необязательная, практика, которая помогает при чтении кода и разрешении конфликтов импортов.
+
 Assuming you have cloned the book's source code repository, the project for this chapter can be built using Pulp, with the following commands:
+
+Предпогая что вы склонировали себе репозиторий кода из книги, проект для этой главы может быть построен при помощи программы Pulp, используя следующие команды:
 
 ```text
 $ cd chapter3
@@ -39,8 +58,11 @@ $ pulp build
 ```
 
 ## Simple Types
+## Простые типы
 
 PureScript defines three built-in types which correspond to JavaScript's primitive types: numbers, strings and booleans. These are defined in the `Prim` module, which is implicitly imported by every module. They are called `Number`, `String`, and `Boolean`, respectively, and you can see them in PSCi by using the `:type` command to print the types of some simple values:
+
+PureScript определяет три встроенных типа, которые соответствуют примитивным типам JavaScript: числа, строки и булевые значения. Они определены в модуле `Prim`, который неявно импортируется любым модулем. Эти типы называются `Number`, `String` и `Boolean` соответственно. Их можно увидеть в PSCi при помощи команды `:type`, выведя тип для некоторых простых значений:
 
 ```text
 $ pulp psci
@@ -57,7 +79,11 @@ Boolean
 
 PureScript defines some other built-in types: integers, characters, arrays, records, and functions.
 
+PureScript определяет также несколько других встроенных типов: целые, символы, массивы, записи и функции.
+
 Integers are differentiated from floating point values of type `Number` by the lack of a decimal point:
+
+Целые отличаются от чисел с плавающей точкой типа `Number` отстутствием десятичной точки:
 
 ```text
 > :type 1
@@ -66,12 +92,16 @@ Int
 
 Character literals are wrapped in single quotes, unlike string literals which use double quotes:
 
+Символьные значения заключены в одиночные кавычки, в отличие от строковых значений, которые заключаются в двойные кавычки:
+
 ```text
 > :type 'a'
 Char
 ```
 
 Arrays correspond to JavaScript arrays, but unlike in JavaScript, all elements of a PureScript array must have the same type:
+
+Массивы соответствуют массивам JavaScript, но вопреки JavaScript, все элементы массива в PureScript должны иметь один и тот же тип: 
 
 ```text
 > :type [1, 2, 3]
@@ -86,7 +116,11 @@ Could not match type Int with Boolean.
 
 The error in the last example is an error from the type checker, which unsuccessfully attempted to _unify_ (i.e. make equal) the types of the two elements.
 
+Ошибка в последнем примере это ошибка от тайпчекера, который пытался _унифицировать_ (то есть сделать равными) типы двух элементов.
+
 Records correspond to JavaScript's objects, and record literals have the same syntax as JavaScript's object literals:
+
+Записи соответствуют объектам JavaScript, и значения имеют тот же синтаксис как и значения объектов в JavaScript:
 
 ```text
 > let author = { name: "Phil", interests: ["Functional Programming", "JavaScript"] }
@@ -99,7 +133,11 @@ Records correspond to JavaScript's objects, and record literals have the same sy
 
 This type indicates that the specified object has two _fields_, a `name` field which has type `String`, and an `interests` field, which has type `Array String`, i.e. an array of `String`s.
 
+Этот тип обозначает что указанный объект имеет два _поля_, имя `name`, которое имеет тип `String` и интересы `interests`, которое имеет тип `Array String`,  то есть массив `String`.
+
 Fields of records can be accessed using a dot, followed by the label of the field to access:
+
+Поля записей могут адресоваться через точку, сопровождающуюся именем поля:
 
 ```text
 > author.name
@@ -110,6 +148,8 @@ Fields of records can be accessed using a dot, followed by the label of the fiel
 ```
 
 PureScript's functions correspond to JavaScript's functions. The PureScript standard libraries provide plenty of examples of functions, and we will see more in this chapter:
+
+Функции PureScript соответствуют функциям JavaScript. Стандартные библиотеки PureScript предоставляют массу примеров функций и мы еще увидим их в этой главе:
 
 ```text
 > import Prelude
@@ -122,12 +162,16 @@ forall a b. a -> b -> a
 
 Functions can be defined at the top-level of a file by specifying arguments before the equals sign:
 
+Функции могут быть определены на верхнем уровне файла при помощи указания аргументов перед знаком равенства:
+
 ```haskell
 add :: Int -> Int -> Int
 add x y = x + y
 ```
 
 Alternatively, functions can be defined inline, by using a backslash character followed by a space-delimited list of argument names. To enter a multi-line declaration in PSCi, we can enter "paste mode" by using the `:paste` command. In this mode, declarations are terminated using the _Control-D_ key sequence:
+
+Либо можно определять функции на вложенных уровнях 
 
 ```text
 > :paste
@@ -691,3 +735,9 @@ In this chapter, we covered several new functional programming concepts:
 - Using techniques like eta conversion and function composition to refactor code into a clear specification.
 
 In the following chapters, we'll build on these ideas.
+
+### Примечания переводчика
+#### 1
+Record можно перевести как "запись" или "структура". Я выбрал "запись" согласно [статье в в Wikipedia](https://ru.wikipedia.org/wiki/%D0%97%D0%B0%D0%BF%D0%B8%D1%81%D1%8C_(%D1%82%D0%B8%D0%BF_%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85)) 
+#### 2
+Опциональные значения широко распространены в языках с развитыми системами типов. Это значения, которых "может не быть". В более простых языках это эквивалентно "невозможным" значениям, например отрицательное число для значений, которые могут быть только положительными, или широко распространенный NULL для строк. Такие условности служат постоянным источником ошибок, и в PureScript (как и в Haskell, OCaml, F# и многих других) такой подход считается плохой практикой и настоятельно рекомендуются "опциональные типы". В таких типах есть специальное значение, обозначающее "ничто" и его невозможно ни с чем спутать и случайно использовать в вычислениях с "основным" типом.
