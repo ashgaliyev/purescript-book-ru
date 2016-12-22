@@ -269,12 +269,16 @@ The PureScript compiler also ships with an interactive REPL called PSCi. This ca
 
 Pulp can load source modules into PSCi automatically, via the `pulp psci` command:
 
+Pulp может загрузить исходники модулей в psci автоматически, через команду `pulp psci`:
+
 ```text
 $ pulp psci
 >
 ```
 
 You can type `:?` to see a list of commands:
+
+Вы можете увидеть список команд, напечатав `:?`:
 
 ```text
 > :?
@@ -293,13 +297,19 @@ The following commands are available:
 
 By pressing the Tab key, you should be able to see a list of all functions available in your own code, as well as any Bower dependencies and the Prelude modules.
 
+Нажав на Tab, вы должны будете увидеть список всех доступных функций в вашем коде, во всех зависимостях из Bower, а также в модулях Prelude:
+
 Start by importing the `Prelude` module:
+
+Начнем с импортирования модуля `Prelude`:
 
 ```text
 > import Prelude
 ```
 
 Try evaluating a few expressions now:
+
+Теперь попробуем вычислить несколько выражений:
 
 ```text
 > 1 + 2
@@ -311,6 +321,9 @@ Try evaluating a few expressions now:
 
 Let's try out our new `diagonal` function in PSCi:
 
+Давайте попробуем нашу новую функцию `diagonal` в PSCi.
+
+
 ```text
 > import Main
 > diagonal 5.0 12.0
@@ -319,6 +332,8 @@ Let's try out our new `diagonal` function in PSCi:
 ```
 
 You can also use PSCi to define functions:
+
+Вы можете также использовать PSCi для определения функции:
 
 ```text
 > let double x = x * 2
@@ -329,7 +344,11 @@ You can also use PSCi to define functions:
 
 Don't worry if the syntax of these examples is unclear right now - it will make more sense as you read through the book.
 
+Не беспокойтесь, если синтаксис этих примеров вам сейчас не ясен - он приобретет больше смысла по ходу чтения книги (?)
+
 Finally, you can check the type of an expression by using the `:type` command:
+
+Наконец, вы можете проверить тип выражения, используя команду `:type`:
 
 ```text
 > :type true
@@ -339,17 +358,30 @@ Boolean
 Array Int
 ```
 
-Try out the interactive mode now. If you get stuck at any point, simply use the Reset command `:reset` to unload any modules which may be compiled in memory.
+Try out the interactive mode now. If you get stuck at any point, simply use the Reset command `:reset` to unload any modules which may be compiled in memory. 
+
+Теперь попробуйте интерактивный режим. Если вы где-то застряли, просто воспользуйтесь командой `:reset` для выгрузки всех модулей, скомпилированных в памяти.
 
 X> ## Exercises
 X>
 X> 1. (Easy) Use the `Math.pi` constant to write a function `circleArea` which computes the area of a circle with a given radius. Test your function using PSCi (_Hint_: don't forget to import `pi` by modifying the `import Math` statement).
 X> 1. (Medium) Use `bower install` to install the `purescript-globals` package as a dependency. Test out its functions in PSCi (_Hint_: you can use the `:browse` command in PSCi to browse the contents of a module).
 
-## Conclusion
+X> ## Упражнения
+X>
+X> 1. (Легко) Используя константу `Math.pi`, напишите функцию `circleArea`, вычисляющаю площадь круга по заданному радиусу. Проверьте функцию, используя PSCi (_Подсказка_: не забудьте импортировать `pi`, изменив инструкцию `import Math`)
+X> 1. (Средне) Используя `bower install` установите пакет `purescript-globals` в качестве зависимости. Проверьте его функции в PSCi (_Подсказка_: вы можете воспользоваться командой `:browse` в PSCi, чтобы просмотреть содержимое модуля)
+
+## Заключение
 
 In this chapter, we set up a simple PureScript project using the Pulp tool.
 
+В этой главе мы создали простой PureScript проект использовав инструмент Pulp
+
 We also wrote our first PureScript function, and a JavaScript program which could be compiled and executed either in the browser or in NodeJS.
 
+Мы также написали нашу первую PureScript функцию, а также JavaScript программу, которая может быть скомпилирована и запущена, и в браузере, и на NodeJS
+
 We will use this development setup in the following chapters to compile, debug and test our code, so you should make sure that you are comfortable with the tools and techniques involved.
+
+Мы будем использовать эту рабочую конфигурацию в последующих главах для компиляции, отладки и запуска нашего кода, поэтому вы должны убедиться, что чувствуете себя комфортно с используемыми инструментами и техниками.
