@@ -374,11 +374,19 @@ In a type-annotated expression x :: t, the type t must have kind *
 
 This is a _kind error_. Just like values are distinguished by their _types_, types are distinguished by their _kinds_, and just like ill-typed values result in _type errors_, _ill-kinded_ types result in _kind errors_.
 
+Это ошибка _рода_. Прямо как значения различаются по их _типам_, типы различаются по их _родам_, и точно также как неправильно типизированные значения приводят к ошибкам _типов_, неправильно "порожденные" типы приводят к ошибкам _родов_.
+
 There is a special kind called `*` which represents the kind of all types which have values, like `Number` and `String`.
+
+Есть специальный род `*`, который представляет собой род всех типов, которые имеют значения, например `Number` и `String`.
 
 There are also kinds for type constructors. For example, the kind `* -> *` represents a function from types to types, just like `List`. So the error here occurred because values are expected to have types with kind `*`, but `List` has kind `* -> *`.
 
+Также существуют рода для конструкторов типов. Например род `* -> *` представляет функцию из типа в тип, ровно такую как `List`. Поэтому ошибка выше возникла из-за того что значения имеют тип с родом `*`, в то время как `List` имеет род `* -> *`. 
+
 To find out the kind of a type, use the `:kind` command in PSCi. For example:
+
+Для того чтобы определить род типа можно использовать команду `:kind` в PSCi. Например:
 
 ```text
 > :kind Number
@@ -394,15 +402,22 @@ To find out the kind of a type, use the `:kind` command in PSCi. For example:
 
 PureScript's _kind system_ supports other interesting kinds, which we will see later in the book.
 
+_Система родов_ в PureScript поддерживает и другие интересные рода, которые мы еще увидим позже в этой книге.
+
 ## Displaying Address Book Entries
+## Вывод записей из адресной книги
 
 Let's write our first function, which will render an address book entry as a string. We start by giving the function a type. This is optional, but good practice, since it acts as a form of documentation. In fact, the PureScript compiler will give a warning if a top-level declaration does not contain a type annotation. A type declaration separates the name of a function from its type with the `::` symbol:
+
+Давайте напишем нашу первую функцию, которая будет отображать запись из адресной книги как строку. Начнем с того что дадим нашей функции тип. Это вообще необязательно, но считается хорошим тоном, поскольку служит в каком-то смысле документацией. Объявление типа разделяет имя функции от ее типа символом `::`:
 
 ```haskell
 showEntry :: Entry -> String
 ```
 
 This type signature says that `showEntry` is a function, which takes an `Entry` as an argument and returns a `String`. Here is the code for `showEntry`:
+
+Эта сигнатура типа сообщает что `showEntry` является функцией, которая принимает параметр типа `Entry` и возвращает `String`. Вот собственно код для `showEntry`:
 
 ```haskell
 showEntry entry = entry.lastName <> ", " <>
@@ -411,6 +426,9 @@ showEntry entry = entry.lastName <> ", " <>
 ```
 
 This function concatenates the three fields of the `Entry` record into a single string, using the `showAddress` function to turn the record inside the `address` field into a `String`. `showAddress` is defined similarly:
+
+
+Этот код объединяет три поля записи `Entry` в единую строку, используя функцию `showAddress` для того чтобы превратить вложенную запись в поле `address` тоже в `String`. Функция `showAddress` определена подобным же образом:
 
 ```haskell
 showAddress :: Address -> String
@@ -421,17 +439,26 @@ showAddress addr = addr.street <> ", " <>
 
 A function definition begins with the name of the function, followed by a list of argument names. The result of the function is specified after the equals sign. Fields are accessed with a dot, followed by the field name. In PureScript, string concatenation uses the diamond operator (`<>`), instead of the plus operator like in Javascript.
 
+Определение функции начинается с имени функции, сопровождающемся списоком аргументов. Результат функции указывается после знака равенства. Поля записи адресуются через точку, после которой следует имя поля. Для объединения строк в PureScript используется оператор "ромб" (`<>`) вместо плюса, который применяется в JavaScript.
+
 ## Test Early, Test Often
+## Тестируйте рано, тестируйте часто
 
 The PSCi interactive mode allows for rapid prototyping with immediate feedback, so let's use it to verify that our first few functions behave as expected.
 
+Интерактивный режим PSCi позволяет быстрое прототипирование с мгновенной обратной связью. Давайте посмотрим как его можно использовать чтобы убедиться что функции ведут себя как ожидается.
+
+
 First, build the code you've written:
+
+Сначала, скомпилируйте написанный код:
 
 ```text
 $ pulp build
 ```
 
 Next, load PSCi, and use the `import` command to import your new module:
+Затем запустите PSCi и используйте команду `import` для того чтобы загрузить ваш новый модуль:
 
 ```text
 $ pulp psci
@@ -440,6 +467,8 @@ $ pulp psci
 ```
 
 We can create an entry by using a record literal, which looks just like an anonymous object in JavaScript. Bind it to a name with a `let` expression:
+
+Мы можем создать запись, используя запись-константу, которая выглядит совершенно как анонимный объект в JavaScript. Дайте ей имя при помощи выражения `let`:
 
 ```text
 > let address = { street: "123 Fake St.", city: "Faketown", state: "CA" }
