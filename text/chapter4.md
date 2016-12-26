@@ -86,11 +86,20 @@ fib n = fib (n - 1) + fib (n - 2)
 
 Again, this problem is solved by considering the solutions to subproblems. In this case, there are two subproblems, corresponding to the expressions `fib (n - 1)` and `fib (n - 2)`. When these two subproblems are solved, we assemble the result by adding the partial results.
 
+И опять, задача решается путем рассмотрения решений в позадачах (?). В данном случае, здесь две подзадачи, соответствующие выражениям `fib (n - 1)` и `fib (n - 2)`. Когда две эти задачи решены, мы собираем результат путем сложения частичных результатов.
+
+
 ## Recursion on Arrays
+## Рекурсия на массивах
 
 We are not limited to defining recursive functions over the `Int` type! We will see recursive functions defined over a wide array of data types when we cover _pattern matching_ later in the book, but for now, we will restrict ourselves to numbers and arrays.
 
+Мы не ограничены созданием рекурсий на типе `Int`! Мы увидем, что рекурсивные функции определяются на широком массиве типов данных когда дойдем до _сопоставления с образцом_ далее в книге, но сейчас мы ограничемся числами и массивами.
+
 Just as we branch based on whether the input is non-zero, in the array case, we will branch based on whether the input is non-empty. Consider this function, which computes the length of an array using recursion:
+
+Подобно тому, как мы ответвлялись на случае, когда аргумент был не равен нулю, в случае с массивом, мы будем ответвлятся на случае когда массив не пустой. Рассмотрим данную функцию, вычисляющую длину массива, используя рекурсию:
+
 
 ```haskell
 import Prelude
@@ -108,11 +117,16 @@ length arr =
 
 In this function, we use an `if .. then .. else` expression to branch based on the emptiness of the array. The `null` function returns `true` on an empty array. Empty arrays have length zero, and a non-empty array has a length that is one more than the length of its tail.
 
+В данной функции мы используем выражение `if .. then .. else` для ветвления на условии пустоты массива. Функция `null` возвращает `true` если массив пустой. Пустые массивы имеют нулевую длину, а непустые - 1 плюс длина хвоста (не понял фразу после запятой, написал своими словами)
+
 This example is obviously a very impractical way to find the length of an array in JavaScript, but should provide enough help to allow you to complete the following exercises:
 
-X> ## Exercises
+Очевидно, этот пример - очень непрактичный способ нахождения длины массива в JavaScript, но он должен обеспечить достаточную помощь, чтобы позволить вам решить следующие упражнения:
+
+X> ## Упражнения
 X>
 X> 1. (Easy) Write a recursive function which returns `true` if and only if its input is an even integer.
+X> 1. (Легко) Write a recursive function which returns `true` if and only if its input is an even integer.
 X> 2. (Medium) Write a recursive function which counts the number of even integers in an array. _Hint_: the function `unsafePartial head` (where `head` is also imported from `Data.Array.Partial`) can be used to find the first element in a non-empty array.
 
 ## Maps
