@@ -1,38 +1,67 @@
 # Recursion, Maps And Folds
+# Рекурсия, отображения и свёртки
 
-## Chapter Goals
+## Цели главы
 
 In this chapter, we will look at how recursive functions can be used to structure algorithms. Recursion is a basic technique used in functional programming, which we will use throughout this book.
 
+В этой главе мы увидим как работает рекурсия и как она может быть использована для построения алгоритмов. Рекурсия - это базовая техника, используемая в функциональном программировании, которую мы будем использовать на протяжение всей книги.
+
 We will also cover some standard functions from PureScript's standard libraries. We will see the `map` and `fold` functions, as well as some useful special cases, like `filter` and `concatMap`.
+
+Мы также рассмотрим некоторые стандартные функции из стандартных библиотек PureScript. Мы увидем функции `map`, `fold`, а также некоторые специальные, такие как `filter` и `concatMap`.
 
 The motivating example for this chapter is a library of functions for working with a virtual filesystem. We will apply the techniques learned in this chapter to write functions which compute properties of the files represented by a model of a filesystem.
 
+Побуждающий пример для этой главы - это библиотека функций для работы с виртуальной системой. Техники, которые мы изучим в это главе мы применим для написания функций, вычисляющих свойства файлов представленных моделью файловой системы.
+
 ## Project Setup
+## Настройка проекта
 
 The source code for this chapter is contained in the two files `src/Data/Path.purs` and `src/FileOperations.purs`.
 
+Исходный код данной главы содержится в двух файлах - `src/Data/Path.purs` и `src/FileOperations.purs`.
+
 The `Data.Path` module contains a model of a virtual filesystem. You do not need to modify the contents of this module.
+
+Модуль `Data.Path` содержит модель виртуальной файловой системы. Вам не нужно изменять содержимое этого модуля.
 
 The `FileOperations` module contains functions which use the `Data.Path` API. Solutions to the exercises can be completed in this file.
 
+Модуль `FileOperations` содержит функции, которые использую API `Data.Path`. Решения к упражнениям могут быть выполнены в этом модуле.
+
 The project has the following Bower dependencies:
 
-- `purescript-maybe`, which defines the `Maybe` type constructor
-- `purescript-arrays`, which defines functions for working with arrays
-- `purescript-strings`, which defines functions for working with Javascript strings
-- `purescript-foldable-traversable`, which defines functions for folding arrays and other data structures
-- `purescript-console`, which defines functions for printing to the console
+Проект имеет следующие Bower зависимости:
 
-## Introduction
+- `purescript-maybe`, which defines the `Maybe` type constructor
+- `purescript-maybe`, который определяет конструктор типа `Maybe`
+- `purescript-arrays`, which defines functions for working with arrays
+- `purescript-arrays`, определяющий функции для работы с массивами
+- `purescript-strings`, which defines functions for working with Javascript strings
+- `purescript-strings`, содержащий функции для работы со строками Javascript
+- `purescript-foldable-traversable`, which defines functions for folding arrays and other data structures
+- `purescript-foldable-traversable`, который содержит функции для свертки массивов и других структур данных 
+- `purescript-console`, which defines functions for printing to the console
+- `purescript-console`, определяющий функции для печатания в консоли
+
+## Введение
 
 Recursion is an important technique in programming in general, but particularly common in pure functional programming, because, as we will see in this chapter, recursion helps to reduce the mutable state in our programs.
 
+Рекурсия - это важная техника в программировании в общем, но особенно в чистом функциональном программировании, потому что, как мы увидем в этой главе, она помогает сократить мутацию состояния наших программ.
+
 Recursion is closely linked to the _divide and conquer_ strategy: to solve a problem on certain inputs, we can break down the inputs into smaller parts, solve the problem on those parts, and then assemble a solution from the partial solutions.
+
+Рекурсия тесно связана со стратегией _разделяй и властвуй_: чтобы решить задачу с множеством входных данных, мы разбиваем входные данные на меньшие части, решаем задачу в этих частях, а потом собираем решение из меньших решений.
 
 Let's see some simple examples of recursion in PureScript.
 
+Давайте рассмотрим примеры рекурсии в PureScript.
+
 Here is the usual _factorial function_ example:
+
+Вот обычный пример _функции нахождения факториала_:
 
 ```haskell
 fact :: Int -> Int
@@ -42,7 +71,11 @@ fact n = n * fact (n - 1)
 
 Here, we can see how the factorial function is computed by reducing the problem to a subproblem - that of computing the factorial of a smaller integer. When we reach zero, the answer is immediate.
 
+Тут мы видем как функция факториала вычесляется путем редуцирования задачи на подзадачу - которая вычисляет факториал меньшего целого. Когда мы достигнем нуля, ответ тут же выдается.
+
 Here is another common example, which computes the _Fibonnacci function_:
+
+Вот еще один общий пример - _функция вычиляющая число Фибоначчи_:
 
 ```haskell
 fib :: Int -> Int
