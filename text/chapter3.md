@@ -475,6 +475,7 @@ We can create an entry by using a record literal, which looks just like an anony
 ```
 
 Now, try applying our function to the example:
+Теперь давайте применим нашу функцию к этим данным:
 
 ```text
 > showAddress address
@@ -484,6 +485,8 @@ Now, try applying our function to the example:
 
 Let's also test `showEntry` by creating an address book entry record containing our example address:
 
+Заодно проверим `showEntry` создав запись в адресной книге, содержащую наш пример адреса: 
+
 ```text
 > let entry = { firstName: "John", lastName: "Smith", address: address }
 > showEntry entry
@@ -492,8 +495,11 @@ Let's also test `showEntry` by creating an address book entry record containing 
 ```
 
 ## Creating Address Books
+## Создаем адресные книги
 
 Now let's write some utility functions for working with address books. We will need a value which represents an empty address book: an empty list.
+
+Теперь давайте напишем несколько функций для работы с адресными книгами. Нам понадобится значение, представляющее пустую адресную книгу: пустой список.
 
 ```haskell
 emptyBook :: AddressBook
@@ -502,15 +508,23 @@ emptyBook = empty
 
 We will also need a function for inserting a value into an existing address book. We will call this function `insertEntry`. Start by giving its type:
 
+Также понадобится функция для вставки значения в существующую адресную книгу. Назовем эту функцию `insertEntry`. Начнем с определения типа для нее:
+
 ```haskell
 insertEntry :: Entry -> AddressBook -> AddressBook
 ```
 
 This type signature says that `insertEntry` takes an `Entry` as its first argument, and an `AddressBook` as a second argument, and returns a new `AddressBook`.
 
+Эта сигнатура говорит что `insertEntry` принимает параметр типа `Entry` в качестве первого аргумента и типа `AddressBook` в качестве второго, а возвращает значение типа `AddressBook`.
+
 We don't modify the existing `AddressBook` directly. Instead, we return a new `AddressBook` which contains the same data. As such, `AddressBook` is an example of an _immutable data structure_. This is an important idea in PureScript - mutation is a side-effect of code, and inhibits our ability to reason effectively about its behavior, so we prefer pure functions and immutable data where possible.
 
+Мы не модифицируем существующую структуру `AddressBook` напрямую. Вместо этого мы возвращаем _новую структуру `AddressBook`, которая содержит те же данные. Таким образом, `AddressBook` это пример _неизменяемой структуры данных_. И это одна из важнеших концепций PureScript - изменение данных это побочный эффект от исполнения программы и мешает нам анализировать ее поведение, поэтому мы предпочитаем чистые функции (без побочных эффектов) и неизменяемые структуры данных.
+
 To implement `insertEntry`, we can use the `Cons` function from `Data.List`. To see its type, open PSCi and use the `:type` command:
+
+Чтобы реализовать `insertEntry` мы можем использовать функцию `Cons` из модуля `Data.List`. Чтобы посмотреть ее тип, запустим PSCi и воспользуемся опять `:type`:
 
 ```text
 $ pulp psci
@@ -523,11 +537,15 @@ forall a. a -> List a -> List a
 
 This type signature says that `Cons` takes a value of some type `a`, and a list of elements of type `a`, and returns a new list with entries of the same type. Let's specialize this with `a` as our `Entry` type:
 
+Эта сигнатура говорит что `Cons` принимает значение какого-то типа `a` плюс список элементов типа `a`, и возвращает новый список элементов этого типа. Давайте специализируем эту функцию, подразумевая что `a`  это наш типа `Entry`:
+
 ```haskell
 Entry -> List Entry -> List Entry
 ```
 
 But `List Entry` is the same as `AddressBook`, so this is equivalent to
+
+Но `List Entry` это тот же `AddressBook`, так что это эквивалентно
 
 ```haskell
 Entry -> AddressBook -> AddressBook
@@ -535,7 +553,11 @@ Entry -> AddressBook -> AddressBook
 
 In our case, we already have the appropriate inputs: an `Entry`, and a `AddressBook`, so can apply `Cons` and get a new `AddressBook`, which is exactly what we wanted!
 
+В нашем случае мы уже имеем все необходимые входные типы: и `Entry` и `AddressBook`, так что мы можем просто применить `Cons` и получить новый `AddressBook`, то есть ровно то что нам и надо!
+
 Here is our implementation of `insertEntry`:
+
+Вот наша реализация `insertEntry`:
 
 ```haskell
 insertEntry entry book = Cons entry book
@@ -543,11 +565,18 @@ insertEntry entry book = Cons entry book
 
 This brings the two arguments `entry` and `book` into scope, on the left hand side of the equals symbol, and then applies the `Cons` function to create the result.
 
+Она вводит два параметра `entry` и `book` в область видимости, помещая их слева от знака равенства и затем применяет к ним  `Cons` для того чтобы получить результат.
+
 ## Curried Functions
+## Каррированные функции 
 
 Functions in PureScript take exactly one argument. While it looks like the `insertEntry` function takes two arguments, it is in fact an example of a _curried function_.
 
+Функции в PureScript принимают только один аргумент. Кажется что `insertEntry` принимает два, но на самом деле это пример так называемой _каррированной функции_.
+
 The `->` operator in the type of `insertEntry` associates to the right, which means that the compiler parses the type as
+
+Оператор `->` в типе `insertEntry` ассоциируется направо, что означает что компилятор воспринимает это как
 
 ```haskell
 Entry -> (AddressBook -> AddressBook)
@@ -555,7 +584,11 @@ Entry -> (AddressBook -> AddressBook)
 
 That is, `insertEntry` is a function which returns a function! It takes a single argument, an `Entry`, and returns a new function, which in turn takes a single `AddressBook` argument and returns a new `AddressBook`.
 
+Таким образом, `insertEntry` это функция, которая возвращает функцию! Она принимает единственный аргумент типа `Entry` и возвращает функцию, которая в свою очередь, принимает единственный аргумент типа `AddressBook` и возвращает новый `AddressBook`.
+
 This means that we can _partially apply_ `insertEntry` by specifying only its first argument, for example. In PSCi, we can see the result type:
+
+Это означает что мы можем _частично применить_ `insertEntry`, например указав только ее первый аргумент. Это можно увидеть в PSCi:
 
 ```text
 > :type insertEntry entry
@@ -565,12 +598,16 @@ AddressBook -> AddressBook
 
 As expected, the return type was a function. We can apply the resulting function to a second argument:
 
+Как и ожидалось, тип возвращаемого значения это функция. Мы можем применить ее ко второму аргументу:
+
 ```text
 > :type (insertEntry entry) emptyBook
 AddressBook
 ```
 
 Note though that the parentheses here are unnecessary - the following is equivalent:
+
+Обратите внимание что скобки тут необязательны, данная запись совершенно эквивалентна:
 
 ```text
 > :type insertEntry example emptyBook
@@ -579,9 +616,15 @@ AddressBook
 
 This is because function application associates to the left, and this explains why we can just specify function arguments one after the other, separated by whitespace.
 
+Это происходит потому что примение функции левоассоциативно и это объясняет почему мы можем просто указывать аргументы функции один за одним, разделяя их пробелом.
+
 Note that in the rest of the book, I will talk about things like "functions of two arguments". However, it is to be understood that this means a curried function, taking a first argument and returning another function.
 
+Заметим, что далее в книге я буду говорить о вещах типа "функции от двух аргументов". Но на самом деле это надо воспринимать как каррированную функцию, принимающую первый аргумент и возвращающую другую функцию, принимающую второй аргумент.
+
 Now consider the definition of `insertEntry`:
+
+Посмотрите на определение `insertEntry`:
 
 ```haskell
 insertEntry :: Entry -> AddressBook -> AddressBook
@@ -590,12 +633,16 @@ insertEntry entry book = Cons entry book
 
 If we explicitly parenthesize the right-hand side, we get `(Cons entry) book`. That is, `insertEntry entry` is a function whose argument is just passed along to the `(Cons entry)` function. But if two functions have the same result for every input, then they are the same function! So we can remove the argument `book` from both sides:
 
+Если мы явным образом заключим в скобки правую часть, то мы получим `(Cons entry) book`. Таким образом, `insertEntry entry` это функция, чей аргумент просто передается дальше в функцию `(Cons entry)`. Но если две функции возвращают один и тот же результат для любого значения, то значит это одна и та же функция! Поэтому мы можем удалить аргумент `book` с обоих сторон:
+
 ```haskell
 insertEntry :: Entry -> AddressBook -> AddressBook
 insertEntry entry = Cons entry
 ```
 
 But now, by the same argument, we can remove `entry` from both sides:
+
+Но теперь, пользуясь той же логикой, мы можем удалить `entry` с обоих сторон:
 
 ```haskell
 insertEntry :: Entry -> AddressBook -> AddressBook
