@@ -651,15 +651,26 @@ insertEntry = Cons
 
 This process is called _eta conversion_, and can be used (along with some other techniques) to rewrite functions in _point-free form_, which means functions defined without reference to their arguments.
 
+Этот процесс называется _eta преобразованием_<sup>[4](#4)</sup> и может быть использован (вкупе с некоторыми другими методами) для записи функций в _бесточечной форме_<sup>[5](#5)</sup>, что означает отсутствие указания аргументов.
+
 In the case of `insertEntry`, _eta conversion_ has resulted in a very clear definition of our function - "`insertEntry` is just cons on lists". However, it is arguable whether point-free form is better in general.
 
+В случае с `insertEntry`, _эта преобразование_ привело к очень ясному определению нашей функции - "`insertEntry` это просто cons на списках". Однако, преимущества записи в бесточечной форме в общем случае спорны. 
+
 ## Querying the Address Book
+## Запросы к адресной книге
 
 The last function we need to implement for our minimal address book application will look up a person by name and return the correct `Entry`. This will be a nice application of building programs by composing small functions - a key idea from functional programming.
 
+Последняя функция, которую надо определить для нашего минимального приложения, будет запрашивать адресную книгу по имени персоны и возвращать необходимую запись `Entry`. Это будет прекрасное приложение метода построения программы из композиции маленьких функций - ключевой идеи функционального программирования.
+
 We can first filter the address book, keeping only those entries with the correct first and last names. Then we can simply return the head (i.e. first) element of the resulting list.
 
+Сначала мы можем профильтровать адресную книгу, сохраняя только те записи у которых нужные нам имя и фамилия. И потом просто вернем голову (то есть первый элемент) списка.
+
 With this high-level specification of our approach, we can calculate the type of our function. First open PSCi, and find the types of the `filter` and `head` functions:
+
+Базируюясь на таком дизайне высокого уровня, мы можем вычислить необходимый нам тип желаемой функции. Запустим PSCi и посмотрим на тип функций `filter` и `head`:
 
 ```text
 $ pulp psci
@@ -676,11 +687,19 @@ forall a. List a -> Maybe a
 
 Let's pick apart these two types to understand their meaning.
 
+Давайте разберем эти типы чтобы понять что они означают.
+
 `filter` is a curried function of two arguments. Its first argument is a function, which takes a list element and returns a `Boolean` value as a result. Its second argument is a list of elements, and the return value is another list.
+
+`filter` это каррированая функция о двух аргументах. Первый аргумент это функция, которая принимает список и возвращает значение типа `Boolean`. Второй это список элементов, а возвращаемое значение это опять список.
 
 `head` takes a list as its argument, and returns a type we haven't seen before: `Maybe a`. `Maybe a` represents an optional value of type `a`, and provides a type-safe alternative to using `null` to indicate a missing value in languages like Javascript. We will see it again in more detail in later chapters.
 
+`head` принимает список в качестве первого аргумента и возврашает тип, который мы до сих пор еще не видели: `Maybe a`. Этот тип представляет собой необязательное значение типа `a`, и позволяет реализовать типо-безопасную альтернативу значению `null`, чтобы отразить в программе несуществующее значение, как в JavaScript. Мы его еще увидим в дальнейших главах.
+
 The universally quantified types of `filter` and `head` can be _specialized_ by the PureScript compiler, to the following types:
+
+Универсально квантифицированные типы для `filter` и `head` могут быть _специализированы_ компилятором PureScript в следующие типы:
 
 ```haskell
 filter :: (Entry -> Boolean) -> AddressBook -> AddressBook
@@ -690,9 +709,15 @@ head :: AddressBook -> Maybe Entry
 
 We know that we will need to pass the first and last names that we want to search for, as arguments to our function.
 
+Мы знаем что мы должны передать искомые имя и фамилию как аргументы в нашу функцию.
+
 We also know that we will need a function to pass to `filter`. Let's call this function `filterEntry`. `filterEntry` will have type `Entry -> Boolean`. The application `filter filterEntry` will then have type `AddressBook -> AddressBook`. If we pass the result of this function to the `head` function, we get our result of type `Maybe Entry`.
 
+Мы также знаем что нам нужна функция, которую мы передадим в `filter`. Давайте назовем ее `filterEntry`. `filterEntry` будет иметь тип `Entry -> Boolean`. Таким образом `filter filterEntry` будет иметь тип `AddressBook -> AddressBook`. Если мы передадим результат этой функции в  `head`, то мы получим искомый результат `Maybe Entry`.
+
 Putting these facts together, a reasonable type signature for our function, which we will call `findEntry`, is:
+
+Объединяя эти факты, разумная сигнатура нашей функции, котору мы назовем `findEntry`, будет такой:
 
 ```haskell
 findEntry :: String -> String -> AddressBook -> Maybe Entry
@@ -700,7 +725,11 @@ findEntry :: String -> String -> AddressBook -> Maybe Entry
 
 This type signature says that `findEntry` takes two strings, the first and last names, and a `AddressBook`, and returns an optional `Entry`. The optional result will contain a value only if the name is found in the address book.
 
+Эта сигнатура говорит, что `findEntry` принимает две строки, имя и фамилию, а также `AddressBook`, и возвращает необязательное значение `Entry`. Необязательное значение будет содержать реальное значение только если имя найдено в адресной книге.
+
 And here is the definition of `findEntry`:
+
+И вот определение `findEntry`:
 
 ```haskell
 findEntry firstName lastName book = head $ filter filterEntry book
@@ -711,15 +740,26 @@ findEntry firstName lastName book = head $ filter filterEntry book
 
 Let's go over this code step by step.
 
+Давайте пройдемся по этому коду шаг за шагом.
+
 `findEntry` brings three names into scope: `firstName`, and `lastName`, both representing strings, and `book`, an `AddressBook`.
+
+`findEntry` вводит в область видимости три идентификатора: `firstName`, `lastName`, представленные строками и `book`, представленный типом `AddressBook`.
 
 The right hand side of the definition combines the `filter` and `head` functions: first, the list of entries is filtered, and the `head` function is applied to the result.
 
+Правая часть определения комбинирует функции `filter` и `head`: сначала фильтруется список записей, а потом к результату применяется `head`.
+
 The predicate function `filterEntry` is defined as an auxiliary declaration inside a `where` clause. This way, the `filterEntry` function is available inside the definition of our function, but not outside it. Also, it can depend on the arguments to the enclosing function, which is essential here because `filterEntry` uses the `firstName` and `lastName` arguments to filter the specified `Entry`.
+
+Функция-предикат `filterEntry` определена как вспомогательное объявление внутри объявления `where`. Таким образом, функция `filterEntry` доступна внутри определения нашей функции, но не снаружи ее области видимости. К тому же, она может зависеть от аргументов внешней функции, что в данном случае для нас существенно, поскольку `filterEntry` использует аргументы `firstName` и `lastName` чтобы отфильтровать необходимое значение `Entry`.
 
 Note that, just like for top-level declarations, it was not necessary to specify a type signature for `filterEntry`. However, doing so is recommended as a form of documentation.
 
+Обратите внимание что, как и в случае с нашими внешними объявлениями, не обязательно указывать сигнатуру типов для `filterEntry`. Однако это считается хорошим тоном для документирования.
+
 ## Infix Function Application
+## 
 
 In the code for `findEntry` above, we used a different form of function application: the `head` function was applied to the expression `filter filterEntry book` by using the infix `$` symbol.
 
@@ -871,3 +911,7 @@ Record можно перевести как "запись" или "структ�
 Опциональные значения широко распространены в языках с развитыми системами типов. Это значения, которых "может не быть". В более простых языках это эквивалентно "невозможным" значениям, например отрицательное число для значений, которые могут быть только положительными, или широко распространенный NULL для строк. Такие условности служат постоянным источником ошибок, и в PureScript (как и в Haskell, OCaml, F# и многих других) такой подход считается плохой практикой и настоятельно рекомендуются "опциональные типы". В таких типах есть специальное значение, обозначающее "ничто" и его невозможно ни с чем спутать и случайно использовать в вычислениях с "основным" типом.
 #### 3
 [Квантор всеобщности](https://ru.wikipedia.org/wiki/%D0%9A%D0%B2%D0%B0%D0%BD%D1%82%D0%BE%D1%80_%D0%B2%D1%81%D0%B5%D0%BE%D0%B1%D1%89%D0%BD%D0%BE%D1%81%D1%82%D0%B8). В PureScript вы можете использовать юникод символ FOR ALL (U+2200 или &amp#8704;) вместо ключевого слова `forall`.
+#### 4
+[η-преобразование](https://ru.wikipedia.org/wiki/%D0%9B%D1%8F%D0%BC%D0%B1%D0%B4%D0%B0-%D0%B8%D1%81%D1%87%D0%B8%D1%81%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5#.CE.B7-.D0.BF.D1.80.D0.B5.D0.BE.D0.B1.D1.80.D0.B0.D0.B7.D0.BE.D0.B2.D0.B0.D0.BD.D0.B8.D0.B5)
+#### 5
+В данном случае "точка" не имеет никакого отношения к синтаксису языка программирования, этот термин пришел из топологии, где множества состоят из точек и соответственно точки аналогичны значениям в алгебре. Бесточечная запись, тем самым, это запись без указания значений, то есть аргументов функций.
