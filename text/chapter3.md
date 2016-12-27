@@ -41,7 +41,7 @@ Here, we import several modules:
 - The `Data.List` module, which is provided by the `purescript-lists` package which can be installed using Bower. It contains a few functions which we will need for working with linked lists.
 - Модуль `Data.List`, который содержится в пакете `purescript-lists` и может быть установлен с использованием Bower. Он содержит несколько функций, которые нам будут нужны для работы со связанными списками.
 - The `Data.Maybe` module, which defines data types and functions for working with optional values.
-- Модуль `Data.Maybe`, который определяет типы данных и функции для работы с опциональными значениями<sup>[2](#2)</sup>. 
+- Модуль `Data.Maybe`, который определяет типы данных и функции для работы с необязательными значениями<sup>[2](#2)</sup>. 
 
 Notice that the imports for these modules are listed explicitly in parentheses. This is generally a good practice, as it helps to avoid conflicting imports.
 
@@ -651,15 +651,26 @@ insertEntry = Cons
 
 This process is called _eta conversion_, and can be used (along with some other techniques) to rewrite functions in _point-free form_, which means functions defined without reference to their arguments.
 
+Этот процесс называется _эта преобразованием_<sup>[4](#4)</sup> и может быть использован (вкупе с некоторыми другими методами) для записи функций в _бесточечной форме_<sup>[5](#5)</sup>, что означает отсутствие указания аргументов.
+
 In the case of `insertEntry`, _eta conversion_ has resulted in a very clear definition of our function - "`insertEntry` is just cons on lists". However, it is arguable whether point-free form is better in general.
 
+В случае с `insertEntry`, _эта преобразование_ привело к очень ясному определению нашей функции - "`insertEntry` это просто cons на списках". Однако, преимущества записи в бесточечной форме в общем случае спорны. 
+
 ## Querying the Address Book
+## Запросы к адресной книге
 
 The last function we need to implement for our minimal address book application will look up a person by name and return the correct `Entry`. This will be a nice application of building programs by composing small functions - a key idea from functional programming.
 
+Последняя функция, которую надо определить для нашего минимального приложения, будет запрашивать адресную книгу по имени персоны и возвращать необходимую запись `Entry`. Это будет прекрасное приложение метода построения программы из композиции маленьких функций - ключевой идеи функционального программирования.
+
 We can first filter the address book, keeping only those entries with the correct first and last names. Then we can simply return the head (i.e. first) element of the resulting list.
 
+Сначала мы можем профильтровать адресную книгу, сохраняя только те записи у которых нужные нам имя и фамилия. И потом просто вернем голову (то есть первый элемент) списка.
+
 With this high-level specification of our approach, we can calculate the type of our function. First open PSCi, and find the types of the `filter` and `head` functions:
+
+Базируюясь на таком дизайне высокого уровня, мы можем вычислить необходимый нам тип желаемой функции. Запустим PSCi и посмотрим на тип функций `filter` и `head`:
 
 ```text
 $ pulp psci
@@ -676,11 +687,19 @@ forall a. List a -> Maybe a
 
 Let's pick apart these two types to understand their meaning.
 
+Давайте разберем эти типы чтобы понять что они означают.
+
 `filter` is a curried function of two arguments. Its first argument is a function, which takes a list element and returns a `Boolean` value as a result. Its second argument is a list of elements, and the return value is another list.
+
+`filter` это каррированая функция о двух аргументах. Первый аргумент это функция, которая принимает список и возвращает значение типа `Boolean`. Второй это список элементов, а возвращаемое значение это опять список.
 
 `head` takes a list as its argument, and returns a type we haven't seen before: `Maybe a`. `Maybe a` represents an optional value of type `a`, and provides a type-safe alternative to using `null` to indicate a missing value in languages like Javascript. We will see it again in more detail in later chapters.
 
+`head` принимает список в качестве первого аргумента и возврашает тип, который мы до сих пор еще не видели: `Maybe a`. Этот тип представляет собой необязательное значение типа `a`, и позволяет реализовать типо-безопасную альтернативу значению `null`, чтобы отразить в программе несуществующее значение, как в JavaScript. Мы его еще увидим в дальнейших главах.
+
 The universally quantified types of `filter` and `head` can be _specialized_ by the PureScript compiler, to the following types:
+
+Универсально квантифицированные типы для `filter` и `head` могут быть _специализированы_ компилятором PureScript в следующие типы:
 
 ```haskell
 filter :: (Entry -> Boolean) -> AddressBook -> AddressBook
@@ -690,9 +709,15 @@ head :: AddressBook -> Maybe Entry
 
 We know that we will need to pass the first and last names that we want to search for, as arguments to our function.
 
+Мы знаем что мы должны передать искомые имя и фамилию как аргументы в нашу функцию.
+
 We also know that we will need a function to pass to `filter`. Let's call this function `filterEntry`. `filterEntry` will have type `Entry -> Boolean`. The application `filter filterEntry` will then have type `AddressBook -> AddressBook`. If we pass the result of this function to the `head` function, we get our result of type `Maybe Entry`.
 
+Мы также знаем что нам нужна функция, которую мы передадим в `filter`. Давайте назовем ее `filterEntry`. `filterEntry` будет иметь тип `Entry -> Boolean`. Таким образом `filter filterEntry` будет иметь тип `AddressBook -> AddressBook`. Если мы передадим результат этой функции в  `head`, то мы получим искомый результат `Maybe Entry`.
+
 Putting these facts together, a reasonable type signature for our function, which we will call `findEntry`, is:
+
+Объединяя эти факты, разумная сигнатура нашей функции, котору мы назовем `findEntry`, будет такой:
 
 ```haskell
 findEntry :: String -> String -> AddressBook -> Maybe Entry
@@ -700,7 +725,11 @@ findEntry :: String -> String -> AddressBook -> Maybe Entry
 
 This type signature says that `findEntry` takes two strings, the first and last names, and a `AddressBook`, and returns an optional `Entry`. The optional result will contain a value only if the name is found in the address book.
 
+Эта сигнатура говорит, что `findEntry` принимает две строки, имя и фамилию, а также `AddressBook`, и возвращает необязательное значение `Entry`. Необязательное значение будет содержать реальное значение только если имя найдено в адресной книге.
+
 And here is the definition of `findEntry`:
+
+И вот определение `findEntry`:
 
 ```haskell
 findEntry firstName lastName book = head $ filter filterEntry book
@@ -711,21 +740,38 @@ findEntry firstName lastName book = head $ filter filterEntry book
 
 Let's go over this code step by step.
 
+Давайте пройдемся по этому коду шаг за шагом.
+
 `findEntry` brings three names into scope: `firstName`, and `lastName`, both representing strings, and `book`, an `AddressBook`.
+
+`findEntry` вводит в область видимости три идентификатора: `firstName`, `lastName`, представленные строками и `book`, представленный типом `AddressBook`.
 
 The right hand side of the definition combines the `filter` and `head` functions: first, the list of entries is filtered, and the `head` function is applied to the result.
 
+Правая часть определения комбинирует функции `filter` и `head`: сначала фильтруется список записей, а потом к результату применяется `head`.
+
 The predicate function `filterEntry` is defined as an auxiliary declaration inside a `where` clause. This way, the `filterEntry` function is available inside the definition of our function, but not outside it. Also, it can depend on the arguments to the enclosing function, which is essential here because `filterEntry` uses the `firstName` and `lastName` arguments to filter the specified `Entry`.
+
+Функция-предикат `filterEntry` определена как вспомогательное объявление внутри объявления `where`. Таким образом, функция `filterEntry` доступна внутри определения нашей функции, но не снаружи ее области видимости. К тому же, она может зависеть от аргументов внешней функции, что в данном случае для нас существенно, поскольку `filterEntry` использует аргументы `firstName` и `lastName` чтобы отфильтровать необходимое значение `Entry`.
 
 Note that, just like for top-level declarations, it was not necessary to specify a type signature for `filterEntry`. However, doing so is recommended as a form of documentation.
 
+Обратите внимание что, как и в случае с нашими внешними объявлениями, не обязательно указывать сигнатуру типов для `filterEntry`. Однако это считается хорошим тоном для документирования.
+
 ## Infix Function Application
+## Инфиксное применение функций
 
 In the code for `findEntry` above, we used a different form of function application: the `head` function was applied to the expression `filter filterEntry book` by using the infix `$` symbol.
 
+В предыдущем коде для `findEntry` мы использовали другую форму применения функций к аргументам: функция `head` была применена к выражению `filter filterEntry book` при помощи инфиксного символа `$`.
+
 This is equivalent to the usual application `head (filter filterEntry book)`
 
+Это эквивалентно обычному применению `head (filter filterEntry book)`
+
 `($)` is just an alias for a regular function called `apply`, which is defined in the Prelude. It is defined as follows:
+
+`($)` это просто синоним для обычной функции `apply`, которая определена в модуле Prelude. Определение выглядит следующим образом:
 
 ```haskell
 apply :: forall a b. (a -> b) -> a -> b
@@ -736,35 +782,53 @@ infixr 0 apply as $
 
 So `apply` takes a function and a value and applies the function to the value. The `infixr` keyword is used to define `($)` as an alias for `apply`.
 
+Таким образом, `apply` берет функцию и значение и применяет функцию к значению. Ключевое слово `infixr` использовано для определения `($)` как синонима `apply`.
+
 But why would we want to use `$` instead of regular function application? The reason is that `$` is a right-associative, low precedence operator. This means that `$` allows us to remove sets of parentheses for deeply-nested applications.
 
+Но почему мы захотели бы использовать `$` вместо обычного применения функции? Причина в том, что `$` это правоассоциативный оператор с низким приоритетом. Что означает что `$` избавляет нас от набора скобок вокруг глубоко вложенных применений функций.
+
 For example, the following nested function application, which finds the street in the address of an employee's boss:
+
+Например, следующая вложенное применение функций, которое находит улицу в адресе руководителя сотрудника:
 
 ```haskell
 street (address (boss employee))
 ```
 
 becomes (arguably) easier to read when expressed using `$`:
+становится (предположительно) более легкочитаемой после записи с использованием `$`:
 
 ```haskell
 street $ address $ boss employee
 ```
 
 ## Function Composition
+## Композиция функций
 
 Just like we were able to simplify the `insertEntry` function by using eta conversion, we can simplify the definition of `findEntry` by reasoning about its arguments.
 
+Ровно также как мы смогли упростить функцию `insertEntry` используя эта-преобразование, мы можем упростить определение `findEntry` рассуждая о ее аргументах.
+
 Note that the `book` argument is passed to the `filter filterEntry` function, and the result of this application is passed to `head`. In other words, `book` is passed to the _composition_ of the functions `filter filterEntry` and `head`.
+
+Обратите внимание, что аргумент `book` передается в функцию `filter filterEntry` и результат этого применения функции передается в `head`. Другими словами, `book` передается в _композицию_ функций `filter filterEntry` и `head`.
 
 In PureScript, the function composition operators are `<<<` and `>>>`. The first is "backwards composition", and the second is "forwards composition".
 
+В PureScript операторами для композиции функций являются `<<<` и `>>>`. Первый это "обратная композиция", а второй - "прямая композиция".
+
 We can rewrite the right-hand side of `findEntry` using either operator. Using backwards-composition, the right-hand side would be
+
+Мы можем переписать правую часть определения `findEntry` используя любой из этих операторов. Используя обратную композицию, правая часть будет выглядеть так:
 
 ```
 (head <<< filter filterEntry) book
 ```
 
 In this form, we can apply the eta conversion trick from earlier, to arrive at the final form of `findEntry`:
+
+В этой форме использования мы можем применить трюк эта-преобразования как и раньше, чтобы придти к окончательной форме `findEntry`:
 
 ```haskell
 findEntry firstName lastName = head <<< filter filterEntry
@@ -774,17 +838,26 @@ findEntry firstName lastName = head <<< filter filterEntry
 
 An equally valid right-hand side would be:
 
+Не менее корректная другая форма правой части определения:
+
 ```haskell
 filter filterEntry >>> head
 ```
 
 Either way, this gives a clear definition of the `findEntry` function: "`findEntry` is the composition of a filtering function and the `head` function".
 
+В любом случае это дает нам ясное определение функции `findEntry`: "`findEntry` это композиция фильтрующей функции и функции `head`".
+
 I will let you make your own decision which definition is easier to understand, but it is often useful to think of functions as building blocks in this way - each function executing a single task, and solutions assembled using function composition.
 
+Я позволю вам самостоятельно принять решение какое определение легче понять, но в любом случае, часто выгодно думать о функциях как о строительных блоках в таком ключе - каждая функция выполняет одну простую задачу, а решение собирается вместе при помощи композиции функций.
+
 ## Tests, Tests, Tests ...
+## Тесты, тесты, тесты ...
 
 Now that we have the core of a working application, let's try it out using PSCi.
+
+Теперь, когда у нас есть ядро работающего приложения, давайте попробуем его с применением PSCi.
 
 ```text
 $ pulp psci
@@ -793,6 +866,8 @@ $ pulp psci
 ```
 
 Let's first try looking up an entry in the empty address book (we obviously expect this to return an empty result):
+
+Давайте сначала попробуем поискать запись в пустой адресной книге (очевидно что мы ожидаем получить пустой результат):
 
 ```text
 > findEntry "John" "Smith" emptyBook
@@ -810,11 +885,19 @@ No type class instance was found for
 
 An error! Not to worry, this error simply means that PSCi doesn't know how to print a value of type `Entry` as a String.
 
+Ошибка! Не беспокойтесь, эта ошибка просто означает что PSCi не имеет понятия как распечатать значение типа `Entry` в виде строки.
+
 The return type of `findEntry` is `Maybe Entry`, which we can convert to a `String` by hand.
+
+Возвращаемое значение `findEntry` это `Maybe Entry`, которое мы можем преобразовать в `String` вручную.
 
 Our `showEntry` function expects an argument of type `Entry`, but we have a value of type `Maybe Entry`. Remember that this means that the function returns an optional value of type `Entry`. What we need to do is apply the `showEntry` function if the optional value is present, and propagate the missing value if not.
 
+Наша функция `showEntry` ожидает аргумент типа `Entry`, а у нас вместо этого типа `Maybe Entry`. Как вы помните, что это означает что функция возвращает необязательное значение `Entry`. Все что нам надо сделать это применить `showEntry` если необязательное значение присутствует и пробросить отсутствующее значение дальше если нет.
+
 Fortunately, the Prelude module provides a way to do this. The `map` operator can be used to lift a function over an appropriate type constructor like `Maybe` (we'll see more on this function, and others like it, later in the book, when we talk about functors):
+
+К счастью, модуль Prelude предоставляет способ для этого. Оператор `map` может быть использован для того чтобы поднять функцию над подходящим конструктором типа, вроде `Maybe` (мы увидим больше об этой функции и ей аналогичных, дальше в книге, когда будем говорить о функторах):
 
 ```text
 > import Prelude
@@ -825,13 +908,19 @@ Nothing
 
 That's better - the return value `Nothing` indicates that the optional return value does not contain a value - just as we expected.
 
+Так лучше - возвращаемое значение `Nothing` указывает что необязательное возвращаемое значение не содержит значения, ровно как мы и ожидали.
+
 For ease of use, we can create a function which prints an `Entry` as a String, so that we don't have to use `showEntry` every time:
+
+Для простоты, мы можем создать функцию, которая печатает `Entry` как строку, так чтобы не надо было использовать `showEntry` каждый раз:
 
 ```text
 > let printEntry firstName lastName book = map showEntry (findEntry firstName lastName book)
 ```
 
 Now let's create a non-empty address book, and try again. We'll reuse our example entry from earlier:
+
+Теперь давайте создадим непустую адресную книгу и попробуем опять. Повторно используем наш пример из предыдущего раза:
 
 ```text
 > let book1 = insertEntry entry emptyBook
@@ -843,31 +932,60 @@ Just ("Smith, John: 123 Fake St., Faketown, CA")
 
 This time, the result contained the correct value. Try defining an address book `book2` with two names by inserting another name into `book1`, and look up each entry by name.
 
+Теперь результат содержит правильное значение. Попробуйте определить новую адресную книгу `book2` с двумя именами путем вставление нового имени в `book1` и поискать каждую из записей по имени.
+
 X> ## Exercises
+X> ## Упражнения
 X>
 X> 1. (Easy) Test your understanding of the `findEntry` function by writing down the types of each of its major subexpressions. For example, the type of the `head` function as used is specialized to `AddressBook -> Maybe Entry`.
+
+X> 1. (Легкое) Протестируйте свое понимание функции `findEntry` написанием типов всех основных подвыражений. Например тип функции `head` специализируется как `AddressBook -> Maybe Entry`.
+
 X> 1. (Medium) Write a function which looks up an `Entry` given a street address, by reusing the existing code in `findEntry`. Test your function in PSCi.
+
+X> 1. (Среднее) Напишите функцию, которая ищет `Entry` по адресу, повторно использовав существующий код для `findEntry`. Протестируйте свою функцию в PSCi.
+
 X> 1. (Medium) Write a function which tests whether a name appears in a `AddressBook`, returning a Boolean value. _Hint_: Use PSCi to find the type of the `Data.List.null` function, which test whether a list is empty or not.
+
+X> 1. (Среднее) Напишите функцию, которая проверяет наличие имени в `AddressBook` и возвращает значение `Boolean`. _Намёк_: Используйте PSCi чтобы определить тип функции `Data.List.null`, которая проверяет непуст ли список.
+
 X> 1. (Difficult) Write a function `removeDuplicates` which removes duplicate address book entries with the same first and last names. _Hint_: Use PSCi to find the type of the `Data.List.nubBy` function, which removes duplicate elements from a list based on an equality predicate.
 
+X> 1. (Сложное) Напишите функцию `removeDuplicates`, которая удаляет дубликаты записей с одинаковыми именем и фамилией. _Намёк_: Используйте PSCi чтобы определить тип функции `Data.List.nubBy, которая удаляет дубликаты элементов списка, базируясь на заданном предикате равенства.
+
 ## Conclusion
+## Заключение
 
 In this chapter, we covered several new functional programming concepts:
+В этой главе мы обсудили несколько новых концепций функционального программирования:
 
 - How to use the interactive mode PSCi to experiment with functions and test ideas.
+- Как использовать интерактивный режим PSCi для экспериментов с функциями и тестирования идей.
 - The role of types as both a correctness tool, and an implementation tool.
+- Роль типов как инструмента для проверки верности, так и инструмента реализации.
 - The use of curried functions to represent functions of multiple arguments.
+- Использование каррированных функций для представления функций с несколькими аргументами.
 - Creating programs from smaller components by composition.
+- Создание программ из меньших компонентов путем композиции.
 - Structuring code neatly using `where` expressions.
+- Аккуратное структурирование кода при помощи выражений `where`.
 - How to avoid null values by using the `Maybe` type.
+- Как избегать нулевых значений используя тип `Maybe`.
 - Using techniques like eta conversion and function composition to refactor code into a clear specification.
+- Использование техник типа эта-преобразования и композиции функций для рефакторинга кода в ясную спецификацию.
 
 In the following chapters, we'll build on these ideas.
+
+В следующих главах мы продолжим строить на этом фундаменте.
 
 ### Примечания переводчика
 #### 1
 Record можно перевести как "запись" или "структура". Я выбрал "запись" согласно [статье в в Wikipedia](https://ru.wikipedia.org/wiki/%D0%97%D0%B0%D0%BF%D0%B8%D1%81%D1%8C_(%D1%82%D0%B8%D0%BF_%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85)) 
 #### 2
-Опциональные значения широко распространены в языках с развитыми системами типов. Это значения, которых "может не быть". В более простых языках это эквивалентно "невозможным" значениям, например отрицательное число для значений, которые могут быть только положительными, или широко распространенный NULL для строк. Такие условности служат постоянным источником ошибок, и в PureScript (как и в Haskell, OCaml, F# и многих других) такой подход считается плохой практикой и настоятельно рекомендуются "опциональные типы". В таких типах есть специальное значение, обозначающее "ничто" и его невозможно ни с чем спутать и случайно использовать в вычислениях с "основным" типом.
+Необязательные значения широко распространены в языках с развитыми системами типов. Это значения, которых "может не быть". В более простых языках это эквивалентно "невозможным" значениям, например отрицательное число для значений, которые могут быть только положительными, или широко распространенный NULL для строк. Такие условности служат постоянным источником ошибок, и в PureScript (как и в Haskell, OCaml, F# и многих других) такой подход считается плохой практикой и настоятельно рекомендуются "необязательные типы". В таких типах есть специальное значение, обозначающее "ничто" и его невозможно ни с чем спутать и случайно использовать в вычислениях с "основным" типом.
 #### 3
 [Квантор всеобщности](https://ru.wikipedia.org/wiki/%D0%9A%D0%B2%D0%B0%D0%BD%D1%82%D0%BE%D1%80_%D0%B2%D1%81%D0%B5%D0%BE%D0%B1%D1%89%D0%BD%D0%BE%D1%81%D1%82%D0%B8). В PureScript вы можете использовать юникод символ FOR ALL (U+2200 или &amp#8704;) вместо ключевого слова `forall`.
+#### 4
+[η-преобразование](https://ru.wikipedia.org/wiki/%D0%9B%D1%8F%D0%BC%D0%B1%D0%B4%D0%B0-%D0%B8%D1%81%D1%87%D0%B8%D1%81%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5#.CE.B7-.D0.BF.D1.80.D0.B5.D0.BE.D0.B1.D1.80.D0.B0.D0.B7.D0.BE.D0.B2.D0.B0.D0.BD.D0.B8.D0.B5)
+#### 5
+В данном случае "точка" не имеет никакого отношения к синтаксису языка программирования, этот термин пришел из топологии, где множества состоят из точек и соответственно точки аналогичны значениям в алгебре. Бесточечная запись, тем самым, это запись без указания значений, то есть аргументов функций.
