@@ -1,25 +1,14 @@
-# Functions and Records
 # Функции и записи <sup>[1](#1)</sup>
 
-## Chapter Goals
 ## Цели главы
-
-This chapter will introduce two building blocks of PureScript programs: functions and records. In addition, we'll see how to structure PureScript programs, and how to use types as an aid to program development.
 
 Эта глава знакомит с двумя элементами языка PureScript: функциями и записями<sup>[1](#1)</sup>. Кроме того, мы увидим как структурировать программы на PureScript и как использовать типы для помощи в разработке программ.
 
-We will build a simple address book application to manage a list of contacts. This code will introduce some new ideas from the syntax of PureScript.
-
 Мы создадим простую программу для управления записной книжкой контактов. Этот код внесет некоторые новые идеи из ситаксиса PureScript.
-
-The front-end of our application will be the interactive mode PSCi, but it would be possible to build on this code to write a front-end in Javascript. In fact, we will do exactly that in later chapters, adding form validation and save/restore functionality.
 
 В качестве интерфейса к нашему приложению мы будем использовать непосредственно оболочку интерпретатора PSCi в интерактивном режиме, но ничего не мешает написать интерфейс на JavaScript. На самом деле, мы это и сделаем в следующих главах, добавив валидацию форм и возможность сохранения и загрузки.
 
-## Project Setup
 ## Настройки проекта
-
-The source code for this chapter is contained in the file `src/Data/AddressBook.purs`. This file starts with a module declaration and its import list:
 
 Исходники для этой главы находятся в файле `src/Data/AddressBook.purs`. Этот файл начинается с объявления модуля и списка импортов:
 
@@ -33,21 +22,13 @@ import Data.List (List(..), filter, head)
 import Data.Maybe (Maybe)
 ```
 
-Here, we import several modules:
 Здесь мы импортируем несколько модулей:
 
-- The `Control.Plus` module, which defines the `empty` value.
 - Модуль `Control.Plus` , который определяет значение `empty`.
-- The `Data.List` module, which is provided by the `purescript-lists` package which can be installed using Bower. It contains a few functions which we will need for working with linked lists.
 - Модуль `Data.List`, который содержится в пакете `purescript-lists` и может быть установлен с использованием Bower. Он содержит несколько функций, которые нам будут нужны для работы со связанными списками.
-- The `Data.Maybe` module, which defines data types and functions for working with optional values.
 - Модуль `Data.Maybe`, который определяет типы данных и функции для работы с необязательными значениями<sup>[2](#2)</sup>. 
 
-Notice that the imports for these modules are listed explicitly in parentheses. This is generally a good practice, as it helps to avoid conflicting imports.
-
 Обратите внимание что импортируемые имена явно перечислены в скобках. Это хорошая, хотя и необязательная, практика, которая помогает при чтении кода и разрешении конфликтов импортов.
-
-Assuming you have cloned the book's source code repository, the project for this chapter can be built using Pulp, with the following commands:
 
 Предпогая что вы склонировали себе репозиторий кода из книги, проект для этой главы может быть построен при помощи программы Pulp, используя следующие команды:
 
@@ -57,10 +38,7 @@ $ bower update
 $ pulp build
 ```
 
-## Simple Types
 ## Простые типы
-
-PureScript defines three built-in types which correspond to JavaScript's primitive types: numbers, strings and booleans. These are defined in the `Prim` module, which is implicitly imported by every module. They are called `Number`, `String`, and `Boolean`, respectively, and you can see them in PSCi by using the `:type` command to print the types of some simple values:
 
 PureScript определяет три встроенных типа, которые соответствуют примитивным типам JavaScript: числа, строки и булевые значения. Они определены в модуле `Prim`, который неявно импортируется любым модулем. Эти типы называются `Number`, `String` и `Boolean` соответственно. Их можно увидеть в PSCi при помощи команды `:type`, выведя тип для некоторых простых значений:
 
@@ -77,11 +55,7 @@ String
 Boolean
 ```
 
-PureScript defines some other built-in types: integers, characters, arrays, records, and functions.
-
 PureScript определяет также несколько других встроенных типов: целые, символы, массивы, записи и функции.
-
-Integers are differentiated from floating point values of type `Number` by the lack of a decimal point:
 
 Целые отличаются от чисел с плавающей точкой типа `Number` отстутствием десятичной точки:
 
@@ -90,16 +64,12 @@ Integers are differentiated from floating point values of type `Number` by the l
 Int
 ```
 
-Character literals are wrapped in single quotes, unlike string literals which use double quotes:
-
 Символьные значения заключены в одиночные кавычки, в отличие от строковых значений, которые заключаются в двойные кавычки:
 
 ```text
 > :type 'a'
 Char
 ```
-
-Arrays correspond to JavaScript arrays, but unlike in JavaScript, all elements of a PureScript array must have the same type:
 
 Массивы соответствуют массивам JavaScript, но вопреки JavaScript, все элементы массива в PureScript должны иметь один и тот же тип: 
 
@@ -114,11 +84,7 @@ Array Boolean
 Could not match type Int with Boolean.
 ```
 
-The error in the last example is an error from the type checker, which unsuccessfully attempted to _unify_ (i.e. make equal) the types of the two elements.
-
 Ошибка в последнем примере это ошибка от тайпчекера, который пытался _унифицировать_ (то есть сделать равными) типы двух элементов.
-
-Records correspond to JavaScript's objects, and record literals have the same syntax as JavaScript's object literals:
 
 Записи соответствуют объектам JavaScript, и значения имеют тот же синтаксис как и значения объектов в JavaScript:
 
@@ -131,11 +97,7 @@ Records correspond to JavaScript's objects, and record literals have the same sy
 }
 ```
 
-This type indicates that the specified object has two _fields_, a `name` field which has type `String`, and an `interests` field, which has type `Array String`, i.e. an array of `String`s.
-
 Этот тип обозначает что указанный объект имеет два _поля_, имя `name`, которое имеет тип `String` и интересы `interests`, которое имеет тип `Array String`,  то есть массив `String`.
-
-Fields of records can be accessed using a dot, followed by the label of the field to access:
 
 Поля записей могут адресоваться через точку, сопровождающуюся именем поля:
 
@@ -146,8 +108,6 @@ Fields of records can be accessed using a dot, followed by the label of the fiel
 > author.interests
 ["Functional Programming","JavaScript"]
 ```
-
-PureScript's functions correspond to JavaScript's functions. The PureScript standard libraries provide plenty of examples of functions, and we will see more in this chapter:
 
 Функции PureScript соответствуют функциям JavaScript. Стандартные библиотеки PureScript предоставляют массу примеров функций и мы еще увидим их в этой главе:
 
@@ -160,16 +120,12 @@ forall a b c. (a -> b -> c) -> b -> a -> c
 forall a b. a -> b -> a
 ```
 
-Functions can be defined at the top-level of a file by specifying arguments before the equals sign:
-
 Функции могут быть определены на верхнем уровне файла при помощи указания аргументов перед знаком равенства:
 
 ```haskell
 add :: Int -> Int -> Int
 add x y = x + y
 ```
-
-Alternatively, functions can be defined inline, by using a backslash character followed by a space-delimited list of argument names. To enter a multi-line declaration in PSCi, we can enter "paste mode" by using the `:paste` command. In this mode, declarations are terminated using the _Control-D_ key sequence:
 
 Либо можно определять функции на вложенных уровнях файла с исходным кодом, используя обратную косую черту, после которой следует список имен параметров. Для того чтобы переключить PSCi в режим многострочного ввода, надо выбрать "режим копирования" при помощи команды `:paste`. В этом режиме объявления завершаются последовательностью _Control-D_: 
 
@@ -181,19 +137,14 @@ Alternatively, functions can be defined inline, by using a backslash character f
 … ^D
 ```
 
-Having defined this function in PSCi, we can _apply_ it to its arguments by separating the two arguments from the function name by whitespace:
-
-Определив эту функцию в PSCi мы можем _применить_ ее к ее аргементам, указав аргументы через пробел после имени функции:
+Определив эту функцию в PSCi мы можем _применить_ ее к ее аргументам, указав аргументы через пробел после имени функции:
 
 ```text
 > add 10 20
 30
 ```
 
-## Quantified Types
 ## Квантифицированные типы
-
-In the previous section, we saw the types of some functions defined in the Prelude. For example, the `flip` function had the following type:
 
 В предыдущем разделе мы видели типы некоторых функций, определенных в модуле Prelude. Например, функция `flip` имеет следующий тип:
 
@@ -206,25 +157,19 @@ The keyword `forall` here indicates that `flip` has a _universally quantified ty
 
 Ключевое слово `forall` здесь обозначает что `flip` имеет _универсально квантифицированный тип_<sup>[3](#3)</sup>. Это означает что вы можете подставить любой тип вместо `a`, `b` или `c` и `flip` будет работать с этими типами.
 
-For example, we might choose the type `a` to be `Int`, `b` to be `String` and `c` to be `String`. In that case we could _specialize_ the type of `flip` to
-
 Например мы можем выбрать тип `Int` для `a`, `String` для `b` и `String` для `c`. В таком случае мы можем _специализировать_ тип функции `flip` как
 
 ```text
 (Int -> String -> String) -> String -> Int -> String
 ```
 
-We don't have to indicate in code that we want to specialize a quantified type - it happens automatically. For example, we can just use `flip` as if it had this type already:
-
-    Мы не обязаны указывать в коде что мы хотим специализировать квантифицированный тип - это получается автоматически. Мы можем использовать `flip` как будто у него и так есть такой тип:
+Мы не обязаны указывать в коде что мы хотим специализировать квантифицированный тип - это получается автоматически. Мы можем использовать `flip` как будто у него и так есть такой тип:
 
 ```text
 > flip (\n s -> show n <> s) "Ten" 10
 
 "10Ten"
 ```
-
-While we can choose any types for `a`, `b` and `c`, we have to be consistent. The type of the function we passed to `flip` had to be consistent with the types of the other arguments. That is why we passed the string `"Ten"` as the second argument, and the number `10` as the third. It would not work if the arguments were reversed:
 
 В то время как мы можем выбрать любой тип для `a`, `b` и `c` мы должны быть последовательны. Тип функции, который мы передаем во `flip` должен соответствовать  типам остальных параметров. Именно поэтому мы передали строку `"Ten"` в качестве второго параметра и число `10` в качестве третьего. Переставить местами аргументы не получилось бы:
 
@@ -234,18 +179,11 @@ While we can choose any types for `a`, `b` and `c`, we have to be consistent. Th
 Could not match type Int with type String
 ```
 
-## Notes On Indentation
 ## Замечания об отступах
-
-PureScript code is _indentation-sensitive_, just like Haskell, but unlike JavaScript. This means that the whitespace in your code is not meaningless, but rather is used to group regions of code, just like curly braces in C-like languages.
 
 PureScript - язык, чувствительный к отступам, также как и Haskell, но не JavaScript. Это означает что пробелы/табуляции в вашем коде несут смысл и используются для группирования блоков кода, аналогично фигурным скобкам в JavaScript.
 
-If a declaration spans multiple lines, then any lines except the first must be indented past the indentation level of the first line.
-
 Если объявление занимает больше одной строки, то то все строки кроме первой должны быть предварены отступом, большим чем отступ первой строки.
-
-Therefore, the following is valid PureScript code:
 
 Таким образом, данный код корректен:
 
@@ -254,8 +192,6 @@ add x y z = x +
   y + z
 ```
 
-But this is not valid code:
-
 А этот некорректен:
 
 ```haskell
@@ -263,11 +199,7 @@ add x y z = x +
 y + z
 ```
 
-In the second case, the PureScript compiler will try to parse _two_ declarations, one for each line.
-
 Во втором случае компилятор попытается разобрать _два_ объявления, по одному на каждой строке.
-
-Generally, any declarations defined in the same block should be indented at the same level. For example, in PSCi, declarations in a let statement must be indented equally. This is valid:
 
 В общем случае, все объявления, определяемые в одном блоке, должны быть предварены отступом одинаковой глубины. Например, в PSCi, объявления внутри выражения `let` должны быть выровнены отступами одинаково. Данный код корректен:
 
@@ -278,8 +210,6 @@ Generally, any declarations defined in the same block should be indented at the 
 … ^D
 ```
 
-but this is not:
-
 А этот нет:
 
 ```text
@@ -288,9 +218,6 @@ but this is not:
 …      y = 2
 … ^D
 ```
-
-Certain PureScript keywords (such as `where`, `of` and `let`) introduce a new block of code, in which declarations must be further-indented:
-
 Некоторые ключевые слова PureScript (такие как `where`, `of` или `let`) вводят новый блок кода, в котором объявления должны быть предварены отступами глубже:
 
 ```haskell
@@ -300,18 +227,11 @@ example x y z = foo + bar
     bar = y * z
 ```
 
-Note how the declarations for `foo` and `bar` are indented past the declaration of `example`.
-
 Обратите внимание что объявления для `foo` и `bar` отступлены дальше чем объявление `example`.
-
-The only exception to this rule is the `where` keyword in the initial `module` declaration at the top of a source file.
 
 Единственное исключение из этого правила это ключевое слово `where` в объявлении заголовка модуля `module` в начале файла.
 
-## Defining Our Types
 ## Определяем наши типы
-
-A good first step when tackling a new problem in PureScript is to write out type definitions for any values you will be working with. First, let's define a type for records in our address book:
 
 Хорошим первым шагом чтобы разобраться с новой проблемой в PureScript является написание определений типов для значений с которыми предстоит работать. Сначала, давайте определим тип для записей в нашей адресной книге:
 
@@ -323,8 +243,6 @@ type Entry =
   }
 ```
 
-This defines a _type synonym_ called `Entry` - the type `Entry` is equivalent to the type on the right of the equals symbol: a record type with three fields - `firstName`, `lastName` and `address`. The two name fields will have type `String`, and the `address` field will have type `Address`, defined as follows:
-
 Это определение определяет _тип-синоним_, который называется `Entry` - тип `Entry` эквивалентен типу справа от знака равенства: тип записи с тремя полями - `firstName`, `lastName` и `address`. Два поля для имени будут иметь тип `String`, а поле `address` будет иметь тип `Address`, определенный следующим образом:
 
 ```haskell
@@ -335,11 +253,7 @@ type Address =
   }
 ```
 
-Note that records can contain other records.
-
 Обратите внимание что записи могут содержать другие записи.
-
-Now let's define a third type synonym, for our address book data structure, which will represented simply as a linked list of entries:
 
 Теперь давайте определим третий тип-синоним для нашей структуры данных адресной книги, который будет представлять собой просто связанный список записей:
 
@@ -347,22 +261,13 @@ Now let's define a third type synonym, for our address book data structure, whic
 type AddressBook = List Entry
 ```
 
-Note that `List Entry` is not the same as `Array Entry`, which represents an _array_ of entries.
-
 Обратите внимание что `List Entry` это не тоже самое что `Array Entry`, который представляет собой _массив_ записей.
 
-## Type Constructors and Kinds
-## Конструкторы типов и роды
-
-`List` is an example of a _type constructor_. Values do not have the type `List` directly, but rather `List a` for some type `a`. That is, `List` takes a _type argument_ `a` and _constructs_ a new type `List a`.
+## Конструкторы типов и родá
 
 `List` это пример _конструктора типов_. Значения не имеют тип `List` напрямую, а имеют тип `List a` для некоторого типа `a`. Таким образом, `List` принимает _аргумент типа_ `a` и _конструирует_ новый тип `List a`.
 
-Note that just like function application, type constructors are applied to other types simply by juxtaposition: the type `List Entry` is in fact the type constructor `List` _applied_ to the type `Entry` - it represents a list of entries.
-
 Обратите внимание что как и в случае применения функций, конструкторы типов применяются к другим типам просто составлением: тип `List Entry` это конструктор типов `List`, _примененный_ к типу `Entry` - он представляет собой список записей.
-
-If we try to incorrectly define a value of type `List` (by using the type annotation operator `::`), we will see a new type of error:
 
 Если мы попробуем некорректно определить значение типа `List` (используя оператор аннотации типа `::`), то мы увидим новый тип ошибки:
 
@@ -372,19 +277,11 @@ If we try to incorrectly define a value of type `List` (by using the type annota
 In a type-annotated expression x :: t, the type t must have kind *
 ```
 
-This is a _kind error_. Just like values are distinguished by their _types_, types are distinguished by their _kinds_, and just like ill-typed values result in _type errors_, _ill-kinded_ types result in _kind errors_.
-
-Это ошибка _рода_. Прямо как значения различаются по их _типам_, типы различаются по их _родам_, и точно также как неправильно типизированные значения приводят к ошибкам _типов_, неправильно "порожденные" типы приводят к ошибкам _родов_.
-
-There is a special kind called `*` which represents the kind of all types which have values, like `Number` and `String`.
+Это ошибка _рóда_. Прямо как значения различаются по их _типам_, типы различаются по их _родам_, и точно также как неправильно типизированные значения приводят к ошибкам _типов_, неправильно "порожденные" типы приводят к ошибкам _родов_.
 
 Есть специальный род `*`, который представляет собой род всех типов, которые имеют значения, например `Number` и `String`.
 
-There are also kinds for type constructors. For example, the kind `* -> *` represents a function from types to types, just like `List`. So the error here occurred because values are expected to have types with kind `*`, but `List` has kind `* -> *`.
-
-Также существуют рода для конструкторов типов. Например род `* -> *` представляет функцию из типа в тип, ровно такую как `List`. Поэтому ошибка выше возникла из-за того что значения имеют тип с родом `*`, в то время как `List` имеет род `* -> *`. 
-
-To find out the kind of a type, use the `:kind` command in PSCi. For example:
+Также существуют родá для конструкторов типов. Например род `* -> *` представляет функцию из типа в тип, ровно такую как `List`. Поэтому ошибка выше возникла из-за того что значения имеют тип с родом `*`, в то время как `List` имеет род `* -> *`. 
 
 Для того чтобы определить род типа можно использовать команду `:kind` в PSCi. Например:
 
@@ -400,11 +297,8 @@ To find out the kind of a type, use the `:kind` command in PSCi. For example:
 *
 ```
 
-PureScript's _kind system_ supports other interesting kinds, which we will see later in the book.
+_Система родóв_ в PureScript поддерживает и другие интересные родá, которые мы еще увидим позже в этой книге.
 
-_Система родов_ в PureScript поддерживает и другие интересные рода, которые мы еще увидим позже в этой книге.
-
-## Displaying Address Book Entries
 ## Вывод записей из адресной книги
 
 Let's write our first function, which will render an address book entry as a string. We start by giving the function a type. This is optional, but good practice, since it acts as a form of documentation. In fact, the PureScript compiler will give a warning if a top-level declaration does not contain a type annotation. A type declaration separates the name of a function from its type with the `::` symbol:
