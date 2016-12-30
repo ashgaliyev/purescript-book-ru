@@ -124,18 +124,31 @@ This example is obviously a very impractical way to find the length of an array 
 Очевидно, этот пример - очень непрактичный способ нахождения длины массива в JavaScript, но он должен обеспечить достаточную помощь, чтобы позволить вам решить следующие упражнения:
 
 X> ## Упражнения
+
 X>
+
 X> 1. (Easy) Write a recursive function which returns `true` if and only if its input is an even integer.
-X> 1. (Легко) Write a recursive function which returns `true` if and only if its input is an even integer.
+
+X> 1. (Легкое) Напишите рекурсивную функцию, которая возвращает `true` тогда, и только тогда, когда на вход подаётся четное число. (не понял)
+
 X> 2. (Medium) Write a recursive function which counts the number of even integers in an array. _Hint_: the function `unsafePartial head` (where `head` is also imported from `Data.Array.Partial`) can be used to find the first element in a non-empty array.
 
+X> 2. (Среднее) Напишите рекурсивную функцию, которая подсчитывает число четных чисел в массиве. _Намёк_: функция `unsafePartial head` (где `head` также импортирована из `Data.Array.Partial`) может быть использована для получения первого элемента из непустого массива.
+
 ## Maps
+## Отображения
 
 The `map` function is an example of a recursive function on arrays. It is used to transform the elements of an array by applying a function to each element in turn. Therefore, it changes the _contents_ of the array, but preserves its _shape_ (i.e. its length).
 
+Функция `map` - это пример рекурсивной функции на массивах. Она используется для изменения элементов массива, путем применения передаваемой ей функции к каждому элементу по-очереди. Следовательно, она изменяет _содержимое_ массива, но сохраняет его _форму_ (то есть длину).
+
 When we cover _type classes_ later in the book we will see that the `map` function is an example of a more general pattern of shape-preserving functions which transform a class of type constructors called _functors_.
 
+Когда мы осветим _классы типов_ далее в книге, то мы увидем, что функция `map` это пример более общего шаблона функций, сохраняющих форму. Они образуют класс конструкторов типа под названием _функторы_. (?)
+
 Let's try out the `map` function in PSCi:
+
+Давайте попробуем функцию `map` в PSCi:
 
 ```text
 $ psci
@@ -147,9 +160,14 @@ $ psci
 
 Notice how `map` is used - we provide a function which should be "mapped over" the array in the first argument, and the array itself in its second.
 
+Обратите внимание на то, как используется функция `map` - в качестве первого аргумента мы передаем функцию, "шагаещую по массиву", и во второй аргумент - сам массив.
+
 ## Infix Operators
+## Инфиксные оператор
 
 The `map` function can also be written between the mapping function and the array, by wrapping the function name in backticks:
+
+Функция `map` может быть так же записана между передаваемой функцией и массивом, включив название функции в обратные кавычки:
 
 ```text
 > (\n -> n + 1) `map` [1, 2, 3, 4, 5]
@@ -158,7 +176,11 @@ The `map` function can also be written between the mapping function and the arra
 
 This syntax is called _infix function application_, and any function can be made infix in this way. It is usually most appropriate for functions with two arguments.
 
+Такой синтаксис называется _инфиксным применением функции_, и любая функция может быть инфиксной таким образом. Это наиболее подходящий способ записи для функций с двумя аргументами.
+
 There is an operator which is equivalent to the `map` function when used with arrays, called `<$>`. This operator can be used infix like any other binary operator:
+
+Есть оператор, который эквивалентен функции `map` применённой к массиву, записываемый как `<$>`. Этот оператор может быть использован в инфиксной форме, как и любой бинарный оператор:
 
 ```text
 > (\n -> n + 1) <$> [1, 2, 3, 4, 5]
@@ -167,12 +189,16 @@ There is an operator which is equivalent to the `map` function when used with ar
 
 Let's look at the type of `map`:
 
+Давайте посмотрим на тип функции `map`:
+
 ```text
 > :type map
 forall a b f. (Functor f) => (a -> b) -> f a -> f b
 ```
 
 The type of `map` is actually more general than we need in this chapter. For our purposes, we can treat `map` as if it had the following less general type:
+
+Тип функции `map` является более обобщенным, чем тот, который нужен в нашей главе. Для наших целей, мы можем рассматривать `map` так, если бы она имела следующий, менее общий тип:
 
 ```text
 forall a b. (a -> b) -> Array a -> Array b
