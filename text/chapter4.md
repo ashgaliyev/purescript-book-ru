@@ -206,6 +206,8 @@ forall a b. (a -> b) -> Array a -> Array b
 
 This type says that we can choose any two types, `a` and `b`, with which to apply the `map` function. `a` is the type of elements in the source array, and `b` is the type of elements in the target array. In particular, there is no reason why `map` has to preserve the type of the array elements. We can use `map` or `<$>` to transform integers to strings, for example:
 
+Этот тип говорит, что мы можем выбрать любые два типа `a` и `b`, с которыми применяется функция `map`. `a` это тип элементов в исходном массиве, а `b` - тип элементов в целевом массиве. В частности, нет никаких причин, почему `map` должен сохранять тип элементов массива. Мы можем использовать `map` или `<$>` для преобразования целых чисел в строки, к примеру:
+
 ```text
 > show <$> [1, 2, 3, 4, 5]
 
@@ -214,6 +216,9 @@ This type says that we can choose any two types, `a` and `b`, with which to appl
 
 Even though the infix operator `<$>` looks like special syntax, it is in fact just an alias for a regular PureScript function. The function is simply _applied_ using infix syntax. In fact, the function can be used like a regular function by enclosing its name in parentheses. This means that we can used the parenthesized name `(<$>)` in place of `map` on arrays:
 
+Хоть инфиксный оператор `<$>` выглядит как специальный синтаксис, на самом деле - это всего лишь псевдоним для обычной функции PureScript. Функция просто _применяется_ используя инфиксный синтаксис. В действительности функцию можно использовать как обычная функция, заключив её имя в скобки. В следствие этого мы можем ипользовать функцию в скобках `(<$>)` вместо `map` на массивах:
+
+
 ```text
 > (<$>) show [1, 2, 3, 4, 5]
 ["1","2","3","4","5"]
@@ -221,11 +226,15 @@ Even though the infix operator `<$>` looks like special syntax, it is in fact ju
 
 Infix function names are defined as _aliases_ for existing function names. For example, the `Data.Array` module defines an infix operator `(..)` as a synonym for the `range` function, as follows:
 
+Имена инфиксных функций определяются как _псевдонимы_ для существующих названий функций. Например, модуль `Data.Array` определяет инфиксный оператор `(..)` как синоним функции `range` следующим образом:
+
 ```haskell
 infix 8 range as ..
 ```
 
 We can use this operator as follows:
+
+Мы можем использовать этот оператор вот так:
 
 ```text
 > import Data.Array
@@ -239,7 +248,11 @@ We can use this operator as follows:
 
 _Note_: Infix operators can be a great tool for defining domain-specific languages with a natural syntax. However, used excessively, they can render code unreadable to beginners, so it is wise to exercise caution when defining any new operators.
 
+_Примечание_: Инфиксные операторы могут быть отличным инструментом для определения предметно-ориентированных языков с естественным синтаксисом. Однако, чрезмерное использование может сделать код нечитаемым для новичков, поэтому стоит быть осторожным при определении каких-либо новых операторов.
+
 In the example above, we parenthesized the expression `1 .. 5`, but this was actually not necessary, because the `Data.Array` module assigns a higher precedence level to the `..` operator than that assigned to the `<$>` operator. In the example above, the precedence of the `..` operator was defined as `8`, the number after the `infix` keyword. This is higher than the precedence level of `<$>`, meaning that we do not need to add parentheses:
+
+В примере выше мы заключили выражение `1 .. 5` в скобки, но на самом деле это необязательно, потому что модуль `Data.Array` присваивает бóльший приоритет оператору `..` чем `<$>`. В примере выше, приоретет оператора `..` определен как `8` - число после ключевого слова `infix`. Это больше, чем приоритет у `<$>`, означающий, что нам не нужно добавлять скобки: 
 
 ```text
 > show <$> 1 .. 5
@@ -247,6 +260,8 @@ In the example above, we parenthesized the expression `1 .. 5`, but this was act
 ```
 
 If we wanted to assign an _associativity_ (left or right) to an infix operator, we could do so with the `infixl` and `infixr` keywords instead.
+
+Если мы хотим присвоить _ассоциативность_ (правую или левую) к инфиксному оператору, мы можем использовать ключевые слова `infixl` и `infixr`.
 
 ## Filtering Arrays
 
