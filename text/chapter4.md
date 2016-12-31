@@ -71,11 +71,11 @@ fact n = n * fact (n - 1)
 
 Here, we can see how the factorial function is computed by reducing the problem to a subproblem - that of computing the factorial of a smaller integer. When we reach zero, the answer is immediate.
 
-Тут мы видем как функция факториала вычесляется путем редуцирования задачи на подзадачу - которая вычисляет факториал меньшего целого. Когда мы достигнем нуля, ответ тут же выдается.
+Тут мы видем как функция факториала вычисляется путем редуцирования задачи на подзадачу - которая вычисляет факториал меньшего целого. Когда мы достигнем нуля, ответ тут же выдается.
 
 Here is another common example, which computes the _Fibonnacci function_:
 
-Вот еще один общий пример - _функция вычиляющая число Фибоначчи_:
+Вот еще один общий пример - _функция вычисляющая число Фибоначчи_:
 
 ```haskell
 fib :: Int -> Int
@@ -163,7 +163,7 @@ Notice how `map` is used - we provide a function which should be "mapped over" t
 Обратите внимание на то, как используется функция `map` - в качестве первого аргумента мы передаем функцию, "шагаещую по массиву", и во второй аргумент - сам массив.
 
 ## Infix Operators
-## Инфиксные оператор
+## Инфиксные операторы
 
 The `map` function can also be written between the mapping function and the array, by wrapping the function name in backticks:
 
@@ -216,7 +216,7 @@ This type says that we can choose any two types, `a` and `b`, with which to appl
 
 Even though the infix operator `<$>` looks like special syntax, it is in fact just an alias for a regular PureScript function. The function is simply _applied_ using infix syntax. In fact, the function can be used like a regular function by enclosing its name in parentheses. This means that we can used the parenthesized name `(<$>)` in place of `map` on arrays:
 
-Хоть инфиксный оператор `<$>` выглядит как специальный синтаксис, на самом деле - это всего лишь псевдоним для обычной функции PureScript. Функция просто _применяется_ используя инфиксный синтаксис. В действительности функцию можно использовать как обычная функция, заключив её имя в скобки. В следствие этого мы можем ипользовать функцию в скобках `(<$>)` вместо `map` на массивах:
+Хоть инфиксный оператор `<$>` выглядит как специальный синтаксис, на самом деле - это всего лишь псевдоним для обычной функции PureScript. Функция просто _применяется_ используя инфиксный синтаксис. В действительности функцию можно использовать как обычную функцию, заключив её имя в скобки. Это означает, что мы можем ипользовать функцию в скобках `(<$>)` вместо `map` на массивах:
 
 
 ```text
@@ -264,10 +264,15 @@ If we wanted to assign an _associativity_ (left or right) to an infix operator, 
 Если мы хотим присвоить _ассоциативность_ (правую или левую) к инфиксному оператору, мы можем использовать ключевые слова `infixl` и `infixr`.
 
 ## Filtering Arrays
+## Фильтрация массивов
 
 The `Data.Array` module provides another function `filter`, which is commonly used together with `map`. It provides the ability to create a new array from an existing array, keeping only those elements which match a predicate function.
 
+Модуль `Data.Array` предоставляет еще одну функцию под названием `filter`, которая обычно используется вместе с `map`. Она позволяет создавать новый массив из существующего, сохраняя только те элементы, которые удовлетворяют условию функции-предиката.
+
 For example, suppose we wanted to compute an array of all numbers between 1 and 10 which were even. We could do so as follows:
+
+Например, предположим, что мы хотим найти все чётные элементы массива чисел от 1 до 10. Мы могли бы сделать это следующим образом:
 
 ```text
 > import Data.Array
@@ -276,15 +281,26 @@ For example, suppose we wanted to compute an array of all numbers between 1 and 
 [2,4,6,8,10]
 ```
 
-X> ## Exercises
+X> ## Упражнения
 X>
 X> 1. (Easy) Use the `map` or `<$>` function to write a function which calculates the squares of an array of numbers.
+
+X> 1. (Легкое) Используя функции `map` или `<$>` напишите функцию, вычисляющую квадраты в массиве чисел.
+
 X> 1. (Easy) Use the `filter` function to write a function which removes the negative numbers from an array of numbers.
+
+X> 1. (Легкое) Используя функцию `filter` напишите функцию, которая удаляет все отрицательные числа из массива чисел.
+
 X> 1. (Medium) Define an infix synonym `<$?>` for `filter`. Rewrite your answer to the previous question to use your new operator. Experiment with the precedence level and associativity of your operator in PSCi.
 
+X> 1. (Среднее) Определите синоним `<$?>` для `filter`. Перепишите предыдущее решение, используя новый оператор. По-экспериментируйте с приоритетом и ассоциативностью оператора в PSCi.
+
 ## Flattening Arrays
+## Уплощение массивов
 
 Another standard function on arrays is the `concat` function, defined in `Data.Array`. `concat` flattens an array of arrays into a single array:
+
+Другая стандартная функция для массивов - `concat`, определённая в `Data.Array`. `concat` уплощает массив массивов в единый массив:
 
 ```text
 > import Data.Array
@@ -298,7 +314,11 @@ forall a. Array (Array a) -> Array a
 
 There is a related function called `concatMap` which is like a combination of the `concat` and `map` functions. Where `map` takes a function from values to values (possibly of a different type), `concatMap` takes a function from values to arrays of values.
 
+Существую так же функция под названием `concatMap`, которая подобна комбинации функций `concat` и `map`. Если `map` использует функцию из значений в значения (которые могут быть другого типа), `concatMap` использует функцию из значений в массив значений: 
+
 Let's see it in action:
+
+Давайте посмотрим на неё в действии:
 
 ```text
 > import Data.Array
@@ -312,9 +332,15 @@ forall a b. (a -> Array b) -> Array a -> Array b
 
 Here, we call `concatMap` with the function `\n -> [n, n * n]` which sends an integer to the array of two elements consisting of that integer and its square. The result is an array of ten integers: the integers from 1 to 5 along with their squares.
 
+Здесь мы вызываем `concatMap` вместе с функцией `\n -> [n, n * n]`, которая отправляет целое число в массив из двух элементов, сотоящих из этого целого числа и его квадрата. Результат является массивом из десяти чисел: целые числа от 1 до 5 рядом с их квадратами.
+
 Note how `concatMap` concatenates its results. It calls the provided function once for each element of the original array, generating an array for each. Finally, it collapses all of those arrays into a single array, which is its result.
 
+Обратите внимание как `concatMap` соединяет свои результаты. Она вызывает предоставленную функцию по-одному разу на каждом элементе исходного массива, тем самым генерируя к каждому элементу свой массив. Наконец, она сплющивает все эти массивы в единый массив, который и является результатом.
+
 `map`, `filter` and `concatMap` form the basis for a whole range of functions over arrays called "array comprehensions".
+
+`map`, `filter` и `concatMap` формируют базу для целого спектра функций на массивах, под названием "генераторы массивов" (array comprehensions). 
 
 ## Array Comprehensions
 
