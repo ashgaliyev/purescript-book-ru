@@ -8,7 +8,7 @@
 
 - ~~Глава 1~~
 - ~~Глава 2~~
-- Глава 3 _ждёт вычитки_
+- ~~Глава 3~~
 - __Глава 4__  [@ashgaliyev](https://github.com/ashgaliyev)
 - __Глава 5__  [@kika](https://github.com/kika)
 - Глава 6
