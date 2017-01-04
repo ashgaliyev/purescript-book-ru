@@ -343,14 +343,23 @@ Note how `concatMap` concatenates its results. It calls the provided function on
 `map`, `filter` и `concatMap` формируют базу для целого спектра функций на массивах, под названием "генераторы массивов" (array comprehensions). 
 
 ## Array Comprehensions
+## Генераторы массивов
 
 Suppose we wanted to find the factors of a number `n`. One simple way to do this would be by brute force: we could generate all pairs of numbers between 1 and `n`, and try multiplying them together. If the product was `n`, we would have found a pair of factors of `n`.
 
+Предположим, что мы хотим найти все множители числа `n`. Один простой способ это сделать - мог быть грубый пебор: мы могли бы сгенерировать пары чисел от 1 до `n` и попытаться их перемножить. Если произведение будет равно `n` - мы нашли пару множителей числа `n`.
+
 We can perform this computation using an array comprehension. We will do so in steps, using PSCi as our interactive development environment.
+
+Мы можем произвести это вычисление используя генератор массива. Мы будем делать это по-шагам, используя PSCi в качестве нашей среды разработки. 
 
 The first step is to generate an array of pairs of numbers below `n`, which we can do using `concatMap`.
 
+Первым шагом будет генерация массива пар чисел меньше `n`, которую можно сделать, используя `concatMap`.
+
 Let's start by mapping each number to the array `1 .. n`:
+
+Давайте начнем с отображения каждого числа на массив `1 .. n`:
 
 ```text
 > let pairs n = concatMap (\i -> 1 .. n) (1 .. n)
@@ -358,12 +367,16 @@ Let's start by mapping each number to the array `1 .. n`:
 
 We can test our function
 
+Протестируем функцию
+
 ```text
 > pairs 3
 [1,2,3,1,2,3,1,2,3]
 ```
 
 This is not quite what we want. Instead of just returning the second element of each pair, we need to map a function over the inner copy of `1 .. n` which will allow us to keep the entire pair:
+
+Это не совсем то что мы хотели. Вместо того, чтобы просто возвращать второй элемент каждой пары, нам нужно отобразить функцию на внутреннюю копию `1 .. n`, что позволит сохранить целую пару:
 
 ```text
 > :paste
@@ -379,6 +392,8 @@ This is not quite what we want. Instead of just returning the second element of 
 
 This is looking better. However, we are generating too many pairs: we keep both [1, 2] and [2, 1] for example. We can exclude the second case by making sure that `j` only ranges from `i` to `n`:
 
+Выглядит уже лучше. Однако, мы генерируем слишком много пар: мы создаем и [1, 2], и [2, 1], к примеру. Мы можем исключить второй случай убедившись в том, что `j` варьируется только от `i` до `n`:
+
 ```text
 > :paste
 … let pairs'' n =
@@ -392,6 +407,8 @@ This is looking better. However, we are generating too many pairs: we keep both 
 
 Great! Now that we have all of the pairs of potential factors, we can use `filter` to choose the pairs which multiply to give `n`:
 
+Отлично! Теперь, когда у нас есть все потенциальные множители, мы можем использовать `filter`, выбрав только те пары, которые являются множителями `n`:
+
 ```text
 > import Data.Foldable
 
@@ -403,15 +420,25 @@ Great! Now that we have all of the pairs of potential factors, we can use `filte
 
 This code uses the `product` function from the `Data.Foldable` module in the `purescript-foldable-traversable` library.
 
+Этот код использует функцию `product` из модуля `Data.Foldable` в библиотеке `purescript-foldable-traversavle`.
+
 Excellent! We've managed to find the correct set of factor pairs without duplicates.
 
-## Do Notation
+Превосходно! Нам удалось найти правильный набор пар множителей без дублей.
+
+## Do-нотация
 
 However, we can improve the readability of our code considerably. `map` and `concatMap` are so fundamental, that they (or rather, their generalizations `map` and `bind`) form the basis of a special syntax called _do notation_.
 
+Тем не менее, мы можем значительно улучшить читаемость нашего кода. `map` и `concatMap` настолько фундаментальны, что они (или скорее, их обобщения `map` и `bind`) формируют базу специального синтаксиса под названием _do-нотация_.
+
 _Note_: Just like `map` and `concatMap` allowed us to write _array comprehensions_, the more general operators `map` and `bind` allow us to write so-called _monad comprehensions_. We'll see plenty more examples of _monads_ later in the book, but in this chapter, we will only consider arrays.
 
+_Примечание_: Так же как `map` и `concatMap` позволяет нам создавать _генераторы массивов_, более общие операторы `map` и `bind` позволяют писать созвучные _монадные генераторы_.  Мы увидем еще много примеров _монад_ далее в книге, но в этой главе мы рассмотрим только массивы.
+
 We can rewrite our `factors` function using do notation as follows:
+
+Мы можем переписать нашу функцию `factors`, используя do-нотацию, следующим образом:
 
 ```haskell
 factors :: Int -> Array (Array Int)
@@ -423,13 +450,27 @@ factors n = filter (\xs -> product xs == n) $ do
 
 The keyword `do` introduces a block of code which uses do notation. The block consists of expressions of a few types:
 
-- Expressions which bind elements of an array to a name. These are indicated with the backwards-facing arrow `<-`, with a name on the left, and an expression on the right whose type is an array.
+Ключевое слово `do`, предваряет блок кода, использующего do-нотацию. Блок состоит из выражений нескольких типов:
+
+- Expressions which bind elements of an array to a name. These are indicated with the backwards-facing arrow `<-`, with a name on the left, and an expression on the right whose type is an array. 
+
+- Выражения, которые связывают элементы массива с именем. Они обозначены стрелкой назад `<-`, с именем слева, и с выражением справа, чей тип является массивом. 
+
 - Expressions which do not bind elements of the array to names. The last line `pure [i, j]` is an example of this kind of expression.
+
+- Выражения, которые не связывают элементы массивов с именами. Последняя строка `pure [i, j]` является примером такого рода выражений.
+
 - Expressions which give names to expressions, using the `let` keyword.
+
+- Выражения, которые присваивают имена выражениям, используя ключевое слово `let`.
 
 This new notation hopefully makes the structure of the algorithm clearer. If you mentally replace the arrow `<-` with the word "choose", you might read it as follows: "choose an element `i` between 1 and n, then choose an element `j` between `i` and `n`, and return `[i, j]`".
 
+Эта новая нотация, мы надеямся, делает структуру алгоритма более ясной. Если вы мысленно замените стрелку `<-` словом "выбрать", вы сможете прочитать его следующим образом: "выбрать элемент `i` между 1 и n, затем выбрать элемент `j` между `i` и `n`, а потом вернуть `[i, j]`".
+
 In the last line, we use the `pure` function. This function can be evaluated in PSCi, but we have to provide a type:
+
+В последней строке мы использовали функцию `pure`. Эта функция может быть использована в PSCi, но нам нужно указывать тип:
 
 ```text
 > pure [1, 2] :: Array (Array Int)
@@ -437,6 +478,8 @@ In the last line, we use the `pure` function. This function can be evaluated in 
 ```
 
 In the case of arrays, `pure` simply constructs a singleton array. In fact, we could modify our `factors` function to use this form, instead of using `pure`:
+
+В случае массивов, `pure` просто создает одиночный массив. Фактически, мы можем изменить функцию `factors` для использования данной формы, вместо `pure`:
 
 ```haskell
 factors :: Int -> Array (Array Int)
@@ -447,6 +490,8 @@ factors n = filter (\xs -> product xs == n) $ do
 ```
 
 and the result would be the same.
+
+и результат будет такой же.
 
 ## Guards
 
