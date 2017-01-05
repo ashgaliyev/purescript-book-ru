@@ -494,8 +494,12 @@ and the result would be the same.
 и результат будет такой же.
 
 ## Guards
+## Охранные выражения
 
 One further change we can make to the `factors` function is to move the filter inside the array comprehension. This is possible using the `guard` function from the `Control.MonadZero` module (from the `purescript-control` package):
+
+Еще одно изменение которое мы можем сделать с функцией `factors` - это переместить фильтрацию в генератор массива. Это возможно, путем использования функции `guard` из модуля `Control.MonadZero` (пакета `purescript-control`):
+
 
 ```haskell
 import Control.MonadZero (guard)
@@ -510,6 +514,8 @@ factors n = do
 
 Just like `pure`, we can apply the `guard` function in PSCi to understand how it works. The type of the `guard` function is more general than we need here:
 
+Так же как и `pure`, мы можем проверить функцию `guard` в PSCi, чтобы понять как она работает. Тип функции `guard` более общий, чем тот который нам здесь нужен:
+
 ```text
 > import Control.MonadZero
 
@@ -519,11 +525,16 @@ forall m. MonadZero m => Boolean -> m Unit
 
 In our case, we can assume that PSCi reported the following type:
 
+В нашем случае, мы можем допустить, что PSCi вывела следующий тип:
+
+
 ```haskell
 Boolean -> Array Unit
 ```
 
 For our purposes, the following calculations tell us everything we need to know about the `guard` function on arrays:
+
+Для наших целей, следующие вычисления говорят нам всё, что нам нужно знать о функции `guard` на массивах:
 
 ```text
 > import Data.Array
@@ -537,16 +548,34 @@ For our purposes, the following calculations tell us everything we need to know 
 
 That is, if `guard` is passed an expression which evaluates to `true`, then it returns an array with a single element. If the expression evaluates to `false`, then its result is empty.
 
+То есть, если `guard` получила на вход выражение, которое вычисляется в `true`, тогда возвращается массив с единственным элементом. Если выражение вычисляется в `false`, тогда результатом будет пустой массив.
+
+
 This means that if the guard fails, then the current branch of the array comprehension will terminate early with no results. This means that a call to `guard` is equivalent to using `filter` on the intermediate array. Depending on the application, you might prefer to use `guard` instead of a `filter`. Try the two definitions of `factors` to verify that they give the same results.
 
-X> ## Exercises
+Это означает, что если охранное выражение не выполнится, то текущая ветка генератора массива завершиться раньше, без результата. (?) Это значит, что вызов `guard` эквивалентен использованию `filter` на промежуточном массиве. В зависимости от приложения, вы можете предпочесть использование `guard` вместо `filter`. Попробуйте два варианта `factor`, чтобы убедиться, что оба они дают одинаковые результаты. 
+
+X> ## Упражнения
+
 X>
 X> 1. (Easy) Use the `factors` function to define a function `isPrime` which tests if its integer argument is prime or not.
+
+X> 1. (Лёгкое) Используйте функцию `factors` для написания функции `isPrime`, которое проверяет, является ли его аргумент (целое число) простым или нет.
+
 X> 1. (Medium) Write a function which uses do notation to find the _cartesian product_ of two arrays, i.e. the set of all pairs of elements `a`, `b`, where `a` is an element of the first array, and `b` is an element of the second.
+
+X> 1. (Среднее) Напишите функцию, которая использует do-нотацию для нахождения _декартового произведения_ двух массивов, то есть множество всех пар элементов `a`, `b`, где `a` - элемент первого массива, а `b` - элемент второго массива.
+
+
 X> 1. (Medium) A _Pythagorean triple_ is an array of numbers `[a, b, c]` such that `a² + b² = c²`. Use the `guard` function in an array comprehension to write a function `triples` which takes a number `n` and calculates all Pythagorean triples whose components are less than `n`. Your function should have type `Int -> Array (Array Int)`.
+
+X> 1. (Срнеднее)  _Пифагорова тройка_ - это массив чисел `[a, b, c]`, удовлетворяющих выражению `a² + b² = c²`. Используйте функцию `guard` в генераторе массива для написания функции `triples`, которая принимает число `n` и вычисляет все пифагоровы тройки, чьи компоненты меньше `n`. Ваша функция должна иметь тип `Int -> Array (Array Int)`.
+
 X> 1. (Difficult) Write a function `factorizations` which produces all _factorizations_ of an integer `n`, i.e. arrays of integers whose product is `n`. _Hint_: for an integer greater than 1, break the problem down into two subproblems: finding the first factor, and finding the remaining factors.
 
-## Folds
+X> 1. (Сложное) Напишите функцию `factorizations`, которая возвращает все _простые множители_ числа `n`, то есть массив чисел, чьё произведение равно `n`. _Подсказка_: Для целых чисел больше 1, разбейте задачу на две подзадачи: нахождения первого множителя, а затем нахождения оставшихся множетелей.
+
+## Свёртки
 
 Left and right folds over arrays provide another class of interesting functions which can be implemented using recursion.
 
