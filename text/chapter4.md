@@ -133,7 +133,7 @@ X> 1. (Легкое) Напишите рекурсивную функцию, к�
 
 X> 2. (Medium) Write a recursive function which counts the number of even integers in an array. _Hint_: the function `unsafePartial head` (where `head` is also imported from `Data.Array.Partial`) can be used to find the first element in a non-empty array.
 
-X> 2. (Среднее) Напишите рекурсивную функцию, которая подсчитывает число четных чисел в массиве. _Намёк_: функция `unsafePartial head` (где `head` также импортирована из `Data.Array.Partial`) может быть использована для получения первого элемента из непустого массива.
+X> 2. (Среднее) Напишите рекурсивную функцию, которая подсчитывает число четных чисел в массиве. _Подсказка_: функция `unsafePartial head` (где `head` также импортирована из `Data.Array.Partial`) может быть использована для получения первого элемента из непустого массива.
 
 ## Maps
 ## Отображения
@@ -579,7 +579,11 @@ X> 1. (Сложное) Напишите функцию `factorizations`, кот�
 
 Left and right folds over arrays provide another class of interesting functions which can be implemented using recursion.
 
+Левые и правые свёртки массивов предоствляют еще один класс интересных функций, которые могут быть реализованы с использованием рекурсии.
+
 Start by importing the `Data.Foldable` module, and inspecting the types of the `foldl` and `foldr` functions using PSCi:
+
+Начнем с импорта модуля `Data.Foldable` и просмотра типов `foldl`, и `foldr`, используя PSCi:
 
 ```text
 > import Data.Foldable
@@ -593,6 +597,8 @@ forall a b f. (Foldable f) => (a -> b -> b) -> b -> f a -> b
 
 These types are actually more general than we are interested in right now. For the purposes of this chapter, we can assume that PSCi had given the following (more specific) answer:
 
+Эти типы на самом деле более общие, чем те, что нас сейчас интересуют. Для целей нашей главы, мы предположим, что PSCi выдала следующий ответ:
+
 ```text
 > :type foldl
 forall a b. (b -> a -> b) -> b -> Array a -> b
@@ -603,9 +609,15 @@ forall a b. (a -> b -> b) -> b -> Array a -> b
 
 In both of these cases, the type `a` corresponds to the type of elements of our array. The type `b` can be thought of as the type of an "accumulator", which will accumulate a result as we traverse the array.
 
+В обоих случаях тип `a` соответствует типу элементов нашего массива. Тип `b` можно рассматривать как тип "аккумулятора", который аккумулирует результат по мере прохождения по массиву.
+
 The difference between the `foldl` and `foldr` functions is the direction of the traversal. `foldl` folds the array "from the left", whereas `foldr` folds the array "from the right".
 
+Разница между функциями `foldl` и `foldr` это направление обхода. `foldl` "свёртывает массив слева", а `foldr` свёртывает справа.
+
 Let's see these functions in action. Let's use `foldl` to sum an array of integers. The type `a` will be `Int`, and we can also choose the result type `b` to be `Int`. We need to provide three arguments: a function `Int -> Int -> Int`, which will add the next element to the accumulator, an initial value for the accumulator of type `Int`, and an array of `Int`s to add. For the first argument, we can just use the addition operator, and the initial value of the accumulator will be zero:
+
+Давайте увидем эти функции в действии. Используем `foldl` для складывание массива целых чисел. Типом `a` будет `Int`, и мы можем выбрать тип `Int` и для `b`. Нам нужно предоставить три аргумента: функцию `Int -> Int -> Int`, которая складывает следующий элемент с аккумулятором, начальное значение аккумулятора с типом `Int`, а также массив целых чисел для складывания. В качестве первого аргумента, мы можем просто использовать оператор сложения, а начальное значение аккумулятора будет ноль:
 
 ```text
 > foldl (+) 0 (1 .. 5)
@@ -614,12 +626,16 @@ Let's see these functions in action. Let's use `foldl` to sum an array of intege
 
 In this case, it didn't matter whether we used `foldl` or `foldr`, because the result is the same, no matter what order the additions happen in:
 
+В данном случае, не имеет значения, какая используется функция `foldl` или `foldr`, потому что результат будет одинаковый. Не важно, в каком порядке происходит сложение:
+
 ```text
 > foldr (+) 0 (1 .. 5)
 15
 ```
 
 Let's write an example where the choice of folding function does matter, in order to illustrate the difference. Instead of the addition function, let's use string concatenation to build a string:
+
+Давайте напишем пример, где выбор функции будет иметь значение, чтобы продемонстрировать разницу. Вместо функции сложения, используем функцию конкатенации для построения строки: 
 
 ```text
 > foldl (\acc n -> acc <> show n) "" [1,2,3,4,5]
@@ -631,11 +647,15 @@ Let's write an example where the choice of folding function does matter, in orde
 
 This illustrates the difference between the two functions. The left fold expression is equivalent to the following application:
 
+Это иллюстрирует разницу между двумя этими функциями. Выражение левой свёртки эквивалентно следующей конструкции:
+
 ```text
 ((((("" <> show 1) <> show 2) <> show 3) <> show 4) <> show 5)
 ```
 
 whereas the right fold is equivalent to this:
+
+в то время как правая свёртка эквивалентна этой:
 
 ```text
 ((((("" <> show 5) <> show 4) <> show 3) <> show 2) <> show 1)
