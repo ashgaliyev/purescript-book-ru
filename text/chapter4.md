@@ -662,10 +662,16 @@ whereas the right fold is equivalent to this:
 ```
 
 ## Tail Recursion
+## Хвостовая рекурсия (нужно внимательно перечитать раздел)
 
 Recursion is a powerful technique for specifying algorithms, but comes with a problem: evaluating recursive functions in JavaScript can lead to stack overflow errors if our inputs are too large.
 
+Рекурсия является мощным средством для создания алгоритмов, но которая приходит с проблемой: вычисление рекурсивных функций в JavaScript может привести к ошибкам переполнения стека, если количество вызовов будет очень много.
+
 It is easy to verify this problem, with the following code in PSCi:
+
+Легко подтвердить эту проблему, введя следующий код в PSCi:
+
 
 ```text
 > let f 0 = 0
@@ -680,15 +686,27 @@ RangeError: Maximum call stack size exceeded
 
 This is a problem. If we are going to adopt recursion as a standard technique from functional programming, then we need a way to deal with possibly unbounded recursion.
 
+Это проблема. Если мы собираемся принять рекурсию как стандартную технику функционального программирования, тогда нам необходим способ борьбы с возможной неограниченной рекурсией.
+
 PureScript provides a partial solution to this problem in the form of _tail recursion optimization_.
+
+PureScript предоставляет частичное решение этой проблемы в форме _оптимизации хвостовой рекурсии_.
 
 _Note_: more complete solutions to the problem can be implemented in libraries using so-called _trampolining_, but that is beyond the scope of this chapter. The interested reader can consult the documentation for the `purescript-free` and `purescript-tailrec` packages.
 
+_Примечание_: более полные решения проблемы могут быть реализованы в библиотеках с использованием так называемого _трамплининга_ (_trampolining_), но этой выходит за рамки данной главы. Заинтересованный читатель может обратиться к документации пакетов `purescript-free` и `purescript-tailrec`. (?)
+
 The key observation which enables tail recursion optimization is the following: a recursive call in _tail position_ to a function can be replaced with a _jump_, which does not allocate a stack frame. A call is in _tail position_ when it is the last call made before a function returns. This is the reason why we observed a stack overflow in the example - the recursive call to `f` was _not_ in tail position.
+
+Ключевое замечание, делающее возможным оптимизацию хвостовой рекурсии, следующее: рекурсивный вызов функции в _хвостовой позиции_ может быть заменён на _прыжок_, который не занимает стековый фрейм. Вызов находится в _хвостовой позиции_, когда он сделан перед возвратом функции. Эта причина, почему мы наблюдали переполнение стека в примере выше - рекурсивный вызов `f` _не был_ в хвостовой позиции.
 
 In practice, the PureScript compiler does not replace the recursive call with a jump, but rather replaces the entire recursive function with a _while loop_.
 
+На практике, компилятор PureScript не заменяет рекурсивный вызов прыжком, а заменяет всю рекурсивную функцию циклом _while_.
+
 Here is an example of a recursive function with all recursive calls in tail position:
+
+Вот пример рекурсивной функции с вызовами в хвостовой позиции:
 
 ```haskell
 fact :: Int -> Int -> Int
@@ -698,11 +716,17 @@ fact n acc = fact (n - 1) (acc * n)
 
 Notice that the recursive call to `fact` is the last thing that happens in this function - it is in tail position.
 
-## Accumulators
+Обратите внимание что рекурсивный вызов `fact` это последнее, что происходит внутри функции - он в хвостовой позиции. (?)
+
+## Аккумуляторы
 
 One common way to turn a function which is not tail recursive into a tail recursive function is to use an _accumulator parameter_. An accumulator parameter is an additional parameter which is added to a function which _accumulates_ a return value, as opposed to using the return value to accumulate the result.
 
+Один из известных способов превратить рекурсивную функцию, не являющейся хвостовой, в хвостовую - это использовать _аккумуляторный параметр_. Аккумуляторный параметр - это дополнительный параметр, добавляемый в функцию, который _аккумулирует_ возвращающее значение, в отличие от использования возвращаемого значения для аккумулирования результата.
+
 For example, consider this array recursion which reverses the input array by appending elements at the head of the input array to the end of the result.
+
+
 
 ```haskell
 reverse :: forall a. Array a -> Array a
