@@ -726,6 +726,7 @@ One common way to turn a function which is not tail recursive into a tail recurs
 
 For example, consider this array recursion which reverses the input array by appending elements at the head of the input array to the end of the result.
 
+Для примера, рассмотрим рекурсию на массиве, которая меняет местами элементы массива путём добавления головы входного массива в конец результирующего.
 
 
 ```haskell
@@ -736,6 +737,8 @@ reverse xs = snoc (reverse (unsafePartial tail xs))
 ```
 
 This implementation is not tail recursive, so the generated JavaScript will cause a stack overflow when executed on a large input array. However, we can make it tail recursive, by introducing a second function argument to accumulate the result instead:
+
+Эта реализация не является хвостовой рекурсией, поэтому сгенерированный код будет создавать переполнение стека, при передачи в него большого массива. Однако, мы можем сделать из неё хвостовую рекурсию, добавив второй аргумент в функцию для аккумуляции результата:
 
 ```haskell
 reverse :: forall a. Array a -> Array a
