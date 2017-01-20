@@ -751,11 +751,18 @@ reverse = reverse' []
 
 In this case, we delegate to the helper function `reverse'`, which performs the heavy lifting of reversing the array. Notice though that the function `reverse'` is tail recursive - its only recursive call is in the last case, and is in tail position. This means that the generated code will be a _while loop_, and will not blow the stack for large inputs.
 
+В данном случае мы делегируем выполнение вызова вспомогательной функции `reverse'`, которая производит всю работу по перевёртыванию массива. Обратите внимание, однако, что функция `reverse'` является хвостовой рекурсией - она осуществляет рекурсивный вызов в последнем случае в хвостовой позиции. Это означает, что сгенерированный код будет циклом _while_, и не "взорвёт" стек на больших входных данных.
+
 To understand the second implementation of `reverse`, note that the helper function `reverse'` essentially uses the accumulator parameter to maintain an additional piece of state - the partially constructed result. The result starts out empty, and grows by one element for every element in the input array. However, because later elements are added at the front of the array, the result is the original array in reverse!
+
+Чтобы понять вторую реализацию `reverse`, обратите внимание, что вспомогательная функция `reverse'` по сути использует аккумуляторный параметр для сохранения кусочка состояния - это частично сконструированный результат. Результат сначала пустой, затем он возрастает по-одному элементу из входного массива. Однако, так как дальнейшие элементы добавляются в начало массива, результатом становится перевёрнутый оригинальный массив!
 
 Note also that while we might think of the accumulator as "state", there is no direct mutation going on. The accumulator is an immutable array, and we simply use function arguments to thread the state through the computation.
 
+Отметим, что пока мы могли думать об аккумуляторе как о "состоянии", здесь не происходит прямой мутации. Аккумулятор является неизменяемым массивом, мы просто используем аргументы функции чтобы связать состояние через вычисление. 
+
 ## Prefer Folds to Explicit Recursion
+## Предпочтение Свёрток прямой рекурсии
 
 If we can write our recursive functions using tail recursion, then we can benefit from tail recursion optimization, so it becomes tempting to try to write all of our functions in this form. However, it is often easy to forget that many functions can be written directly as a fold over an array or similar data structure. Writing algorithms directly in terms of combinators such as `map` and `fold` has the added advantage of code simplicity - these combinators are well-understood, and as such, communicate the _intent_ of the algorithm much better than explicit recursion.
 
