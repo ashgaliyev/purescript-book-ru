@@ -766,7 +766,11 @@ Note also that while we might think of the accumulator as "state", there is no d
 
 If we can write our recursive functions using tail recursion, then we can benefit from tail recursion optimization, so it becomes tempting to try to write all of our functions in this form. However, it is often easy to forget that many functions can be written directly as a fold over an array or similar data structure. Writing algorithms directly in terms of combinators such as `map` and `fold` has the added advantage of code simplicity - these combinators are well-understood, and as such, communicate the _intent_ of the algorithm much better than explicit recursion.
 
+Если мы можем писать наши рекурсивные функции используя хвостовую рекурсию, то мы можем извлечь выгоду из оптимизации хвостовой рекурсии, и поэтому написание наших функций в данной форме становится довольно заманчивым. Однако, легко забыть то, что многие функции могут быть написаны как свёртки массивов или других структур данных. Написание алгоритмов с точки зрения комбинаторов, таких как `map` и `fold` имеет дополнительное приемущество в простоте кода - эти комбинаторы хорошо понятны, и поэтому связь с _намерением_ алгоритма более лучше, чем при использовании явной рекурсии.
+
 For example, the `reverse` example can be written as a fold in at least two ways. Here is a version which uses `foldr`:
+
+К примеру, код с `reverse` может быть написан в виде свёртки по крайней мере двумя способами. Тут версия с использованием `foldr`:
 
 ```text
 > import Data.Foldable
@@ -782,11 +786,16 @@ For example, the `reverse` example can be written as a fold in at least two ways
 
 Writing `reverse` in terms of `foldl` will be left as an exercise for the reader.
 
-X> ## Exercises
+Написание `reverse` с использованием `foldl` будет оставлено в качестве упражнения читателю.
+
+X> ## Упражнения
 X>
 X> 1. (Easy) Use `foldl` to test whether an array of boolean values are all true.
+X> 1. (Лёгкое) Используйте `foldl` для проверки - состоит ли массив булевых значений только из true.
 X> 2. (Medium) Characterize those arrays `xs` for which the function `foldl (==) false xs` returns true.
+X> 2. (Среднее) Опишите массив `xs` для которого функция `foldl (==) false xs` возвращает true.
 X> 3. (Medium) Rewrite the following function in tail recursive form using an accumulator parameter:
+X> 3. (Среднее) Перепишите следующую функцию в форму хвостовой рекурсии, используя аккумуляторный параметр:
 X>
 X>     ```haskell
 X>     import Prelude
@@ -800,6 +809,7 @@ X>                    else count p (unsafePartial tail xs)
 X>     ```
 X>
 X> 4. (Medium) Write `reverse` in terms of `foldl`.
+X> 4. (Среднее) Напишите `reverse` используя `foldl`.
 
 ## A Virtual Filesystem
 
