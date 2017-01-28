@@ -811,11 +811,15 @@ X>
 X> 4. (Medium) Write `reverse` in terms of `foldl`.
 X> 4. (Среднее) Напишите `reverse` используя `foldl`.
 
-## A Virtual Filesystem
+## Виртуальная файловая система
 
 In this section, we're going to apply what we've learned, writing functions which will work with a model of a filesystem. We will use maps, folds and filters to work with a predefined API.
 
+В этом разделе мы собираемся применить то, что выучили, написав функции, которые будут работать с моделью файловой системы. Мы будем использовать отображения, свёртки и фильтры для работы с предопределённым API.
+
 The `Data.Path` module defines an API for a virtual filesystem, as follows:
+
+Модуль `Data.Path` определяет API виртуальной файловой системы следующим образом:
 
 - There is a type `Path` which represents a path in the filesystem.
 - There is a path `root` which represents the root directory.
@@ -824,7 +828,15 @@ The `Data.Path` module defines an API for a virtual filesystem, as follows:
 - The `size` function returns the file size for a `Path` which represents a file.
 - The `isDirectory` function tests whether a function is a file or a directory.
 
+- Тип `Path`, обозначающий путь в файловой системе
+- Константа `root` типа `Path`, обозначающая корневую директорию
+- Функция `ls`, перечисляющая файлы в директории
+- Функция `size`, возвращающая размер файла, представленного типом `Path`
+- Функция `isDirectory`, проверяющая - является ли путь файлом или директорией
+
 In terms of types, we have the following type definitions:
+
+В терминах типов мы имеем следующие определения:
 
 ```haskell
 root :: Path
@@ -839,6 +851,8 @@ isDirectory :: Path -> Boolean
 ```
 
 We can try out the API in PSCi:
+
+Мы можем проверить API в PSCi:
 
 ```text
 $ pulp psci
@@ -857,9 +871,14 @@ true
 
 The `FileOperations` module defines functions which use the `Data.Path` API. You do not need to modify the `Data.Path` module, or understand its implementation. We will work entirely in the `FileOperations` module.
 
+Модуль `FileOperations` определяет функции для работы с API `Data.Path`. Вам не нужно изменять модуль `Data.Path` или понимать его реализацию. Мы будет целиком работать в модуле `FileOperations`.
+
 ## Listing All Files
+## Вывод списка файлов
 
 Let's write a function which performs a deep enumeration of all files inside a directory. This function will have the following type:
+
+Давайте напишем функцию, выполняющую глубокое перечисление всех файлов внутри каталога. Эта функция будет иметь следующий тип:
 
 ```haskell
 allFiles :: Path -> Array Path
@@ -867,7 +886,11 @@ allFiles :: Path -> Array Path
 
 We can define this function by recursion. First, we can use `ls` to enumerate the immediate children of the directory. For each child, we can recursively apply `allFiles`, which will return an array of paths. `concatMap` will allow us to apply `allFiles` and flatten the results at the same time.
 
+Мы можем определить эту функцию при помощи рекурсии. Сначала, мы можем использовать `ls` для перечисления непосредственных дочерних элементов каталога. Для каждого дочернего мы можем применить рекурсивно функцию `allFiles`, которая возвращает массив путей. А `concatMap` позволит нам применять `allFiles` и одновременно уплощать результат.
+
 Finally, we use the cons operator `:` to include the current file:
+
+Наконец, мы используем оператор `:` чтобы прикрепить текущий файл:
 
 ```haskell
 allFiles file = file : concatMap allFiles (ls file)
@@ -875,7 +898,11 @@ allFiles file = file : concatMap allFiles (ls file)
 
 _Note_: the cons operator `:` actually has poor performance on immutable arrays, so it is not recommended in general. Performance can be improved by using other data structures, such as linked lists and sequences.
 
+_Примечание_: оператор `:` на самом деле имеет низкую производительность на неизменяемых массивах, поэтому его использование не рекомендуется. Производительность может быть улучшена, если использовать другие структуры данных, такие как связный список и перечисления.
+
 Let's try this function in PSCi:
+
+Давайте проверим функцию в PSCi:
 
 ```text
 > import FileOperations
@@ -887,6 +914,8 @@ Let's try this function in PSCi:
 ```
 
 Great! Now let's see if we can write this function using an array comprehension using do notation.
+
+Отлично! Теперь давайте посмотрим, как мы можем записать эту функцию используя генератор массива через do-нотацию.
 
 Recall that a backwards arrow corresponds to choosing an element from an array. The first step is to choose an element from the immediate children of the argument. Then we simply call the function recursively for that file. Since we are using do notation, there is an implicit call to `concatMap` which concatenates all of the recursive results.
 
