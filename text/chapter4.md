@@ -5,7 +5,7 @@
 
 In this chapter, we will look at how recursive functions can be used to structure algorithms. Recursion is a basic technique used in functional programming, which we will use throughout this book.
 
-В этой главе мы увидим как работает рекурсия и как она может быть использована для построения алгоритмов. Рекурсия - это базовая техника, используемая в функциональном программировании, которую мы будем использовать на протяжение всей книги.
+В этой главе мы увидим как работает рекурсия и как она может быть использована для построения алгоритмов. Рекурсия - это основная техника, используемая в функциональном программировании, которую мы будем использовать на протяжение всей книги.
 
 We will also cover some standard functions from PureScript's standard libraries. We will see the `map` and `fold` functions, as well as some useful special cases, like `filter` and `concatMap`.
 
@@ -13,36 +13,21 @@ We will also cover some standard functions from PureScript's standard libraries.
 
 The motivating example for this chapter is a library of functions for working with a virtual filesystem. We will apply the techniques learned in this chapter to write functions which compute properties of the files represented by a model of a filesystem.
 
-Побуждающий пример для этой главы - это библиотека функций для работы с виртуальной системой. Техники, которые мы изучим в это главе мы применим для написания функций, вычисляющих свойства файлов представленных моделью файловой системы.
+Движущий пример для этой главы - это библиотека функций для работы с виртуальной системой. Техники, которые мы изучим в это главе мы применим для написания функций, вычисляющих свойства файлов представленных моделью файловой системы.
 
 ## Project Setup
 ## Настройка проекта
 
-The source code for this chapter is contained in the two files `src/Data/Path.purs` and `src/FileOperations.purs`.
-
 Исходный код данной главы содержится в двух файлах - `src/Data/Path.purs` и `src/FileOperations.purs`.
-
-The `Data.Path` module contains a model of a virtual filesystem. You do not need to modify the contents of this module.
-
 Модуль `Data.Path` содержит модель виртуальной файловой системы. Вам не нужно изменять содержимое этого модуля.
+Модуль `FileOperations` содержит функции, которые используют API `Data.Path`. Решения к упражнениям могут быть выполнены в этом модуле.
 
-The `FileOperations` module contains functions which use the `Data.Path` API. Solutions to the exercises can be completed in this file.
+Проект имеет следующие зависимости Bower:
 
-Модуль `FileOperations` содержит функции, которые использую API `Data.Path`. Решения к упражнениям могут быть выполнены в этом модуле.
-
-The project has the following Bower dependencies:
-
-Проект имеет следующие Bower зависимости:
-
-- `purescript-maybe`, which defines the `Maybe` type constructor
 - `purescript-maybe`, который определяет конструктор типа `Maybe`
-- `purescript-arrays`, which defines functions for working with arrays
 - `purescript-arrays`, определяющий функции для работы с массивами
-- `purescript-strings`, which defines functions for working with Javascript strings
 - `purescript-strings`, содержащий функции для работы со строками Javascript
-- `purescript-foldable-traversable`, which defines functions for folding arrays and other data structures
 - `purescript-foldable-traversable`, который содержит функции для свертки массивов и других структур данных 
-- `purescript-console`, which defines functions for printing to the console
 - `purescript-console`, определяющий функции для печатания в консоли
 
 ## Введение
@@ -55,11 +40,7 @@ Recursion is closely linked to the _divide and conquer_ strategy: to solve a pro
 
 Рекурсия тесно связана со стратегией _разделяй и властвуй_: чтобы решить задачу с множеством входных данных, мы разбиваем входные данные на меньшие части, решаем задачу в этих частях, а потом собираем решение из меньших решений.
 
-Let's see some simple examples of recursion in PureScript.
-
-Давайте рассмотрим примеры рекурсии в PureScript.
-
-Here is the usual _factorial function_ example:
+Давайте рассмотрим простые примеры рекурсии в PureScript.
 
 Вот обычный пример _функции нахождения факториала_:
 
@@ -117,7 +98,7 @@ length arr =
 
 In this function, we use an `if .. then .. else` expression to branch based on the emptiness of the array. The `null` function returns `true` on an empty array. Empty arrays have length zero, and a non-empty array has a length that is one more than the length of its tail.
 
-В данной функции мы используем выражение `if .. then .. else` для ветвления на условии пустоты массива. Функция `null` возвращает `true` если массив пустой. Пустые массивы имеют нулевую длину, а непустые - 1 плюс длина хвоста (не понял фразу после запятой, написал своими словами)
+В данной функции мы используем выражение `if .. then .. else` для ветвления на условии пустоты массива. Функция `null` возвращает `true` если массив пустой. Пустые массивы имеют нулевую длину, а непустые - 1 плюс длина хвоста **(не понял фразу после запятой, написал своими словами)**
 
 This example is obviously a very impractical way to find the length of an array in JavaScript, but should provide enough help to allow you to complete the following exercises:
 
@@ -144,7 +125,7 @@ The `map` function is an example of a recursive function on arrays. It is used t
 
 When we cover _type classes_ later in the book we will see that the `map` function is an example of a more general pattern of shape-preserving functions which transform a class of type constructors called _functors_.
 
-Когда мы осветим _классы типов_ далее в книге, то мы увидем, что функция `map` это пример более общего шаблона функций, сохраняющих форму. Они образуют класс конструкторов типа под названием _функторы_. (?)
+Когда мы ознакомимся с _классами типов_ далее в книге, то увидем, что функция `map` это пример более общего шаблона функций, сохраняющих форму. Они образуют класс конструкторов типа под названием _функторы_. (?)
 
 Let's try out the `map` function in PSCi:
 
@@ -332,11 +313,11 @@ forall a b. (a -> Array b) -> Array a -> Array b
 
 Here, we call `concatMap` with the function `\n -> [n, n * n]` which sends an integer to the array of two elements consisting of that integer and its square. The result is an array of ten integers: the integers from 1 to 5 along with their squares.
 
-Здесь мы вызываем `concatMap` вместе с функцией `\n -> [n, n * n]`, которая отправляет целое число в массив из двух элементов, сотоящих из этого целого числа и его квадрата. Результат является массивом из десяти чисел: целые числа от 1 до 5 рядом с их квадратами.
+Здесь мы вызываем `concatMap` вместе с функцией `\n -> [n, n * n]`, которая отправляет целое число в массив из двух элементов, состоящих из этого целого числа и его квадрата. Результат является массивом из десяти чисел: целые числа от 1 до 5 рядом с их квадратами.
 
 Note how `concatMap` concatenates its results. It calls the provided function once for each element of the original array, generating an array for each. Finally, it collapses all of those arrays into a single array, which is its result.
 
-Обратите внимание как `concatMap` соединяет свои результаты. Она вызывает предоставленную функцию по-одному разу на каждом элементе исходного массива, тем самым генерируя к каждому элементу свой массив. Наконец, она сплющивает все эти массивы в единый массив, который и является результатом.
+Обратите внимание как `concatMap` соединяет свои результаты. Она вызывает предоставленную функцию по-одному разу на каждом элементе исходного массива, тем самым генерируя к каждому элементу свой массив. Наконец, она схлопывает все эти массивы в единый массив, который и является результатом.
 
 `map`, `filter` and `concatMap` form the basis for a whole range of functions over arrays called "array comprehensions".
 
@@ -392,7 +373,7 @@ This is not quite what we want. Instead of just returning the second element of 
 
 This is looking better. However, we are generating too many pairs: we keep both [1, 2] and [2, 1] for example. We can exclude the second case by making sure that `j` only ranges from `i` to `n`:
 
-Выглядит уже лучше. Однако, мы генерируем слишком много пар: мы создаем и [1, 2], и [2, 1], к примеру. Мы можем исключить второй случай убедившись в том, что `j` варьируется только от `i` до `n`:
+Выглядит уже лучше. Однако, мы генерируем слишком много пар: мы создаем и [1, 2], и [2, 1], к примеру. Мы можем исключить второй случай убедившись в том, что `j` находится в диапазоне от `i` до `n`:
 
 ```text
 > :paste
@@ -434,7 +415,7 @@ However, we can improve the readability of our code considerably. `map` and `con
 
 _Note_: Just like `map` and `concatMap` allowed us to write _array comprehensions_, the more general operators `map` and `bind` allow us to write so-called _monad comprehensions_. We'll see plenty more examples of _monads_ later in the book, but in this chapter, we will only consider arrays.
 
-_Примечание_: Так же как `map` и `concatMap` позволяет нам создавать _генераторы массивов_, более общие операторы `map` и `bind` позволяют писать созвучные _монадные генераторы_.  Мы увидем еще много примеров _монад_ далее в книге, но в этой главе мы рассмотрим только массивы.
+_Примечание_: Так же как `map` и `concatMap` позволяет нам создавать _генераторы массивов_, более общие операторы `map` и `bind` позволяют писать созвучные _генераторы монад_.  Мы увидем еще много примеров _монад_ далее в книге, но в этой главе мы рассмотрим только массивы.
 
 We can rewrite our `factors` function using do notation as follows:
 
@@ -450,7 +431,7 @@ factors n = filter (\xs -> product xs == n) $ do
 
 The keyword `do` introduces a block of code which uses do notation. The block consists of expressions of a few types:
 
-Ключевое слово `do`, предваряет блок кода, использующего do-нотацию. Блок состоит из выражений нескольких типов:
+Ключевое слово `do`, открывает блок кода, использующего do-нотацию. Блок состоит из выражений нескольких типов:
 
 - Expressions which bind elements of an array to a name. These are indicated with the backwards-facing arrow `<-`, with a name on the left, and an expression on the right whose type is an array. 
 
@@ -613,7 +594,7 @@ In both of these cases, the type `a` corresponds to the type of elements of our 
 
 The difference between the `foldl` and `foldr` functions is the direction of the traversal. `foldl` folds the array "from the left", whereas `foldr` folds the array "from the right".
 
-Разница между функциями `foldl` и `foldr` это направление обхода. `foldl` "свёртывает массив слева", а `foldr` свёртывает справа.
+Разница между функциями `foldl` и `foldr` это направление обхода. `foldl` свёртывает массив слева, а `foldr` свёртывает справа.
 
 Let's see these functions in action. Let's use `foldl` to sum an array of integers. The type `a` will be `Int`, and we can also choose the result type `b` to be `Int`. We need to provide three arguments: a function `Int -> Int -> Int`, which will add the next element to the accumulator, an initial value for the accumulator of type `Int`, and an array of `Int`s to add. For the first argument, we can just use the addition operator, and the initial value of the accumulator will be zero:
 
@@ -698,7 +679,7 @@ _Примечание_: более полные решения проблемы 
 
 The key observation which enables tail recursion optimization is the following: a recursive call in _tail position_ to a function can be replaced with a _jump_, which does not allocate a stack frame. A call is in _tail position_ when it is the last call made before a function returns. This is the reason why we observed a stack overflow in the example - the recursive call to `f` was _not_ in tail position.
 
-Ключевое замечание, делающее возможным оптимизацию хвостовой рекурсии, следующее: рекурсивный вызов функции в _хвостовой позиции_ может быть заменён на _прыжок_, который не занимает стековый фрейм. Вызов находится в _хвостовой позиции_, когда он сделан перед возвратом функции. Эта причина, почему мы наблюдали переполнение стека в примере выше - рекурсивный вызов `f` _не был_ в хвостовой позиции.
+Ключевое наблюдение, которое позволяет оптимизировать хвостовую рекурсию, следующее: рекурсивный вызов функции в _хвостовой позиции_ может быть заменён на _прыжок_, который не занимает стековый фрейм. Вызов находится в _хвостовой позиции_, когда он сделан перед возвратом функции. Эта причина, почему мы наблюдали переполнение стека в примере выше - рекурсивный вызов `f` _не был_ в хвостовой позиции.
 
 In practice, the PureScript compiler does not replace the recursive call with a jump, but rather replaces the entire recursive function with a _while loop_.
 
@@ -766,7 +747,7 @@ Note also that while we might think of the accumulator as "state", there is no d
 
 If we can write our recursive functions using tail recursion, then we can benefit from tail recursion optimization, so it becomes tempting to try to write all of our functions in this form. However, it is often easy to forget that many functions can be written directly as a fold over an array or similar data structure. Writing algorithms directly in terms of combinators such as `map` and `fold` has the added advantage of code simplicity - these combinators are well-understood, and as such, communicate the _intent_ of the algorithm much better than explicit recursion.
 
-Если мы можем писать наши рекурсивные функции используя хвостовую рекурсию, то мы можем извлечь выгоду из оптимизации хвостовой рекурсии, и поэтому написание наших функций в данной форме становится довольно заманчивым. Однако, легко забыть то, что многие функции могут быть написаны как свёртки массивов или других структур данных. Написание алгоритмов с точки зрения комбинаторов, таких как `map` и `fold` имеет дополнительное приемущество в простоте кода - эти комбинаторы хорошо понятны, и поэтому связь с _намерением_ алгоритма более лучше, чем при использовании явной рекурсии.
+Если мы можем писать наши рекурсивные функции используя хвостовую рекурсию, то мы можем извлечь выгоду из оптимизации хвостовой рекурсии, и поэтому написание наших функций в данной форме становится довольно заманчивым. Однако, легко забыть то, что многие функции могут быть написаны как _свёртки_ массивов или других структур данных. Написание алгоритмов с точки зрения комбинаторов, таких как `map` и `fold` имеет дополнительное приемущество в простоте кода - эти комбинаторы хорошо понятны, и поэтому связь с _намерением_ алгоритма более лучше, чем при использовании явной рекурсии.
 
 For example, the `reverse` example can be written as a fold in at least two ways. Here is a version which uses `foldr`:
 
@@ -791,11 +772,17 @@ Writing `reverse` in terms of `foldl` will be left as an exercise for the reader
 X> ## Упражнения
 X>
 X> 1. (Easy) Use `foldl` to test whether an array of boolean values are all true.
+
 X> 1. (Лёгкое) Используйте `foldl` для проверки - состоит ли массив булевых значений только из true.
+
 X> 2. (Medium) Characterize those arrays `xs` for which the function `foldl (==) false xs` returns true.
+
 X> 2. (Среднее) Опишите массив `xs` для которого функция `foldl (==) false xs` возвращает true.
+
 X> 3. (Medium) Rewrite the following function in tail recursive form using an accumulator parameter:
+
 X> 3. (Среднее) Перепишите следующую функцию в форму хвостовой рекурсии, используя аккумуляторный параметр:
+
 X>
 X>     ```haskell
 X>     import Prelude
@@ -809,6 +796,7 @@ X>                    else count p (unsafePartial tail xs)
 X>     ```
 X>
 X> 4. (Medium) Write `reverse` in terms of `foldl`.
+
 X> 4. (Среднее) Напишите `reverse` используя `foldl`.
 
 ## Виртуальная файловая система
@@ -919,7 +907,12 @@ Great! Now let's see if we can write this function using an array comprehension 
 
 Recall that a backwards arrow corresponds to choosing an element from an array. The first step is to choose an element from the immediate children of the argument. Then we simply call the function recursively for that file. Since we are using do notation, there is an implicit call to `concatMap` which concatenates all of the recursive results.
 
+Вспомним, что обратная стрелка соответствует выбору элемента из массива. Первым шагом будет выбор элемента из прямых потомков аргумента. Затем мы просто запускаем функцию рекурсивно для данного элемента. Так как мы используем do-нотацию, то здесь происходит неявный вызов `concatMap`, который соединяет все результаты рекурсивных вызовов. 
+
+
 Here is the new version:
+
+Вот новая версия:
 
 ```haskell
 allFiles' :: Path -> Array Path
@@ -930,11 +923,21 @@ allFiles' file = file : do
 
 Try out the new version in PSCi - you should get the same result. I'll let you decide which version you find clearer.
 
-X> ## Exercises
+Попробуйте новую версию в PSCi - вы должны получить такой же результат. Позволю вам самим решить, какую из этих версий вы найдете более ясной.
+
+X> ## Упражнения
 X>
 X> 1. (Easy) Write a function `onlyFiles` which returns all _files_ (not directories) in all subdirectories of a directory.
+
+X> 1. (Лёгкое) Напишите функцию `onlyFiles`, которая возвращает все _файлы_ (не каталоги) во всех подкаталогах директории.
+
 X> 1. (Medium) Write a fold to determine the largest and smallest files in the filesystem.
+
+X> 1. (Среднее) Напишите свёртку для определения самого большого и самого маленького файла в файловой системе.
+
 X> 1. (Difficult) Write a function `whereIs` to search for a file by name. The function should return a value of type `Maybe Path`, indicating the directory containing the file, if it exists. It should behave as follows:
+
+X> 1. (Сложное) Напишите функцию `whereIs` для поиска файла по имени. Функция должна возвращать значение типа `Maybe Path`, обозначающее папку, в которой содержится файл, если он существует. Её поведение должно быть следующим:
 X>
 X>     ```text
 X>     > whereIs "/bin/ls"
@@ -946,6 +949,10 @@ X>     ```
 X>
 X>     _Hint_: Try to write this function as an array comprehension using do notation.
 
-## Conclusion
+X>     _Подсказка_: Попробуйте написать эту функцию в виде генератора массива, используя do-нотацию.
+
+## Заключение
 
 In this chapter, we covered the basics of recursion in PureScript, as a means of expressing algorithms concisely. We also introduced user-defined infix operators, standard functions on arrays such as maps, filters and folds, and array comprehensions which combine these ideas. Finally, we showed the importance of using tail recursion in order to avoid stack overflow errors, and how to use accumulator parameters to convert functions to tail recursive form.
+
+В этой главе мы рассмотрели основы рекурсии в PureScript, как средство лаконичного выражения алгоритмов. Мы также ознакомились с определяемыми пользователем инфиксными операторами, стандартными функции на массивах, такие как отображения, фильтры и свёртки, а также с генераторами массивов, которые комбинируют данные идеи. Наконец, мы показали важность использования хвостовой рекурсии, чтобы избежать ошибок переполнения стека, и как использовать аккумуляторный параметр для преобразования функции в хвостовую рекурсию.
