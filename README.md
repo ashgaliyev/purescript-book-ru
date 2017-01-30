@@ -9,9 +9,9 @@
 - ~~Глава 1~~
 - ~~Глава 2~~
 - ~~Глава 3~~
-- __Глава 4__  [@ashgaliyev](https://github.com/ashgaliyev)
+- _Глава 4_  _(требует вычитки)_
 - __Глава 5__  [@kika](https://github.com/kika)
-- Глава 6
+- __Глава 6__ [@ashgaliyev](https://github.com/ashgaliyev)
 - Глава 7
 - Глава 8
 - Глава 9
