@@ -1,18 +1,29 @@
-# Type Classes
+# Классы типов
 
-## Chapter Goals
+## Цели главы
 
 This chapter will introduce a powerful form of abstraction which is enabled by PureScript's type system - type classes.
 
+Эта глава познакомит с мощной формой абстракции, которую предоставляет система типов PureScript - классы типов.
+
 This motivating example for this chapter will be a library for hashing data structures. We will see how the machinery of type classes allow us to hash complex data structures without having to think directly about the structure of the data itself.
+
+Мотивирующим примером к данной главе будет библиотека для хэширования структур данных. Мы увидем как механизм классов типов позволит нам хэшировать сложные структуры данных без необходимости непосредственно думать о структуре этих данных.
 
 We will also see a collection of standard type classes from PureScript's Prelude and standard libraries. PureScript code leans heavily on the power of type classes to express ideas concisely, so it will be beneficial to familiarize yourself with these classes.
 
+Мы также увидем коллекцию стандартных классов типов из Prelude PureScript и стандартных библиотек. PureScript код сильно опирается на мощь классов типов, чтобы выразить идеи сжато, поэтому вам будет полезно ознакомиться с этими классами.
+
 ## Project Setup
+## Настройка проекта
 
 The source code for this chapter is defined in the file `src/Data/Hashable.purs`. 
 
+Исходный код к данной главе содержится в файле `src/Data/Hashable.purs`.
+
 The project has the following Bower dependencies:
+
+Проект имеет следующие зависимости Bower:
 
 - `purescript-maybe`, which defines the `Maybe` data type, which represents optional values.
 - `purescript-tuples`, which defines the `Tuple` data type, which represents pairs of values.
