@@ -160,12 +160,17 @@ X> 1. (Easy) Use the `showShape` function from the previous chapter to define a 
 X> 1. (Лёгкое) Используя функцию `showShape` из предыдущей главы определите инстанс `Show` для типа `Shape`.
 
 ## Common Type Classes
+## Общие классы типов
 
 In this section, we'll look at some standard type classes defined in the Prelude and standard libraries. These type classes form the basis of many common patterns of abstraction in idiomatic PureScript code, so a basic understanding of their functions is highly recommended.
+
+В этом разделе мы посмотрим на некоторые стандартные классы типов, определённые в Prelude и стандартных библиотеках. Эти классы типов образуют базис для многих общих моделей абстракций идиоматического кода PureScript, поэтому базовое понимание их функций настоятельно рекомендуется.
 
 ### Eq
 
 The `Eq` type class defines the `eq` function, which tests two values for equality. The `==` operator is actually just an alias for `eq`.
+
+Класс типов `Eq` определяет функцию `eq`, которая проверяет два значение на равенство. Оператор `==` на самом деле является псеводнимом для `eq`.
 
 ```haskell
 class Eq a where
@@ -174,7 +179,11 @@ class Eq a where
 
 Note that in either case, the two arguments must have the same type: it does not make sense to compare two values of different types for equality.
 
+Отметим, что в любых случаях два аргумента должны иметь один и тот же тип: не имеет смысла проверять два значения различных типов на равенство. 
+
 Try out the `Eq` type class in PSCi:
+
+Попробуем класс типов `Eq` в PSCi:
 
 ```text
 > 1 == 2
@@ -188,6 +197,8 @@ true
 
 The `Ord` type class defines the `compare` function, which can be used to compare two values, for types which support ordering. The comparison operators `<` and `>` along with their non-strict companions `<=` and `>=`, can be defined in terms of `compare`.
 
+Класс типов `Ord` определяет функцию `compare`, которая может быть использована для сравнения двух значений, типы которых поддерживают упорядычевание.  Операторы сравнения `<` и `>` вместе с их не строгими компаньонами `<=` и `>=` могут быть определены в терминах `compare`.
+
 ```haskell
 data Ordering = LT | EQ | GT
 
@@ -197,11 +208,19 @@ class Eq a <= Ord a where
 
 The `compare` function compares two values, and returns an `Ordering`, which has three alternatives:
 
+Функция `compare` сравнивает два значения и возвращает `Ordering`, которое имеет три варианта:
+
 - `LT` - if the first argument is less than the second.
 - `EQ` - if the first argument is equal to the second.
 - `GT` - if the first argument is greater than the second.
 
+- `LT` - если первый аргумент меньше второго.
+- `EQ` - если первый аргумент равен второму.
+- `GT` - если первый аргумент больше второго.
+
 Again, we can try out the `compare` function in PSCi:
+
+И опять, мы можем проверить функцию `compare` в PSCi:
 
 ```text
 > compare 1 2
