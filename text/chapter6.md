@@ -31,13 +31,26 @@ The project has the following Bower dependencies:
 - `purescript-strings`, which defines functions which operate on strings.
 - `purescript-functions`, which defines some helper functions for defining PureScript functions.
 
+- `purescript-maybe`, содержащий тип `Maybe`, означающий опциональные значение.
+- `purescript-tuples`, определяющий тип `Tuple` - пары значений.
+- `purescript-either`, тип `Either`, представляющий непересекающиеся множества.
+- `purescript-strings`, содаржащий функции для операции над строками.
+- `purescript-functions`, содержащий некоторые вспомогательные функции для определения PureScript функций.
+
 The module `Data.Hashable` imports several modules provided by these Bower packages.
 
+Модуль `Data.Hashable` импортирует несколько модулей, предоставляемых этими пакетами Bower.
+
 ## Show Me!
+## Покажи мне!
 
 Our first simple example of a type class is provided by a function we've seen several times already: the `show` function, which takes a value and displays it as a string.
 
+Наш первый простой пример класса типов предоставлен функцией, которую мы уже видели несколько раз: эта функция `show`, которая принимает некоторое значение и выводит его в виде строки.
+
 `show` is defined by a type class in the `Prelude` module called `Show`, which is defined as follows:
+
+Функция `show` определена классом типов `Show` в модуле `Prelude`. Определение выглядит следующим образом:
 
 ```haskell
 class Show a where
@@ -46,9 +59,15 @@ class Show a where
 
 This code declares a new _type class_ called `Show`, which is parameterized by the type variable `a`.
 
+Этот код объявляет новый _класс типов_ под названием `Show`, который параметаризован переменной типа `a`.
+
 A type class _instance_ contains implementations of the functions defined in a type class, specialized to a particular type.
 
+_Инстанс_ класса типов содержит реализацию функций, определённых в классе типов, специализированные под определённый тип
+
 For example, here is the definition of the `Show` type class instance for `Boolean` values, taken from the Prelude:
+
+Например, ниже определение инстанса `Show` для значений типа `Boolean`, взятое из Prelude:
 
 ```haskell
 instance showBoolean :: Show Boolean where
@@ -58,7 +77,11 @@ instance showBoolean :: Show Boolean where
 
 This code declares a type class instance called `showBoolean` - in PureScript, type class instances are named to aid the readability of the generated JavaScript. We say that the `Boolean` type _belongs to the `Show` type class_.
 
+Этот код объявляет инстанс класса типов в PureScript под названием `showBoolean`. Инстансы классов типов имеют собственные названия с целью повышения читаемости сгенерированного кода на JavaScript. Мы говорим, что тип `Boolean` _принадлежит к классу типов `Show`_.
+
 We can try out the `Show` type class in PSCi, by showing a few values with different types:
+
+Мы можем проверить класс типов `Show` в PSCi, показав несколько значений различных типов:
 
 ```text
 > import Prelude
@@ -75,6 +98,8 @@ We can try out the `Show` type class in PSCi, by showing a few values with diffe
 
 These examples demonstrate how to `show` values of various primitive types, but we can also `show` values with more complicated types:
 
+Эти примеры демонстрирует значения `show` с различными примитивными типами, но мы также можем использовать `show` с более сложными типами:
+
 ```text
 > import Data.Tuple
 
@@ -89,6 +114,8 @@ These examples demonstrate how to `show` values of various primitive types, but 
 
 If we try to show a value of type `Data.Either`, we get an interesting error message:
 
+Если мы попробуем использовать `show` на типе `Data.Either`, то мы получим интересное сообщение об ошибке:
+
 ```text
 > import Data.Either
 > show (Left 10)
@@ -102,7 +129,11 @@ has type variables which are not mentioned in the body of the type. Consider add
 
 The problem here is not that there is no `Show` instance for the type we intended to `show`, but rather that PSCi was unable to infer the type. This is indicated by the _unknown type_ `a` in the inferred type.
 
+Проблема здесь не в том, что нет инстанса `Show` для типа, который мы намеревались показать, скорее в том, что PSCi не смог(или смогла?) вывести этот тип. Это показано _неизвестным типом_ `a` в выведенном типе.
+
 We can annotate the expression with a type, using the `::` operator, so that PSCi can choose the correct type class instance:
+
+Мы можем аннотировать выражение типом, используя оператор `::`, и тогда PSCi сможет выбрать правильный инстанс класса типов:
 
 ```text
 > show (Left 10 :: Either Int String)
@@ -110,6 +141,8 @@ We can annotate the expression with a type, using the `::` operator, so that PSC
 ```
 
 Some types do not have a `Show` instance defined at all. One example of this is the function type `->`. If we try to `show` a function from `Int` to `Int`, we get an appropriate error message from the type checker:
+
+Некоторые типы не имеют инстансов класса типов `Show`. Один из примеров таких типов это тип функции `->`. Если мы попытаемы применить `show` к функции из `Int` в `Int`, то получим соответствующее сообщение об ошибке от контроллера(?) типов:
 
 ```text
 > import Prelude
@@ -120,9 +153,11 @@ No type class instance was found for
   Data.Show.Show (Int -> Int)
 ```
 
-X> ## Exercises
+X> ## Упражнения
 X>
 X> 1. (Easy) Use the `showShape` function from the previous chapter to define a `Show` instance for the `Shape` type.
+
+X> 1. (Лёгкое) Используя функцию `showShape` из предыдущей главы определите инстанс `Show` для типа `Shape`.
 
 ## Common Type Classes
 
