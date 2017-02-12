@@ -129,7 +129,7 @@ has type variables which are not mentioned in the body of the type. Consider add
 
 The problem here is not that there is no `Show` instance for the type we intended to `show`, but rather that PSCi was unable to infer the type. This is indicated by the _unknown type_ `a` in the inferred type.
 
-Проблема здесь не в том, что нет инстанса `Show` для типа, который мы намеревались показать, скорее в том, что PSCi не смог(или смогла?) вывести этот тип. Это показано _неизвестным типом_ `a` в выведенном типе.
+Проблема здесь не в том, что нет инстанса `Show` для типа, который мы намеревались показать, скорее в том, что PSCi не смог вывести этот тип. Это показано _неизвестным типом_ `a` в выведенном типе.
 
 We can annotate the expression with a type, using the `::` operator, so that PSCi can choose the correct type class instance:
 
@@ -142,7 +142,7 @@ We can annotate the expression with a type, using the `::` operator, so that PSC
 
 Some types do not have a `Show` instance defined at all. One example of this is the function type `->`. If we try to `show` a function from `Int` to `Int`, we get an appropriate error message from the type checker:
 
-Некоторые типы не имеют инстансов класса типов `Show`. Один из примеров таких типов это тип функции `->`. Если мы попытаемы применить `show` к функции из `Int` в `Int`, то получим соответствующее сообщение об ошибке от контроллера(?) типов:
+Некоторые типы не имеют инстансов класса типов `Show`. Один из примеров таких типов это тип функции `->`. Если мы попытаемся применить `show` к функции из `Int` в `Int`, то получим соответствующее сообщение об ошибке от проверщика типов:
 
 ```text
 > import Prelude
@@ -234,13 +234,19 @@ LT
 
 The `Field` type class identifies those types which support numeric operators such as addition, subtraction, multiplication and division. It is provided to abstract over those operators, so that they can be reused where appropriate.
 
+Класс типов `Field` идентифицирует те типы, которые поддерживают числовые операции, такие как сложение, вычитание, умножение и деление. Он предоставлен для абстрагирования над этими операторами, поэтому они могут быть переиспользованы в соответствующих случаях.
+
 _Note_: Just like the `Eq` and `Ord` type classes, the `Field` type class has special support in the PureScript compiler, so that simple expressions such as `1 + 2 * 3` get translated into simple JavaScript, as opposed to function calls which dispatch based on a type class implementation.
+
+_Примечание_: Так же как классы `Eq` и `Ord`, класс типов `Field` имеет специальную поддержку компилятора PureScript, поэтому простые выражения, такие как `1 + 2 * 3` транслируются в простой JavaScript, в противоположность вызовам функций, которые диспетчеризуются в соответствие с реализацией класса типов.
 
 ```haskell
 class EuclideanRing a <= Field a
 ```
 
 The `Field` type class is composed from several more general _superclasses_. This allows us to talk abstractly about types which support some but not all of the `Field` operations. For example, a type of natural numbers would be closed under addition and multiplication, but not necessarily under subtraction, so that type might have an instance of the `Semiring` class (which is a superclass of `Num`), but not an instance of `Ring` or `Field`.
+
+Класс типов `Field` составлен из нескольких более общих _суперклассов_. Это позволяет нам говорить более абстрактно о типах, которые поддерживают некоторые, но не все операции `Field`. ....
 
 Superclasses will be explained later in this chapter, but the full numeric type class hierarchy is beyond the scope of this chapter. The interested reader is encouraged to read the documentation for the superclasses of `Field` in `purescript-prelude`.
 
