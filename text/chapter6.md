@@ -179,7 +179,7 @@ class Eq a where
 
 Note that in either case, the two arguments must have the same type: it does not make sense to compare two values of different types for equality.
 
-Отметим, что в любых случаях два аргумента должны иметь один и тот же тип: не имеет смысла проверять два значения различных типов на равенство. 
+Отметим, что в любых случаях два аргумента должны иметь один и тот же тип: не имеет смысла проверять два значения различных типов на равенство.
 
 Try out the `Eq` type class in PSCi:
 
@@ -250,9 +250,16 @@ The `Field` type class is composed from several more general _superclasses_. Thi
 
 Superclasses will be explained later in this chapter, but the full numeric type class hierarchy is beyond the scope of this chapter. The interested reader is encouraged to read the documentation for the superclasses of `Field` in `purescript-prelude`.
 
+Суперклассы будут объяснены далее в главе, но объяснение полной числовой иерархии классов типов выходит за рамки данной главы. Заинтересованным читателям рекомендуется ознакомиться с документацией суперкласса `Field` в `purescript-prelude`.
+
 ### Semigroups and Monoids
 
+### Semigroup и Monoid
+
 The `Semigroup` type class identifies those types which support an `append` operation to combine two values:
+
+Класс типов `Semigroup` (Полугруппа) определяет те типы, которые поддерживают операцию `append` для объединения двух значений:
+
 
 ```haskell
 class Semigroup a where
@@ -261,9 +268,15 @@ class Semigroup a where
 
 Strings form a semigroup under regular string concatenation, and so do arrays. Several other standard instances are provided by the `purescript-monoid` package.
 
+Строки образуют полугруппу посредством обычной строковой конкатенации, как и массивы. Несколько других стандартных инстансов предоставляются пакетом `purescript-monoid`.
+
 The `<>` concatenation operator, which we have already seen, is provided as an alias for `append`.
 
+Оператор конкатенации `<>`, который мы уже видели, является псевдонимом для `append`.
+
 The `Monoid` type class (provided by the `purescript-monoid` package) extends the `Semigroup` type class with the concept of an empty value, called `mempty`:
+
+Класс типов `Monoid` (предоставленный пакетом `purescript-monoid`) расширяет класс типов `Semigroup` концепцией пустого значения, под названием `mempty`:
 
 ```haskell
 class Semigroup m <= Monoid m where
@@ -272,7 +285,11 @@ class Semigroup m <= Monoid m where
 
 Again, strings and arrays are simple examples of monoids.
 
+И снова, строки и массивы являются простыми примерами моноидов.
+
 A `Monoid` type class instance for a type describes how to _accumulate_ a result with that type, by starting with an "empty" value, and combining new results. For example, we can write a function which concatenates an array of values in some monoid by using a fold. In PSCi:
+
+Инстанс класса типов `Monoid` для некоторого типа описывает как _аккумулировать_ результат для данного типа, начиная с "пустого" значения, комбинируя новые результаты. Например, мы можем написать функция, которая конкатенирует массив значений в некотором моноиде, используя fold. В PSCi:
 
 ```haskell
 > import Data.Monoid
@@ -287,13 +304,21 @@ A `Monoid` type class instance for a type describes how to _accumulate_ a result
 
 The `purescript-monoid` package provides many examples of monoids and semigroups, which we will use in the rest of the book.
 
+Пакет `purescript-monoid` предоставляет множество примеров моноидов и полугрупп, которые мы будем использовать в оставшейся части книги.
+
 ### Foldable
 
 If the `Monoid` type class identifies those types which act as the result of a fold, then the `Foldable` type class identifies those type constructors which can be used as the source of a fold.
 
+Если класс типов `Monoid` определяет типы, которые выступают(?) как результат свёртки, тогда класс типов `Foldable` определяет те конструкторы типов, которые могут быть использованы в качестве источника свёртки.
+
 The `Foldable` type class is provided in the `purescript-foldable-traversable` package, which also contains instances for some standard containers such as arrays and `Maybe`.
 
+Класс типов `Foldable` предоставлен пакетом `purescript-foldable-traversable`, который так же содержит инстансы для некоторых стандартных контейнеров, таких как массивы и тип `Maybe`.
+
 The type signatures for the functions belonging to the `Foldable` class are a little more complicated than the ones we've seen so far:
+
+Сигнатуры типа для функций, относящихся к классу `Foldable`, немного сложнее, чем те, что мы видели до сих пор:
 
 ```haskell
 class Foldable f where
@@ -304,9 +329,13 @@ class Foldable f where
 
 It is instructive to specialize to the case where `f` is the array type constructor. In this case, we can replace `f a` with `Array a` for any a, and we notice that the types of `foldl` and `foldr` become the types that we saw when we first encountered folds over arrays.
 
+Будет познавательно специализироваться на примере, когда `f` является конструктором массива. В этом случае мы можем заменить `f a` на `Array a` для любого a. Заметим, что типы функций `foldl` и `foldr` стали теми, что мы увидели, когда впервые столкулись со свёртками над массивами.
+
 What about `foldMap`? Well, that becomes `forall a m. Monoid m => (a -> m) -> Array a -> m`. This type signature says that we can choose any type `m` for our result type, as long as that type is an instance of the `Monoid` type class. If we can provide a function which turns our array elements into values in that monoid, then we can accumulate over our array using the structure of the monoid, and return a single value.
 
-Let's try out `foldMap` in PSCi:
+Но что насчёт `foldMap`? Что ж, он превратиться в `forall a m. Monoid m => (a -> m) -> Array a -> m`. Эта сигнатура типа говорит, что мы можем выбрать любой тип `m` для результата, при условии, что выбранный тип является инстансом класса `Monoid`. Если мы предоставим функцию, которая превращает массив элементов в значения в данном моноиде, тогда мы можем производить аккумулирование по нашему массиву, используя структуру моноида, а затем возвращать единственное значение.
+
+Давайте попробуем `foldMap` в PSCi:
 
 ```text
 > import Data.Foldable
@@ -317,7 +346,11 @@ Let's try out `foldMap` in PSCi:
 
 Here, we choose the monoid for strings, which concatenates strings together, and the `show` function which renders an `Int` as a `String`. Then, passing in an array of integers, we see that the results of `show`ing each integer have been concatenated into a single `String`.
 
+Здесь мы выбрали моноид для строк,  который соединяет строки вместе, а также функцию `show`, которая отображает `Int` в `String`. Затем, передавая массив чисел, мы видем, что результат отображения каждого числа конкатенируется в единый `String`.
+
 But arrays are not the only types which are foldable. `purescript-foldable-traversable` also defines `Foldable` instances for types like `Maybe` and `Tuple`, and other libraries like `purescript-lists` define `Foldable` instances for their own data types. `Foldable` captures the notion of an _ordered container_.
+
+Но массивы не единственные свёртываемые (foldable) типы. `purescript-foldable-traversable` также определяет `Foldable` инстантсы для таких типов, как `Maybe` и `Tuple`, а другие библиотеки, например `purescript-lists`, определяю инстансы `Foldable` для своих собственных типов. `Foldable` отражает понятие _упорядоченного контейнера_.
 
 ### Functor, and Type Class Laws
 
