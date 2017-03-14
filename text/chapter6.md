@@ -353,8 +353,11 @@ But arrays are not the only types which are foldable. `purescript-foldable-trave
 Но массивы не единственные свёртываемые (foldable) типы. `purescript-foldable-traversable` также определяет `Foldable` инстантсы для таких типов, как `Maybe` и `Tuple`, а другие библиотеки, например `purescript-lists`, определяю инстансы `Foldable` для своих собственных типов. `Foldable` отражает понятие _упорядоченного контейнера_.
 
 ### Functor, and Type Class Laws
+## Functor и законы классов типов
 
 The Prelude also defines a collection of type classes which enable a functional style of programming with side-effects in PureScript: `Functor`, `Applicative` and `Monad`. We will cover these abstractions later in the book, but for now, let's look at the definition of the `Functor` type class, which we have seen already in the form of the `map` function:
+
+Prelude определяет также коллекцию классов типов, которые дают возможность программирования в функциональном стиле с побочными эффектами в PureScript: `Functor`, `Applicative` и `Monad`. Мы рассмотрим данные абстракции далее в книге, но сейчас, давайте посмотрим на определения класса типов `Functor`, который мы уже видели в форме функции `map`:
 
 ```haskell
 class Functor f where
@@ -362,6 +365,8 @@ class Functor f where
 ```
 
 The `map` function (and its alias `<$>`) allows a function to be "lifted" over a data structure. The precise definition of the word "lifted" here depends on the data structure in question, but we have already seen its behavior for some simple types:
+
+Функция `map` (а также её псевдоним `<$>`) позволяет "поднять" функцию над структурой данных. Точное определение слова "поднятый" зависит от структуры данных, но мы уже видели это поведение для некоторых простых типов:
 
 ```text
 > import Prelude
@@ -378,24 +383,38 @@ The `map` function (and its alias `<$>`) allows a function to be "lifted" over a
 
 How can we understand the meaning of the `map` function, when it acts on many different structures, each in a different way?
 
+Как мы можем понять смысл функции `map`, когда она взаимодействует со множеством различных структур, и с каждой - по-своему?
+
 Well, we can build an intuition that the `map` function applies the function it is given to each element of a container, and builds a new container from the results, with the same shape as the original. But how do we make this concept precise?
 
+Ну, мы можем  построить интуицию, что функция `map` применяет функцию к каждому элементу некоторого контейнера и создаёт новый контейнер с полученными результатами, и с той же формой контейнера, что и оригинал. Но как мы можем сделать этот концепт более точным?
+
 Type class instances for `Functor` are expected to adhere to a set of _laws_, called the _functor laws_:
+
+Ожидается, что инстанс класса типов `Functor` придерживается набора некоторого _законов_, под названием _законы функтора_:
 
 - `map id xs = xs`
 - `map g (map f xs) = map (g <<< f) xs`
 
 The first law is the _identity law_. It states that lifting the identity function (the function which returns its argument unchanged) over a structure just returns the original structure. This makes sense since the identity function does not modify its input.
 
+Первый закон - это _закон идентичности_. Он утверждает, что "поднятие" функции-идентификатора (это функция, которая возвращает свой аргумент без изменений) над структурой данных просто возвращает оригиналную структуру. Это имеет смысл, поскольку функция-идентификатор не изменяет свои входные данные.
+
 The second law is the _composition law_. It states that mapping one function over a structure, and then mapping a second, is the same thing as mapping the composition of the two functions over the structure.
+
+Второй закон - это _закон композиции_. Он утверждает, что проход одной функции над структурой, а затем проход второй функции, будет означать тоже самое, что проход композиции двух функций над данной структурой.
 
 Whatever "lifting" means in the general sense, it should be true that any reasonable definition of lifting a function over a data structure should obey these rules.
 
+Чтобы не значило слово "поднятие" в общем смысле, должно быть верно то, что любое разумное определение поднятия функции над структурой данных должно подчиняться этим правилам.
+
 Many standard type classes come with their own set of similar laws. The laws given to a type class give structure to the functions of that type class and allow us to study its instances in generality. The interested reader can research the laws ascribed to the standard type classes that we have seen already.
 
-X> ## Exercises
+Многие стандартные классы типов поставляются с собственным набором похожих законов. Законы, установленные для класса типов, предоставляют структуру для функций данного класса типов и позволяют нам изучать его экземпляры в общности. Заинтересованный читатель может исследовать законы, приписываемые стандартным классам типов, которые мы уже рассматривали.
+
+X> ## Упражнения
 X>
-X> 1. (Easy) The following newtype represents a complex number:
+X> 1. (Лёгкое) Следующий тип представляет из себя комплексное число:
 X>
 X>     ```haskell
 X>     newtype Complex = Complex
@@ -404,7 +423,7 @@ X>       , imaginary :: Number
 X>       }
 X>     ```
 X>       
-X>     Define `Show` and `Eq` instances for `Complex`.
+X>     Определите инстансы `Show` и `Eq` для `Complex`.
 
 ## Type Annotations
 
