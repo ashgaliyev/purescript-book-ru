@@ -391,7 +391,7 @@ Well, we can build an intuition that the `map` function applies the function it 
 
 Type class instances for `Functor` are expected to adhere to a set of _laws_, called the _functor laws_:
 
-Ожидается, что инстанс класса типов `Functor` придерживается набора некоторого _законов_, под названием _законы функтора_:
+Ожидается, что инстанс класса типов `Functor` придерживается некоторого набора _законов_, под названием _законы функтора_:
 
 - `map id xs = xs`
 - `map g (map f xs) = map (g <<< f) xs`
@@ -426,8 +426,11 @@ X>
 X>     Определите инстансы `Show` и `Eq` для `Complex`.
 
 ## Type Annotations
+## Аннотации к типам
 
 Types of functions can be constrained by using type classes. Here is an example: suppose we want to write a function which tests if three values are equal, by using equality defined using an `Eq` type class instance.
+
+На типы функций можно накладывать ограничения при помощи классов типов. Приводим пример: предположим, мы хотим написать функцию, которая проверяет три значение на равенство, используя равенство, определённое с помощью экземпляра класса типов `Eq`.
 
 ```haskell
 threeAreEqual :: forall a. Eq a => a -> a -> a -> Boolean
@@ -436,9 +439,15 @@ threeAreEqual a1 a2 a3 = a1 == a2 && a2 == a3
 
 The type declaration looks like an ordinary polymorphic type defined using `forall`. However, there is a type class constraint in parentheses, separated from the rest of the type by a double arrow `=>`.
 
+Объявление типа выглядит как обычный полиморфный тип, определённый при помощи `forall`. Однако, здесь есть ограничение класса типов, отделённое от остальной части определения двойной стрелкой `=>`.
+
 This type says that we can call `threeAreEqual` with any choice of type `a`, as long as there is an `Eq` instance available for `a` in one of the imported modules.
 
+Тип указывает, что мы можем вызывать `threeAreEqual` с любым типом `a`, пока существует инстанс `Eq` для `a` в одном из импортируемых модулей.
+
 Constrained types can contain several type class instances, and the types of the instances are not restricted to simple type variables. Here is another example which uses `Ord` and `Show` instances to compare two values:
+
+Ограниченные типы могут содержать несколько инстансов классов типов, и типы инстансов не ограничены простыми переменнами типа. Вот еще один пример, в котором использованы инстансы `Ord` и `Show` для сравнения двух значений:
 
 ```haskell
 showCompare :: forall a. (Ord a, Show a) => a -> a -> String
@@ -452,7 +461,11 @@ showCompare a1 a2 =
 
 The PureScript compiler will try to infer constrained types when a type annotation is not provided. This can be useful if we want to use the most general type possible for a function.
 
+Компилятор PureScript будет пытаться вывести ограничения типов когда аннотации не предоставлены. Это может быть полезно, если мы хотим использовать наиболее общий возможный тип для функции.
+
 To see this, try using one of the standard type classes like `Semiring` in PSCi:
+
+Чтобы это увидеть, попробуем использовать в PSCi один из стандартных классов типов, например `Semiring`:
 
 ```text
 > import Prelude
@@ -462,6 +475,8 @@ forall a. Semiring a => a -> a
 ```
 
 Here, we might have annotated this function as `Int -> Int`, or `Number -> Number`, but PSCi shows us that the most general type works for any `Semiring`, allowing us to use our function with both `Int`s and `Number`s.
+
+Здесь мы могли бы аннотировать функцию как `Int -> Int`  или `Number -> Number`, но PSCi показал нам наиболее обобщенный тип, работающий с любым `Semiring`, позволяющий нам использовать нашу функцию как с `Int`, так и с `Number`.
 
 ## Overlapping Instances
 
