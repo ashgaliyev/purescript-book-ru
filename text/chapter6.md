@@ -63,11 +63,11 @@ This code declares a new _type class_ called `Show`, which is parameterized by t
 
 A type class _instance_ contains implementations of the functions defined in a type class, specialized to a particular type.
 
-_Инстанс_ класса типов содержит реализацию функций, определённых в классе типов, специализированные под определённый тип
+_Экземпляр_ класса типов содержит реализацию функций, определённых в классе типов, специализированные под определённый тип
 
 For example, here is the definition of the `Show` type class instance for `Boolean` values, taken from the Prelude:
 
-Например, ниже определение инстанса `Show` для значений типа `Boolean`, взятое из Prelude:
+Например, ниже определение экземпляра `Show` для значений типа `Boolean`, взятое из Prelude:
 
 ```haskell
 instance showBoolean :: Show Boolean where
@@ -77,7 +77,7 @@ instance showBoolean :: Show Boolean where
 
 This code declares a type class instance called `showBoolean` - in PureScript, type class instances are named to aid the readability of the generated JavaScript. We say that the `Boolean` type _belongs to the `Show` type class_.
 
-Этот код объявляет инстанс класса типов в PureScript под названием `showBoolean`. Инстансы классов типов имеют собственные названия с целью повышения читаемости сгенерированного кода на JavaScript. Мы говорим, что тип `Boolean` _принадлежит к классу типов `Show`_.
+Этот код объявляет экземпляр класса типов в PureScript под названием `showBoolean`. Экземпляры классов типов имеют собственные названия с целью повышения читаемости сгенерированного кода на JavaScript. Мы говорим, что тип `Boolean` _принадлежит к классу типов `Show`_.
 
 We can try out the `Show` type class in PSCi, by showing a few values with different types:
 
@@ -129,11 +129,11 @@ has type variables which are not mentioned in the body of the type. Consider add
 
 The problem here is not that there is no `Show` instance for the type we intended to `show`, but rather that PSCi was unable to infer the type. This is indicated by the _unknown type_ `a` in the inferred type.
 
-Проблема здесь не в том, что нет инстанса `Show` для типа, который мы намеревались показать, скорее в том, что PSCi не смог вывести этот тип. Это показано _неизвестным типом_ `a` в выведенном типе.
+Проблема здесь не в том, что нет экземпляра `Show` для типа, который мы намеревались показать, скорее в том, что PSCi не смог вывести этот тип. Это показано _неизвестным типом_ `a` в выведенном типе.
 
 We can annotate the expression with a type, using the `::` operator, so that PSCi can choose the correct type class instance:
 
-Мы можем аннотировать выражение типом, используя оператор `::`, и тогда PSCi сможет выбрать правильный инстанс класса типов:
+Мы можем аннотировать выражение типом, используя оператор `::`, и тогда PSCi сможет выбрать правильный экземпляр класса типов:
 
 ```text
 > show (Left 10 :: Either Int String)
@@ -142,7 +142,7 @@ We can annotate the expression with a type, using the `::` operator, so that PSC
 
 Some types do not have a `Show` instance defined at all. One example of this is the function type `->`. If we try to `show` a function from `Int` to `Int`, we get an appropriate error message from the type checker:
 
-Некоторые типы не имеют инстансов класса типов `Show`. Один из примеров таких типов это тип функции `->`. Если мы попытаемся применить `show` к функции из `Int` в `Int`, то получим соответствующее сообщение об ошибке от проверщика типов:
+Некоторые типы не имеют экземпляров класса типов `Show`. Один из примеров таких типов это тип функции `->`. Если мы попытаемся применить `show` к функции из `Int` в `Int`, то получим соответствующее сообщение об ошибке от проверщика типов:
 
 ```text
 > import Prelude
@@ -157,7 +157,7 @@ X> ## Упражнения
 X>
 X> 1. (Easy) Use the `showShape` function from the previous chapter to define a `Show` instance for the `Shape` type.
 
-X> 1. (Лёгкое) Используя функцию `showShape` из предыдущей главы определите инстанс `Show` для типа `Shape`.
+X> 1. (Лёгкое) Используя функцию `showShape` из предыдущей главы определите экземпляр `Show` для типа `Shape`.
 
 ## Common Type Classes
 ## Общие классы типов
@@ -268,7 +268,7 @@ class Semigroup a where
 
 Strings form a semigroup under regular string concatenation, and so do arrays. Several other standard instances are provided by the `purescript-monoid` package.
 
-Строки образуют полугруппу посредством обычной строковой конкатенации, как и массивы. Несколько других стандартных инстансов предоставляются пакетом `purescript-monoid`.
+Строки образуют полугруппу посредством обычной строковой конкатенации, как и массивы. Несколько других стандартных экземпляров предоставляются пакетом `purescript-monoid`.
 
 The `<>` concatenation operator, which we have already seen, is provided as an alias for `append`.
 
@@ -289,7 +289,7 @@ Again, strings and arrays are simple examples of monoids.
 
 A `Monoid` type class instance for a type describes how to _accumulate_ a result with that type, by starting with an "empty" value, and combining new results. For example, we can write a function which concatenates an array of values in some monoid by using a fold. In PSCi:
 
-Инстанс класса типов `Monoid` для некоторого типа описывает как _аккумулировать_ результат для данного типа, начиная с "пустого" значения, комбинируя новые результаты. Например, мы можем написать функция, которая конкатенирует массив значений в некотором моноиде, используя fold. В PSCi:
+Экземпляр класса типов `Monoid` для некоторого типа описывает как _аккумулировать_ результат для данного типа, начиная с "пустого" значения, комбинируя новые результаты. Например, мы можем написать функция, которая конкатенирует массив значений в некотором моноиде, используя fold. В PSCi:
 
 ```haskell
 > import Data.Monoid
@@ -314,7 +314,7 @@ If the `Monoid` type class identifies those types which act as the result of a f
 
 The `Foldable` type class is provided in the `purescript-foldable-traversable` package, which also contains instances for some standard containers such as arrays and `Maybe`.
 
-Класс типов `Foldable` предоставлен пакетом `purescript-foldable-traversable`, который так же содержит инстансы для некоторых стандартных контейнеров, таких как массивы и тип `Maybe`.
+Класс типов `Foldable` предоставлен пакетом `purescript-foldable-traversable`, который так же содержит экземпляры для некоторых стандартных контейнеров, таких как массивы и тип `Maybe`.
 
 The type signatures for the functions belonging to the `Foldable` class are a little more complicated than the ones we've seen so far:
 
@@ -333,7 +333,7 @@ It is instructive to specialize to the case where `f` is the array type construc
 
 What about `foldMap`? Well, that becomes `forall a m. Monoid m => (a -> m) -> Array a -> m`. This type signature says that we can choose any type `m` for our result type, as long as that type is an instance of the `Monoid` type class. If we can provide a function which turns our array elements into values in that monoid, then we can accumulate over our array using the structure of the monoid, and return a single value.
 
-Но что насчёт `foldMap`? Что ж, он превратиться в `forall a m. Monoid m => (a -> m) -> Array a -> m`. Эта сигнатура типа говорит, что мы можем выбрать любой тип `m` для результата, при условии, что выбранный тип является инстансом класса `Monoid`. Если мы предоставим функцию, которая превращает массив элементов в значения в данном моноиде, тогда мы можем производить аккумулирование по нашему массиву, используя структуру моноида, а затем возвращать единственное значение.
+Но что насчёт `foldMap`? Что ж, он превратиться в `forall a m. Monoid m => (a -> m) -> Array a -> m`. Эта сигнатура типа говорит, что мы можем выбрать любой тип `m` для результата, при условии, что выбранный тип является экземпляром класса типов `Monoid`. Если мы предоставим функцию, которая превращает массив элементов в значения в данном моноиде, тогда мы можем производить аккумулирование по нашему массиву, используя структуру моноида, а затем возвращать единственное значение.
 
 Давайте попробуем `foldMap` в PSCi:
 
@@ -350,7 +350,7 @@ Here, we choose the monoid for strings, which concatenates strings together, and
 
 But arrays are not the only types which are foldable. `purescript-foldable-traversable` also defines `Foldable` instances for types like `Maybe` and `Tuple`, and other libraries like `purescript-lists` define `Foldable` instances for their own data types. `Foldable` captures the notion of an _ordered container_.
 
-Но массивы не единственные свёртываемые (foldable) типы. `purescript-foldable-traversable` также определяет `Foldable` инстантсы для таких типов, как `Maybe` и `Tuple`, а другие библиотеки, например `purescript-lists`, определяю инстансы `Foldable` для своих собственных типов. `Foldable` отражает понятие _упорядоченного контейнера_.
+Но массивы не единственные свёртываемые (foldable) типы. `purescript-foldable-traversable` также определяет `Foldable` инстантсы для таких типов, как `Maybe` и `Tuple`, а другие библиотеки, например `purescript-lists`, определяют экземпляры `Foldable` для своих собственных типов. `Foldable` отражает понятие _упорядоченного контейнера_.
 
 ### Functor, and Type Class Laws
 ## Functor и законы классов типов
@@ -391,7 +391,7 @@ Well, we can build an intuition that the `map` function applies the function it 
 
 Type class instances for `Functor` are expected to adhere to a set of _laws_, called the _functor laws_:
 
-Ожидается, что инстанс класса типов `Functor` придерживается некоторого набора _законов_, под названием _законы функтора_:
+Ожидается, что экземпляр класса типов `Functor` придерживается некоторого набора _законов_, под названием _законы функтора_:
 
 - `map id xs = xs`
 - `map g (map f xs) = map (g <<< f) xs`
@@ -423,7 +423,7 @@ X>       , imaginary :: Number
 X>       }
 X>     ```
 X>       
-X>     Определите инстансы `Show` и `Eq` для `Complex`.
+X>     Определите экземпляры `Show` и `Eq` для `Complex`.
 
 ## Type Annotations
 ## Аннотации к типам
@@ -443,11 +443,11 @@ The type declaration looks like an ordinary polymorphic type defined using `fora
 
 This type says that we can call `threeAreEqual` with any choice of type `a`, as long as there is an `Eq` instance available for `a` in one of the imported modules.
 
-Тип указывает, что мы можем вызывать `threeAreEqual` с любым типом `a`, пока существует инстанс `Eq` для `a` в одном из импортируемых модулей.
+Тип указывает, что мы можем вызывать `threeAreEqual` с любым типом `a`, пока существует экземпляр `Eq` для `a` в одном из импортируемых модулей.
 
 Constrained types can contain several type class instances, and the types of the instances are not restricted to simple type variables. Here is another example which uses `Ord` and `Show` instances to compare two values:
 
-Ограниченные типы могут содержать несколько инстансов классов типов, и типы инстансов не ограничены простыми переменнами типа. Вот еще один пример, в котором использованы инстансы `Ord` и `Show` для сравнения двух значений:
+Ограниченные типы могут содержать несколько экземпляров классов типов, и типы экземпляров не ограничены простыми переменнами типа. Вот еще один пример, в котором использованы экземпляры `Ord` и `Show` для сравнения двух значений:
 
 ```haskell
 showCompare :: forall a. (Ord a, Show a) => a -> a -> String
@@ -479,10 +479,15 @@ Here, we might have annotated this function as `Int -> Int`, or `Number -> Numbe
 Здесь мы могли бы аннотировать функцию как `Int -> Int`  или `Number -> Number`, но PSCi показал нам наиболее обобщенный тип, работающий с любым `Semiring`, позволяющий нам использовать нашу функцию как с `Int`, так и с `Number`.
 
 ## Overlapping Instances
+## Перекрывающиеся экземпляры
 
 PureScript has another rule regarding type class instances, called the _overlapping instances rule_. Whenever a type class instance is required at a function call site, PureScript will use the information inferred by the type checker to choose the correct instance. At that time, there should be exactly one appropriate instance for that type. If there are multiple valid instances, the compiler will issue a warning.
 
+PureScript имеет еще одно правило, относящееся к экземплярам классов типов, под названием _правило перекрывающихся экземпляров (overlapping instances rule)_. Всякий раз, когда требуется экземпляр класса типов для вызова функции, PureScript будет использовать информацию, выведенную тайпчекером для выбора правильного экземпляра. В это время должен быть только один соответствующий экземпляр для данного типа. Если имеется несколько допустимых экземпляров, компилятор выдаст предупреждение.
+
 To demonstrate this, we can try creating two conflicting type class instances for an example type. In the following code, we create two overlapping `Show` instances for the type `T`:
+
+Чтобы продемонстрировать это, мы можем попытаться создать два конфликтующего экземпляров класса типов для типа-примера. В следующем коде мы создаем два перекрывающихся экземпляра `Show` для типа` T`:  
 
 ```haskell
 module Overlapped where
@@ -500,13 +505,19 @@ instance showT2 :: Show T where
 
 This module will compile with no warnings. However, if we _use_ `show` at type `T` (requiring the compiler to to find a `Show` instance), the overlapping instances rule will be enforced, resulting in a warning:
 
+Этот модуль будет компилироваться без каких-либо предупреждений. Однако, если мы _используем_ `show` в типе` T` (требуя, чтобы компилятор мог найти экземпляр `Show`), будет применяться правило перекрывающихся экземпляров, приводящее к предупреждению:
+
 ```text
 Overlapping instances found for Prelude.Show T
 ```
 
 The overlapping instances rule is enforced so that automatic selection of type class instances is a predictable process. If we allowed two type class instances for a type to exist, then either could be chosen depending on the order of module imports, and that could lead to unpredictable behavior of the program at runtime, which is undesirable.
 
+Правило перекрывающихся экземпляров применяется принудительно, чтобы автоматичекий выбор экземпляра класса типов был предсказуемым процессом. Если для некоторого типы мы допустим существование двух экземпляров класса типов, то любой из них может быть выбран в зависимости от порядка импорта модулей, что может привести к непредсказуемому поведению программы в процессе выполнения, что недопустипо.
+
 If it is truly the case that there are two valid type class instances for a type, satisfying the appropriate laws, then a common approach is to define newtypes which wrap the existing type. Since different newtypes are allowed to have different type class instances under the overlapping instances rule, there is no longer an issue. This approach is taken in PureScript's standard libraries, for example in `purescript-monoids`, where the `Maybe a` type has multiple valid instances for the `Monoid` type class.
+
+В случае, если действительно есть два валидных экземпляра класса типов для некоторого типа, удовлетворяющие соответствующим законам, то общепринятым подходом является определение newtype типов, оборачивающие существующий тип. Посколько различным newtype типам разрешано иметь разные экземпляры классов типов в рамках правила перекрывающихся экземпляров, то проблемы больше не возникает. Этот подход используется в стандартных библиотеках PureScript, например в `purescript-monoids`, где тип `Maybe a` имеет множество валидных экземпляров для класса типов `Monoid`.
 
 ## Instance Dependencies
 
