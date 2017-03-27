@@ -520,10 +520,15 @@ If it is truly the case that there are two valid type class instances for a type
 В случае, если действительно есть два валидных экземпляра класса типов для некоторого типа, удовлетворяющие соответствующим законам, то общепринятым подходом является определение newtype типов, оборачивающие существующий тип. Посколько различным newtype типам разрешано иметь разные экземпляры классов типов в рамках правила перекрывающихся экземпляров, то проблемы больше не возникает. Этот подход используется в стандартных библиотеках PureScript, например в `purescript-monoids`, где тип `Maybe a` имеет множество валидных экземпляров для класса типов `Monoid`.
 
 ## Instance Dependencies
+## Зависимости экземпляров
 
 Just as the implementation of functions can depend on type class instances using constrained types, so can the implementation of type class instances depend on other type class instances. This provides a powerful form of program inference, in which the implementation of a program can be inferred using its types.
 
+Так же как и реализация функций может зависеть от эклемпляров класса типов, используя ограниченные типы (constrained types), так и реализация экземпляров класса типов может зависеть от другого экземпляра класса типов. Это обеспечивает мощную форму вывода программы, в которой реализация самой программы может быть выведена, используя её типы.
+
 For example, consider the `Show` type class. We can write a type class instance to `show` arrays of elements, as long as we have a way to `show` the elements themselves:
+
+Например, рассмотрим класс типов `Show`. Мы можем написать экземпляр класса типов для показа (`show`) массива элементов, при условии, что у нас есть способ показа самих элементов:
 
 ```haskell
 instance showArray :: Show a => Show (Array a) where
@@ -532,34 +537,38 @@ instance showArray :: Show a => Show (Array a) where
 
 This type class instance is provided in the `purescript-prelude` library.
 
+Данный экземпляр класса типов предоставлен библиотекой `purescript-prelude`.
+
 When the program is compiled, the correct type class instance for `Show` is chosen based on the inferred type of the argument to `show`. The selected instance might depend on many such instance relationships, but this complexity is not exposed to the developer.
 
-X> ## Exercises
+Когда программа скомпилированна, правильный экземпляр класса типов `Show` выбирается исходя из вывода типа аргумента `show`. Выбранный экземпляр может зависеть от множества таких отношений, но эта сложность не раскрывается разработчику.
+
+X> ## Упражнения
 X>
-X> 1. (Easy) The following declaration defines a type of non-empty arrays of elements of type `a`:
+X> 1. (Лёгкое) Следующее объявление определяет тип непустых массивов элементов некоторого типа `a`::
 X>
 X>     ```haskell
 X>     data NonEmpty a = NonEmpty a (Array a)
 X>     ```
 X>      
-X>     Write an `Eq` instance for the type `NonEmpty a` which reuses the instances for `Eq a` and `Eq (Array a)`.
-X> 1. (Medium) Write a `Semigroup` instance for `NonEmpty a` by reusing the `Semigroup` instance for `Array`.
-X> 1. (Medium) Write a `Functor` instance for `NonEmpty`.
-X> 1. (Medium) Given any type `a` with an instance of `Ord`, we can add a new "infinite" value which is greater than any other value:
+X>     Напишите экземпляр `Eq` для типа `NonEmpty a`, который переиспользует экземпляры для `Eq a` и `Eq (Array a)`.
+X> 1. (Среднее) Напишите экземпляр `Semigroup` для `NonEmpty a` путём переиспользования экземпляра `Semigroup` для `Array`.
+X> 1. (Среднее) Напишите экземпляр `Functor` для `NonEmpty`.
+X> 1. (Среднее) Для любого типа `a` с экземпляром `Ord`, мы можем добавить значение "бесконечности", которое больше любого другого значения:
 X>
 X>     ```haskell
 X>     data Extended a = Finite a | Infinite
 X>     ```
 X>         
-X>     Write an `Ord` instance for `Extended a` which reuses the `Ord` instance for `a`.
-X> 1. (Difficult) Write a `Foldable` instance for `NonEmpty`. _Hint_: reuse the `Foldable` instance for arrays.
-X> 1. (Difficult) Given an type constructor `f` which defines an ordered container (and so has a `Foldable` instance), we can create a new container type which includes an extra element at the front:
+X>     Напишите экземпляр `Ord` для `Extended a`, который переиспользует экземпляр `Ord` для `a`.
+X> 1. (Сложное) Напишите экземпляр `Foldable` для `NonEmpty`. _Подсказка_: используйте экземпляр `Foldable` для массивов.
+X> 1. (Сложное) Для данного конструктора типа `f`, который определяет упорядоченный контейнер (а также имеет экземпляр `Foldable`), мы можем создать новый контейнер типа, который содержит дополнительный элемент впереди::
 X>
 X>     ```haskell
 X>     data OneMore f a = OneMore a (f a)
 X>     ```
 X>         
-X>     The container `OneMore f` is also has an ordering, where the new element comes before any element of `f`. Write a `Foldable` instance for `OneMore f`:
+X>     Контейнер `OneMore f` так же является упорядоченным, где новый элемент идёт перед любым элементом `f`. Напишите экземпляр `Foldable` для `OneMore f`:
 X>   
 X>     ```haskell
 X>     instance foldableOneMore :: Foldable f => Foldable (OneMore f) where
@@ -567,10 +576,15 @@ X>       ...
 X>     ```
 
 ## Multi Parameter Type Classes
+## Многопараметаризованные классы типов
 
 It's not the case that a type class can only take a single type as an argument. This is the most common case, but in fact, a type class can be parameterized by _zero or more_ type arguments.
 
+Это не правда, что класс типов может принимать только один тип в качестве аргумента. Это наиболее общий случай. Но на самом деле, класс типов может быть параметаризован _от нуля и более_ аргументами типов.
+
 Let's see an example of a type class with two type arguments.
+
+Давайте посмотрим на пример класса типов с двумя аргументами типа.
 
 ```haskell
 module Stream where
@@ -591,11 +605,19 @@ instance streamString :: Stream String Char where
 
 The `Stream` module defines a class `Stream` which identifies types which look like streams of elements, where elements can be pulled from the front of the stream using the `uncons` function.
 
+Модуль `Stream` определяет класс `Stream`, который идентифицирует типы, похожие на потоки элементов, где элементы могут быть извлечены из передней части потока, используя функцию `uncons`.
+
 Note that the `Stream` type class is parameterized not only by the type of the stream itself, but also by its elements. This allows us to define type class instances for the same stream type but different element types.
+
+Отметим, что класс типов `Stream` параметаризован не только типом самого потока, но так же и его элементами. Это позволяет нам определять экземпляры классов типов для одного и того же типа потока, но различных типов элементов.
 
 The module defines two type class instances: an instance for arrays, where `uncons` removes the head element of the array using pattern matching, and an instance for String, which removes the first character from a String.
 
+Модуль определяет два экземпляра класса типов: экземпляр для массивов, где `uncons` удаляет головной элемент массива, используя сопоставление с образцом, а также экземпляр для строк, который удаляет первый символ из строки.
+
 We can write functions which work over arbitrary streams. For example, here is a function which accumulates a result in some `Monoid` based on the elements of a stream:
+
+Мы можем написать функции, которые работают с произвольными потоками. Например, ниже представлена функция, которая аккумулирует результат в некоторый _монойд_ на основе элементах потока:
 
 ```haskell
 import Prelude
@@ -610,15 +632,22 @@ foldStream f list =
 
 Try using `foldStream` in PSCi for different types of `Stream` and different types of `Monoid`.
 
+Попробуйте `foldStream` в PSCi для различных типов `Stream` и различных типов `Monoid`.
+
 ## Functional Dependencies
+## Функциональные зависимости
 
 Multi-parameter type classes can be very useful, but can easily lead to confusing types and even issues with type inference. As a simple example, consider writing a generic `tail` function on streams using the `Stream` class given above:
+
+Многопараметаризованные классы типов могут быть очень полезны, однако могут легко привести к путанице типов, и даже к пробемам с выводом типов. В качестве простого примера, рассмотрим написание обобщенной функции `tail` на потоках, используя класс типов `Stream`, данный выше:
 
 ```haskell
 genericTail xs = map _.tail (uncons xs)
 ```
 
 This gives a somewhat confusing error message:
+
+Это выдаёт несколько запутанное сообщение об ошибке:
 
 ```text
 The inferred type
@@ -630,7 +659,11 @@ has type variables which are not mentioned in the body of the type. Consider add
 
 The problem is that the `genericTail` function does not use the `element` type mentioned in the definition of the `Stream` type class, so that type is left unsolved.
 
+Проблема в том, что функция `genericTail` не использует тип `element`, упомянутый в определении класса типов `Stream`, и поэтому её тип остаётся не разрешенный.
+
 Worse still, we cannot even use `genericTail` by applying it to a specific type of stream:
+
+Хуже того, мы даже не можем использовать `genericTail`, применив её к специализированному типу потока:
 
 ```text
 > map _.tail (uncons "testing")
@@ -644,7 +677,12 @@ has type variables which are not mentioned in the body of the type. Consider add
 
 Here, we might expect the compiler to choose the `streamString` instance. After all, a `String` is a stream of `Char`s, and cannot be a stream of any other type of elements.
 
+Тут мы могли бы ожидать, что компилятор выберет экземпляр `streamString`. В конце концов, строка это поток симполов (`String` is a stream of `Char`s), и он не может быть потоком другого типа элементов.
+
 The compiler is unable to make that deduction automatically, and cannot commit to the `streamString` instance. However, we can help the compiler by adding a hint to the type class definition:
+
+Компилятор не может сделать такой вывод автоматически, и не может определить экземпляр `streamString`. Однако, мы можем помочь компилятору, добавив подсказку в определение класса типов:
+
 
 ```haskell
 class Stream stream element | stream -> element where
@@ -653,7 +691,11 @@ class Stream stream element | stream -> element where
 
 Here, `stream -> element` is called a _functional dependency_. A functional dependency asserts a functional relationship between the type arguments of a multi-parameter type class. This functional dependency tells the compiler that there is a function from stream types to (unique) element types, so if the compiler knows the stream type, then it can commit to the element type.
 
+Конструкция `stream -> element` здесь называется _функциональной зависимостью_. Функциональная зависимость утверждает функциональные взаимотношения между типами-аргументами в многопараметаризированном классе типов.
+
 This hint is enough for the compiler to infer the correct type for our generic tail function above:
+
+Этой подсказки достаточно, чтобы компилятор вывел правильный тип для нашей функции выше, отдающей обобщенный хвост (generic tail).
 
 ```text
 > :type genericTail
@@ -665,7 +707,10 @@ forall stream element. Stream stream element => stream -> Maybe stream
 
 Functional dependencies can be quite useful when using multi-parameter type classes to design certain APIs.
 
+Функциональные зависимости могут быть довольно полезны при использовании многопараметаризированных классах типов для создания определенных API.
+
 ## Nullary Type Classes
+## Безаргументные классы типов
 
 We can even define type classes with zero type arguments! These correspond to compile-time assertions about our functions, allowing us to track global properties of our code in the type system.
 
