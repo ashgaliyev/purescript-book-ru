@@ -714,7 +714,11 @@ Functional dependencies can be quite useful when using multi-parameter type clas
 
 We can even define type classes with zero type arguments! These correspond to compile-time assertions about our functions, allowing us to track global properties of our code in the type system.
 
+Мы даже можем определить классы типов у которых отсутствуют аргументы! Они соответствуют утвеждениям на этапе компиляции для наших функций, позволяя нам следить за свойствами нашего кода при помощи системы типов:
+
 An important example is the `Partial` class which we saw earlier when discussing partial functions. We've seen the partial functions `head` and `tail`, defined in `Data.Array.Partial` already:
+
+Важным примером является класс `Partial`, который мы видели ранее, когда обсуждали частичные функции. Мы уже рассматривали частичные функции `head` и `tail`, определённые в `Data.Array.Partial`:
 
 ```haskell
 head :: forall a. Partial => Array a -> a
@@ -723,6 +727,8 @@ tail :: forall a. Partial => Array a -> Array a
 ```
 
 Note that there is no instance defined for the `Partial` type class! Doing so would defeat its purpose: attempting to use the `head` function directly will result in a type error:
+
+Обратите внимание что для класса типов `Partial` не определён экземпляр! Это противоречивало бы его цели: попытка непосредственного использования функции `head` приведёт к ошибке типов:
 
 ```text
 > head [1, 2, 3]
@@ -734,6 +740,8 @@ No type class instance was found for
 
 Instead, we can republish the `Partial` constraint for any functions making use of partial functions:
 
+Вместо этого, мы можем указывать ограничение `Partial` для любых функций, которые используют частичные функции:
+
 ```haskell
 secondElement :: forall a. Partial => Array a -> a
 secondElement xs = head (tail xs)
@@ -741,19 +749,30 @@ secondElement xs = head (tail xs)
 
 We've already seen the `unsafePartial` function, which allows us to treat a partial function as a regular function (unsafely). This function is defined in the `Partial.Unsafe` module:
 
+Мы уже видели функцию `unsafePartial`, которая позволяет нам обращаться с частичной функцией как с обычной (небезопасно). Эта функция определена в модуле `Partial.Unsafe`:
+
 ```haskell
 unsafePartial :: forall a. (Partial => a) -> a
 ```
 
 Note that the `Partial` constraint appears _inside the parentheses_ on the left of the function arrow, but not in the outer `forall`. That is, `unsafePartial` is a function from partial values to regular values.
 
+Обратите внимание, что ограничение `Partial` представлено _внутри круглых скобок_ слева от функциональной стрелки, но не во внешнем `forall` (пер. не понял фразы после запятой). То есть, `unsafePartial` - это функция из частичных значений в обычные.
+
 ## Superclasses
+## Суперклассы
 
 Just as we can express relationships between type class instances by making an instance dependent on another instance, we can express relationships between type classes themselves using so-called _superclasses_.
 
+Так же, как мы можем выразить отношения между экземплярами классов типов, создавая экземпляр, зависящий от другого экземпляра, мы так же можем выразить отношения между самими классами типов, используя так называемые _суперклассы_.
+
 We say that one type class is a superclass of another if every instance of the second class is required to be an instance of the first, and we indicate a superclass relationship in the class definition by using a backwards facing double arrow.
 
+Мы говорим, что один класс типов является суперклассом другого, если каждый экземпляр второго класса требуется в качестве экземпляра первого. И мы обозначаем отношение суперкласса в определении класса, используя обратную двойную стрелку.
+
 We've already seen some examples of superclass relationships: the `Eq` class is a superclass of `Ord`, and the `Semigroup` class is a superclass of `Monoid`. For every type class instance of the `Ord` class, there must be a corresponding `Eq` instance for the same type. This makes sense, since in many cases, when the `compare` function reports that two values are incomparable, we often want to use the `Eq` class to determine if they are in fact equal.
+
+Мы уже видели несколько примеров отношений суперкласса: класс `Eq` является суперклассом `Ord`, а `Semigroup` является суперклассом `Monoid`. Для каждого экземпляра класса типов `Ord` должен быть соответствующий экземпляр `Eq` одного и того же типа. 
 
 In general, it makes sense to define a superclass relationship when the laws for the subclass mention the members of the superclass. For example, it is reasonable to assume, for any pair of `Ord` and `Eq` instances, that if two values are equal under the `Eq` instance, then the `compare` function should return `EQ`. In order words, `a == b` should be true exactly when `compare a b` evaluates to `EQ`. This relationship on the level of laws justifies the superclass relationship between `Eq` and `Ord`.
 
