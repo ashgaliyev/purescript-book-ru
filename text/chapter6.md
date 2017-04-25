@@ -772,15 +772,20 @@ We say that one type class is a superclass of another if every instance of the s
 
 We've already seen some examples of superclass relationships: the `Eq` class is a superclass of `Ord`, and the `Semigroup` class is a superclass of `Monoid`. For every type class instance of the `Ord` class, there must be a corresponding `Eq` instance for the same type. This makes sense, since in many cases, when the `compare` function reports that two values are incomparable, we often want to use the `Eq` class to determine if they are in fact equal.
 
-Мы уже видели несколько примеров отношений суперкласса: класс `Eq` является суперклассом `Ord`, а `Semigroup` является суперклассом `Monoid`. Для каждого экземпляра класса типов `Ord` должен быть соответствующий экземпляр `Eq` одного и того же типа. 
+Мы уже видели несколько примеров отношений суперкласса: класс `Eq` является суперклассом `Ord`, а `Semigroup` является суперклассом `Monoid`. Для каждого экземпляра класса типов `Ord` должен быть соответствующий экземпляр `Eq` одного и того же типа. В этом есть смысл, поскольку во многих случаях, когда функция `compare` сообщает, что два значения несравниваемые, мы часто хотим использовать класс `Eq`, чтобы определить, одинаковые ли они на самом деле.
 
 In general, it makes sense to define a superclass relationship when the laws for the subclass mention the members of the superclass. For example, it is reasonable to assume, for any pair of `Ord` and `Eq` instances, that if two values are equal under the `Eq` instance, then the `compare` function should return `EQ`. In order words, `a == b` should be true exactly when `compare a b` evaluates to `EQ`. This relationship on the level of laws justifies the superclass relationship between `Eq` and `Ord`.
 
+В целом, имеет смысл определить отношения суперкласса, когда законы для подкласса ссылаются на члены суперкласса. Например, разумно предположить, для любой пары экземпляров `Ord` и `Eq`, чьи два значения равны посредством `Eq`, то функция `compare` на этих значениях должна возвращать `EQ`. Другими словами, выражение `a == b`, верно тогда, когда и функция `compare a b` возвращает `EQ`. Взаимотношения на уровне законов подтверждаются отношениями суперкласса между `Eq` и `Ord`.
+
 Another reason to define a superclass relationship is in the case where there is a clear "is-a" relationship between the two classes. That is, every member of the subclass _is a_ member of the superclass as well.
 
-X> ## Exercises
+Другой причиной для определения отношений суперкласса являтеся случай, когда есть ясное отношение принадлежности ("is-a") между двумя классами. То есть, каждый член подкласса так же _является_ и членом суперкласса.
+
+X> ## Упражнения
 X>
 X> 1. (Medium) The `Action` class is a multi-parameter type class which defines an action of one type on another:
+X> 1. (Среднее) `Action` является мультипараметаризованным классом типов, который определяет действие одного типа на другой:
 X>
 X>     ```haskell
 X>     class Monoid m <= Action m a where
@@ -788,6 +793,7 @@ X>       act :: m -> a -> a
 X>     ```
 X>           
 X>     An _action_ is a function which describes how a monoid can be used to modify a value of another type. We expect the action to respect the concatenation operator of the monoid. For example, the monoid of natural numbers under addition (defined in the `Data.Monoid.Additive` module) _acts_ on strings by repeating a string some number of times:
+X>     Функция _action_ описывает то, как монойд может быть использован для изменения значения другого типа. Мы ожидаем, что action соблюдает правила конкатенации монойда. Например, монойд натуральных чисел в экземпляре добавления (определено в модуле `Data.Monoid.Additive`) _действует_ на строках как повторение строки некоторое число раз:
 X>  
 X>     ```haskell
 X>     import Data.Monoid.Additive (Additive(..))
@@ -799,30 +805,47 @@ X>         repeat m s = s <> repeat (m - 1) s
 X>     ```
 X>
 X>     Note that `act (Additive 2) s` is equal to the combination `act (Additive 1) s <> act (Additive 1) s`, and `Additive 1 <> Additive 1 = Additive 2`.
+X>     Отметим что `act (Additive 2) s` эквивалентно комбинации `act (Additive 1) s <> act (Additive 1) s`, а также `Additive 1 <> Additive 1 = Additive 2`.
 X>   
 X>     Write down a reasonable set of laws which describe how the `Action` class should interact with the `Monoid` class. _Hint_: how do we expect `mempty` to act on elements? What about `append`?
+X>     Напишите обоснованный набор законов, которые описывают, каким образом класс типов `Action` должен взаимодействовать с классом типов `Monoid`. _Подсказка_: каким образом `mempty` взаимодействует с элементами? Что насчет `append`?
 X> 1. (Medium) Write an instance `Action m a => Action m (Array a)`, where the action on arrays is defined by acting on the elements independently.
+X> 1. (Среднее) Напишите экземпляр `Action m a => Action m (Array a)`, где действия с массивами определено как взаимодействия с каждым элементом независимо.
 X> 1. (Difficult) Should the arguments of the multi-parameter type class `Action` be related by some functional dependency? Why or why not?
+X> 1. (Сложное) Должны ли аргументы мультипараметаризованного класса типов `Action` находиться в зависимости посредством функциональной зависимости? Почему или почему нет?
 X> 1. (Difficult) Given the following newtype, write an instance for `Action m (Self m)`, where the monoid `m` acts on itself using `append`:
+X> 1. (Сложное) Для данного newtype типа напишите экземпляр `Action m (Self m)`, где монойд `m` взаимодейтсвет сам с собой посредством `append`:
 X>
 X>     ```haskell
 X>     newtype Self m = Self m
 X>     ```
 X>
 X> 1. (Medium) Define a partial function which finds the maximum of a non-empty array of integers. Your function should have type `Partial => Array Int -> Int`. Test out your function in PSCi using `unsafePartial`. _Hint_: Use the `maximum` function from `Data.Foldable`.
+X> 1. (Среднее) Определите частичную функцию, которая находит максимум в непустом массиве целых чисел. Ваша функция должна иметь тип `Partial => Array Int -> Int`. Протестируйте вашу функцию в PSCi, используя `unsafePartial`. _Подсказка_: Используйте функцию `maximum` из `Data.Foldable`.
 
 ## A Type Class for Hashes
+## Класс типов для Хэшей
 
 In the last section of this chapter, we will use the lessons from the rest of the chapter to create a library for hashing data structures.
 
+В последней части главы мы будем использовать уроки из оставшейся части главы для создания библиотеки для хэширования структур данных.
+
 Note that this library is for demonstration purposes only, and is not intended to provide a robust hashing mechanism.
+
+Обратите внимание, что данная библиотека служит только в демонстрационных целях, и не предназначена для обеспечения надёжного механизма хэширования.
 
 What properties might we expect of a hash function?
 
+Какие свойства мы можем ожидать от хэширующей функции?
+
 - A hash function should be deterministic, and map equal values to equal hash codes.
+- Хэш-функция должна быть детерменированной, и должна сопоставлять равные значения на равные хэш-коды.
 - A hash function should distribute its results approximately uniformly over some set of hash codes.
+- Хеш-функция должна распределять свои результаты приблизительно равномерно по некоторому набору хеш-кодов.
 
 The first property looks a lot like a law for a type class, whereas the second property is more along the lines of an informal contract, and certainly would not be enforceable by PureScript's type system. However, this should provide the intuition for the following type class:
+
+Первое свойство больше похоже на закон класса типов, в то время как второе свойство больше соответствует неофициальному контракту, и определенно не может быть закодировано в системе типов PureScript. Однако, это должно предоставить нам интуицию для следующего класса типов:
 
 ```haskell
 newtype HashCode = HashCode Int
@@ -836,9 +859,15 @@ class Eq a <= Hashable a where
 
 with the associated law that `a == b` implies `hash a == hash b`.
 
+с соответствующим законом, где `a == b` подразумевает `hash a == hash b`.
+
 We'll spend the rest of this section building a library of instances and functions associated with the `Hashable` type class.
 
+Мы потратим оставшуюся часть на построение библиотеки экземпляров, а также функций, ассоциированных с классом типов `Hashable`.
+
 We will need a way to combine hash codes in a deterministic way:
+
+Нам нужен способ для комбинирования хэш-кодов в детерминированном виде:
 
 ```haskell
 combineHashes :: HashCode -> HashCode -> HashCode
@@ -847,7 +876,11 @@ combineHashes (HashCode h1) (HashCode h2) = hashCode (73 * h1 + 51 * h2)
 
 The `combineHashes` function will mix two hash codes and redistribute the result over the interval 0-65535.
 
+Функция `combineHashes` будет смешивать два хэш-кода и перераспределять результат в интервале между 0 и 65535.
+
 Let's write a function which uses the `Hashable` constraint to restrict the types of its inputs. One common task which requires a hashing function is to determine if two values hash to the same hash code. The `hashEqual` relation provides such a capability:
+
+Давайте напишем функцию, которая использует ограничение `Hashable` для лимитирования типов входных значений. Одной из общих задач, требующих функцию для хэширования является возможность определения, равны ли хэши двух значений. Отношение `hashEqual` предоставляет такую возможность:
 
 ```haskell
 hashEqual :: forall a. Hashable a => a -> a -> Boolean
@@ -856,7 +889,11 @@ hashEqual = eq `on` hash
 
 This function uses the `on` function from `Data.Function` to define hash-equality in terms of equality of hash codes, and should read like a declarative definition of hash-equality: two values are "hash-equal" if they are equal after each value has been passed through the `hash` function.
 
+Данная функция использует функцию `on` из `Data.Function` для определения хэш-равенства с точки зрения равенства хэш кодов, и должна читаться как декларативное определения хэш-равенства: два значения "хэш-равны", они равны после прохода через хэширующую функцию.
+
 Let's write some `Hashable` instances for some primitive types. Let's start with an instance for integers. Since a `HashCode` is really just a wrapped integer, this is simple - we can use the `hashCode` helper function:
+
+Давайте напишем некоторые экземпляры `Hashable` для некоторых примитивных типов. Давайте начнем с экземпляра для целых чисел. Посколько `HashCode` на самом деле обёрнутое целое число, тогда всё просто - мы можем использовать функцию `hashCode`:
 
 ```haskell
 instance hashInt :: Hashable Int where
@@ -864,6 +901,8 @@ instance hashInt :: Hashable Int where
 ```
 
 We can also define a simple instance for `Boolean` values using pattern matching:
+
+Мы также можем определить простой экземпляр для значений `Boolean`, используя сопоставление с образцом:
 
 ```haskell
 instance hashBoolean :: Hashable Boolean where
@@ -873,12 +912,16 @@ instance hashBoolean :: Hashable Boolean where
 
 With an instance for hashing integers, we can create an instance for hashing `Char`s by using the `toCharCode` function from `Data.Char`:
 
+Имея экземпляр для целых чисел, мы можем создать экземпляр для хэширования `Char`, используя функцию `toCharCode` из `Data.Char`:
+
 ```haskell
 instance hashChar :: Hashable Char where
   hash = hash <<< toCharCode
 ```
 
 To define an instance for arrays, we can `map` the `hash` function over the elements of the array (if the element type is also an instance of `Hashable`) and then perform a left fold over the resulting hashes using the `combineHashes` function:
+
+Чтобы определить экземпляр для массивов, мы можем отобразить (`map`) функцию `hash` на элементах массива (если тип элементов также является экземпляром `Hashable`) и сделать левую свёртку на получившихся хэшах, используя функцию `combineHashes`:
 
 ```haskell
 instance hashArray :: Hashable a => Hashable (Array a) where
@@ -887,6 +930,9 @@ instance hashArray :: Hashable a => Hashable (Array a) where
 
 Notice how we build up instances using the simpler instances we have already written. Let's use our new `Array` instance to define an instance for `String`s, by turning a `String` into an array of `Char`s:
 
+Обратите внимание, как мы создаём экземпляры, используя более простые экземпляры, которые мы уже написали. Давайте используем экземляр для массива, чтобы определить экземпляр для строк, превращая строку в массив `Char`:
+
+
 ```haskell
 instance hashString :: Hashable String where
   hash = hash <<< toCharArray
@@ -894,15 +940,24 @@ instance hashString :: Hashable String where
 
 How can we prove that these `Hashable` instances satisfy the type class law that we stated above? We need to make sure that equal values have equal hash codes. In cases like `Int`, `Char`, `String` and `Boolean`, this is simple because there are no values of those types which are equal in the sense of `Eq` but not equal identically.
 
+Как мы можем доказать, что данные экземпляры `Hashable` удовлетворяют законам класса типов, о которых мы говорили ранее? Нам нужно убедиться, что одинаковые значения имеют одинаковые хэш-коды. В случаях с `Int`, `Char`, `String` и `Boolean`, это просто, так как у них нет значений, которые равны в понятии `Eq`, но не равны в плане идентичности.
+
 What about some more interesting types? To prove the type class law for the `Array` instance, we can use induction on the length of the array. The only array with length zero is `[]`. Any two non-empty arrays are equal only if they have equals head elements and equal tails, by the definition of `Eq` on arrays. By the inductive hypothesis, the tails have equal hashes, and we know that the head elements have equal hashes if the `Hashable a` instance must satisfy the law. Therefore, the two arrays have equal hashes, and so the `Hashable (Array a)` obeys the type class law as well.
+
+Что насчет более интересных типов? Чтобы доказать закон класса типов для экземпляра `Array`, мы можем использовать индукцию на длине массива. Единственным массивом, длина которого равна нулю, это `[]`. Любые два непустых массива равны, только тогда, когда они имеют равные головные элементы и одинаковые хвосты, по определению `Eq` для массивов. По индуктивному предположению, хвосты имеют равные хэши, а мы знаем, что головные элементы имеют одинаковые хэши, если экземпляр `Hashable a` удовлетворяет закону. Следовательно, два массива имеют одинаковые хэши, и поэтому `Hashable (Array a)` подчиняется закону класса типов.
 
 The source code for this chapter includes several other examples of `Hashable` instances, such as instances for the `Maybe` and `Tuple` type.
 
-X> ## Exercises
+Испходный код для данной главы включает еще некоторые примеры экземпляров `Hashable`, для таких типов, как `Maybe` и `Tuple`.
+
+X> ## Упражнения
 X>
 X> 1. (Easy) Use PSCi to test the hash functions for each of the defined instances.
+X> 1. (Лёгкое) Используйте PSCi, чтобы проверить хэширующую функцию для каждого из определённых ранее экземпляров.
 X> 1. (Medium) Use the `hashEqual` function to write a function which tests if an array has any duplicate elements, using hash-equality as an approximation to value equality. Remember to check for value equality using `==` if a duplicate pair is found. _Hint_: the `nubBy` function in `Data.Array` should make this task much simpler.
+X> 1. (Среднее) Используйте функцию `hashEqual` для написания функции, которая проверяет, содержит ли массив одинаковые элементы, используя хэш-равенство в качестве приближения к равенству значений. Не забудьте проверить значение на равенство, используя `==`, если будет найдена пара дубликатов. _Подсказка_: функция `nubBy` из `Data.Array` должна сделать данное задание намного проще.
 X> 1. (Medium) Write a `Hashable` instance for the following newtype which satisfies the type class law:
+X> 1. (Среднее) Напишите экземпляр `Hashable` для следующего newtype, который будет удовлетворять закону класса типов:
 X>
 X>     ```haskell
 X>     newtype Hour = Hour Int
@@ -912,10 +967,16 @@ X>       eq (Hour n) (Hour m) = mod n 12 == mod m 12
 X>     ```
 X>     
 X>     The newtype `Hour` and its `Eq` instance represent the type of integers modulo 12, so that 1 and 13 are identified as equal, for example. Prove that the type class law holds for your instance.
+X>     Newtype `Hour` и его экземпляр `Eq` представляет собой тип целых чисел, делённых по модулю на 12, поэтому 1 и 13 являются равными, к примеру. Докажите, что закон класса типов выполняется для вашего экземпляра.
 X> 1. (Difficult) Prove the type class laws for the `Hashable` instances for `Maybe`, `Either` and `Tuple`.
+X> 1. (Сложное) Докажите законы класа типов `Hashable` для экземпляров `Maybe`, `Either` и `Tuple`.
 
-## Conclusion
+## Заключение
 
 In this chapter, we've been introduced to _type classes_, a type-oriented form of abstraction which enables powerful forms of code reuse. We've seen a collection of standard type classes from the PureScript standard libraries, and defined our own library based on a type class for computing hash codes.
 
+В данной главе мы познакомились с _классами типов_, типо-ориентированной формой абстракции, которая предоставляет мощные способы переиспользования кода. Мы рассмотрели коллекцию стандартных классов типов из стандартной библиотеки PureScript, а также создали свою собственную библиотеку, основанную на классах типов, для вычисления хэш-кодов.
+
 This chapter also gave an introduction to the notion of type class laws, a technique for proving properties about code which uses type classes for abstraction. Type class laws are part of a larger subject called _equational reasoning_, in which the properties of a programming language and its type system are used to enable logical reasoning about its programs. This is an important idea, and will be a theme which we will return to throughout the rest of the book.
+
+Данная глава также дала введение в понятие законов классов типов - методом доказательства свойств кода, который использует классы типов для абстракции. Законы классов типов являются частью более крупного предмета под названием _эквациональные рассуждения_, в котором свойства языка программирования и его система типов используются для логического обоснования его программ. Это важная идея, и она станет темой, к которой мы вернёмся в оставшейся части книги.
