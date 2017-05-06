@@ -1,29 +1,51 @@
 # Applicative Validation
+# Аппликативная валидация
 
-## Chapter Goals
+## Цели главы
 
 In this chapter, we will meet an important new abstraction - the _applicative functor_, described by the `Applicative` type class. Don't worry if the name sounds confusing - we will motivate the concept with a practical example - validating form data. This technique allows us to convert code which usually involves a lot of boilerplate checking into a simple, declarative description of our form.
 
+В данной главе мы познакомимся с важной новой абстракцией - _аппликативным функтором_, описанным классом типов `Applicative`. Не переживайте, если название звучит странно - мы подкрепим концепцию практическим примером - валидацией данных формы. Данный метод позволит нам преобразовать код, который обычно содержит много шаблонных проверок, в простое, декларативное описание нашей формы.
+
 We will also meet another type class, `Traversable`, which describes _traversable functors_, and see how this concept also arises very naturally from solutions to real-world problems.
+
+Мы также познакомимся с еще одним классом типов, `Traversable`, который описывает _траверсивные функторы_, и увидем как данная концепция естественным образом возникает из решений реальных проблем.
 
 The example code for this chapter will be a continuation of the address book example from chapter 3. This time, we will extend our address book data types, and write functions to validate values for those types. The understanding is that these functions could be used, for example in a web user interface, to display errors to the user as part of a data entry form.
 
+Пример кода для данной главы будет являться продолжением примера адресной книги из главы 3. В этот раз мы расширим типы адресной книги и напишем функции для валидации значений данных типов. Смысл этих функций состоит в том, как они могут быть использованы, например в веб-интерфейсе, для вывода ошибок пользователю, как часть данных формы.
+
 ## Project Setup
+## Настройка проекта
 
 The source code for this chapter is defined in the files `src/Data/AddressBook.purs` and `src/Data/AddressBook/Validation.purs`.
 
+Исходный код для данной главы находится в файлах `src/Data/AddressBook.purs` и `src/Data/AddressBook/Validation.purs`.
+
 The project has a number of Bower dependencies, many of which we have seen before. There are two new dependencies:
+
+Проект имеет определённое число зависимостей Bower, многие из которых мы уже видели до этого. Тут есть две новых зависимости:
 
 - `purescript-control`, which defines functions for abstracting control flow using type classes like `Applicative`.
 - `purescript-validation`, which defines a functor for _applicative validation_, the subject of this chapter.
 
+- `purescript-control`, в которой определены функции для абстрагирования над потоком управления, используя классы типов, такие как `Applicative`.
+- `purescript-validation`, в которой определён функтор для _аппликативной валидации_ - тема нашей главы.
+
 The `Data.AddressBook` module defines data types and `Show` instances for the types in our project, and the `Data.AddressBook.Validation` module contains validation rules for those types.
 
+В модуле `Data.AddressBook` определены типы данных и экземпляр `Show` для типов нашего проекта, а модуль  `Data.AddressBook.Validation` содержит правила валидации для этих типов.
+
 ## Generalizing Function Application
+## Обобщение функции аппликации
 
 To explain the concept of an _applicative functor_, let's consider the type constructor `Maybe` that we met earlier.
 
+Чтобы объяснить понятие _аппликативного функтора_, давайте рассмотрим конструктор типа `Maybe`, с которым мы познакомились ранее.
+
 The source code for this module defines a function `address` which has the following type:
+
+Исходный код данного модуля определяет функцию `address`, которая имеет следующий тип:
 
 ```haskell
 address :: String -> String -> String -> Address
@@ -31,7 +53,11 @@ address :: String -> String -> String -> Address
 
 This function is used to construct a value of type `Address` from three strings: a street name, a city, and a state.
 
+Данная функция используется для построения значения типа `Address` из трёх строк: названия улицы, города, штата.
+
 We can apply this function easily and see the result in PSCi:
+
+Мы можем без труда применить эту функцию и увидеть результат в PSCi:
 
 ```text
 > import Data.AddressBook
@@ -42,7 +68,11 @@ Address { street: "123 Fake St.", city: "Faketown", state: "CA" }
 
 However, suppose we did not necessarily have a street, city, or state, and wanted to use the `Maybe` type to indicate a missing value in each of the three cases.
 
+Предположим, однако, что нам не обязательно нужно указывать улицу, город или штат, и мы хотим использовать тип `Maybe`, чтобы указать отсутствующее значение в каждом из трёх случаев.
+
 In one case, we might have a missing city. If we try to apply our function directly, we will receive an error from the type checker:
+
+В одном из случаев у нас может отсутствовать город. Если мы попробуем применить нашу функцию напрямую, то получим сообщение об ошибке от тайпчекера:
 
 ```text
 > import Data.Maybe
@@ -59,7 +89,11 @@ with type
 
 Of course, this is an expected type error - `address` takes strings as arguments, not values of type `Maybe String`.
 
+Конечно, это ожидаемая ошибка - `address` в качестве аргументов принимает строки, а не значения типа `Maybe String`.
+
 However, it is reasonable to expect that we should be able to "lift" the `address` function to work with optional values described by the `Maybe` type. In fact, we can, and the `Control.Apply` provides the function `lift3` function which does exactly what we need:
+
+Однако, резонно ожидать, что у нас должна быть возможность "поднять" (to lift) функцию `address` для работы с опциональными значениями, описанными типом `Maybe`. Фактически, мы можем это сделать, и `Control.Apply` предоставляет функцию `lift3`, которая делает в точности то, что нам нужно:
 
 ```text
 > import Control.Apply
@@ -70,6 +104,8 @@ Nothing
 
 In this case, the result is `Nothing`, because one of the arguments (the city) was missing. If we provide all three arguments using the `Just` constructor, then the result will contain a value as well:
 
+В данном случае результатом будет `Nothing`, потому что один из аргументов (город) отсутствовал. Если мы предоставим все три аргумента, используя конструктор `Just`, тогда результат будет содержать значение, как и ожидалось:
+
 ```text
 > lift3 address (Just "123 Fake St.") (Just "Faketown") (Just "CA")
 
@@ -77,6 +113,8 @@ Just (Address { street: "123 Fake St.", city: "Faketown", state: "CA" })
 ```
 
 The name of the function `lift3` indicates that it can be used to lift functions of 3 arguments. There are similar functions defined in `Control.Apply` for functions of other numbers of arguments.
+
+Название функции `lift3` указывает, что она может быть использована для поднятия функции 3х аргументов. Существуют аналогичные функции, определённые в `Control.Apply` для функции других чисел аргументов.
 
 ## Lifting Arbitrary Functions
 
