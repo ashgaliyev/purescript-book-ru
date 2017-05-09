@@ -117,10 +117,15 @@ The name of the function `lift3` indicates that it can be used to lift functions
 Название функции `lift3` указывает, что она может быть использована для поднятия функции 3х аргументов. Существуют аналогичные функции, определённые в `Control.Apply` для функции других чисел аргументов.
 
 ## Lifting Arbitrary Functions
+## Поднятие произвольных функций
 
 So, we can lift functions with small numbers of arguments by using `lift2`, `lift3`, etc. But how can we generalize this to arbitrary functions?
 
+Итак, мы можем поднять функции с малым количеством аргументов, используя `lift2`, `lift3` и так далее. Но как мы можем обобщить это для произвольных функций?
+
 It is instructive to look at the type of `lift3`:
+
+Будет полезно взглянуть на тип функции `lift3`:
 
 ```text
 > :type lift3
@@ -129,13 +134,19 @@ forall a b c d f. Apply f => (a -> b -> c -> d) -> f a -> f b -> f c -> f d
 
 In the `Maybe` example above, the type constructor `f` is `Maybe`, so that `lift3` is specialized to the following type:
 
+В примере с `Maybe`, указанном ниже, конструктором типа `f` является `Maybe`, и поэтому `lift3` приведён к следующему типу:
+
 ```haskell
 forall a b c d. (a -> b -> c -> d) -> Maybe a -> Maybe b -> Maybe c -> Maybe d
 ```
 
 This type says that we can take any function with three arguments, and lift it to give a new function whose argument and result types are wrapped with `Maybe`.
 
+Этот тип говорит нам, что мы можем взять любую функцию трёх аргументов, поднять её, и получить новую функцию, типы аргументов и тип результата которой будут обёрнуты в `Maybe`.   
+
 Certainly, this is not possible for any type constructor `f`, so what is it about the `Maybe` type which allowed us to do this? Well, in specializing the type above, we removed a type class constraint on `f` from the `Apply` type class. `Apply` is defined in the Prelude as follows:
+
+Разумеется, это невозможно для любого конструктора типа `f`. Что же такого с типом `Maybe`, который позволил нам это сделать? Ну, специлизируюясь на типе выше, мы удалили ограничение класса типов `Apply` для типа `f`. `Apply` определен в Prelude следующим образом:
 
 ```haskell
 class Functor f where
@@ -147,7 +158,11 @@ class Functor f <= Apply f where
 
 The `Apply` type class is a subclass of `Functor`, and defines an additional function `apply`. As `<$>` was defined as an alias for `map`, the `Prelude` module defines `<*>` as an alias for `apply`. As we'll see, these two operators are often used together.
 
+Класс типов `Apply` является подклассом `Functor` и определяет дополнительную функцию `apply`. Так же как и `<$>` является псевдонимом для `map`, так и Prelude содержит определение `<*>`, что является псевдонимом для `apply`. Как мы видим, эти два оператора часто используются вместе.
+
 The type of `apply` looks a lot like the type of `map`. The difference between `map` and `apply` is that `map` takes a function as an argument, whereas the first argument to `apply` is wrapped in the type constructor `f`. We'll see how this is used soon, but first, let's see how to implement the `Apply` type class for the `Maybe` type:
+
+Тип `apply` выглядит очень похожим на тип `map`. Разница между `map` и `apply` в том, что `map` берёт функцию в качестве аргумента, в то время как первый аргумент для `apply` упакован в конструктор типа `f`. Мы скоро увидем, как это будет использоваться, но сначала, давайте посмотрим, как реализован класс типов `Apply` для типа `Maybe`:
 
 ```haskell
 instance functorMaybe :: Functor Maybe where
@@ -161,15 +176,27 @@ instance applyMaybe :: Apply Maybe where
 
 This type class instance says that we can apply an optional function to an optional value, and the result is defined only if both are defined.
 
+Данный экземпляр типа говорит, что мы можем применить опциональную функцию к опциональному значению, и результат будет определён, если, и функция, и значение указаны.
+
 Now we'll see how `map` and `apply` can be used together to lift functions of arbitrary number of arguments.
+
+Давайте посмотрим, как `map` и `apply` используются вместе для поднятия функций произвольного числа аргументов.
 
 For functions of one argument, we can just use `map` directly.
 
+Для функций одного аргумента мы можем использовать `map` напрямую.
+
 For functions of two arguments, we have a curried function `g` with type `a -> b -> c`, say. This is equivalent to the type `a -> (b -> c)`, so we can apply `map` to `g` to get a new function of type `f a -> f (b -> c)` for any type constructor `f` with a `Functor` instance. Partially applying this function to the first lifted argument (of type `f a`), we get a new wrapped function of type `f (b -> c)`. If we also have an `Apply` instance for `f`, then we can then use `apply` to apply the second lifted argument (of type `f b`) to get our final value of type `f c`.
+
+Для функций двух аргументов в качестве примера возьмём каррированную функцию `g` с типом `a -> b -> c`. Это эквивалентно типу `a -> (b -> c)` и поэтому мы можем применить `map` к `g` чтобы получить новую функцию с типом `f a -> f (b -> c)` для любого конструктора типа `f` с экземпляром `Functor`. Частично применяя данную новую функцию к первому поднятому аргументу (с типом `f a`), мы получаем новую упакованную функцию с типом `f (b -> c)`. Если у нас также есть экземпляр класса `Apply` для `f`, тогда мы можем использовать `apply` чтобы применить функцию ко второму поднятому аргументу (с типом `f b`) чтобы получить окончательное значение типа `f c`.
 
 Putting this all together, we see that if we have values `x :: f a` and `y :: f b`, then the expression `(g <$> x) <*> y` has type `f c` (remember, this expression is equivalent to `apply (map g x) y`). The precedence rules defined in the Prelude allow us to remove the parentheses: `g <$> x <*> y`.
 
+Собирая всё вместе, мы увидим, если у нас есть значения `x :: f a` и `y :: f b`, тогда выражение `(g <$> x) <*> y` имеет тип `f c` (запомните, что это выражение эквивалентно `apply (map g x) y`). Правила приоритета, определённые в Prelude позволяют нам удалить скобки: `g <$> x <*> y`.
+
 In general, we can use `<$>` on the first argument, and `<*>` for the remaining arguments, as illustrated here for `lift3`:
+
+В общем, мы можем использовать `<$>` для первого аргументов и `<*>` для оставшихся аргументов, как показано здесь, в `lift3`:
 
 ```haskell
 lift3 :: forall a b c d f
@@ -184,7 +211,11 @@ lift3 f x y z = f <$> x <*> y <*> z
 
 It is left as an exercise for the reader to verify the types involved in this expression.
 
+Проверку типов, участвующих в выражении оставляем читателю в качестве упражнения.
+
 As an example, we can try lifting the address function over `Maybe`, directly using the `<$>` and `<*>` functions:
+
+В качестве примера, мы можем попробовать поднять функцию address над `Maybe`, напрямую используя функции `<$>` и `<*>`:
 
 ```text
 > address <$> Just "123 Fake St." <*> Just "Faketown" <*> Just "CA"
@@ -195,6 +226,8 @@ Nothing
 ```
 
 Try lifting some other functions of various numbers of arguments over `Maybe` in this way.
+
+Попробуйте поднять какие-нибудь другие функции с разным числом аргументов над типом `Maybe` таким же способом.
 
 ## The Applicative Type Class
 
