@@ -230,8 +230,11 @@ Try lifting some other functions of various numbers of arguments over `Maybe` in
 Попробуйте поднять какие-нибудь другие функции с разным числом аргументов над типом `Maybe` таким же способом.
 
 ## The Applicative Type Class
+## Класс типов Applicative
 
 There is a related type class called `Applicative`, defined as follows:
+
+Существует связанный класс типов под названием `Applicative`, определённый следующим образом:
 
 ```haskell
 class Apply f <= Applicative f where
@@ -240,7 +243,11 @@ class Apply f <= Applicative f where
 
 `Applicative` is a subclass of `Apply` and defines the `pure` function. `pure` takes a value and returns a value whose type has been wrapped with the type constructor `f`.
 
+`Applicative` является подклассом `Apply` и определяет функцию `pure`. `pure` принимает некоторое значение и возвращает это значение, упакованное в конструктор типа `f`.
+
 Here is the `Applicative` instance for `Maybe`:
+
+Вот экземпляр `Applicative` для типа `Maybe`:
 
 ```haskell
 instance applicativeMaybe :: Applicative Maybe where
@@ -249,19 +256,34 @@ instance applicativeMaybe :: Applicative Maybe where
 
 If we think of applicative functors as functors which allow lifting of functions, then `pure` can be thought of as lifting functions of zero arguments.
 
+Если рассматривать апликативные функторы, как функторы, позволяющие поднимать функции, тогда `pure` может считать поднятием функций, не содержащих аргументы.
+
 ## Intuition for Applicative
+## Интуиция для Applicative
 
 Functions in PureScript are pure and do not support side-effects. Applicative functors allow us to work in larger "programming languages" which support some sort of side-effect encoded by the functor `f`.
 
+Функции в PureScript являются чистыми и не поддерживают побочные эффекты. Апликативные функторы позволяют нам работать в расширенных "языках программирования" (не понятно как правильно перевести), которые поддерживают некоторые разновидности побочных эффектов, закодированные функтором `f`.
+
 As an example, the functor `Maybe` represents the side effect of possibly-missing values. Some other examples include `Either err`, which represents the side effect of possible errors of type `err`, and the arrow functor `r ->` which represents the side-effect of reading from a global configuration. For now, we'll only consider the `Maybe` functor.
+
+В качестве примера, функтор `Maybe` обозначает побочный эффект возможно-отсутствующих значений. Некоторые другие примеры включают `Either err`, что значает побочный эффект позможных ошибок типа `err`, или стрелка-функтор `r ->`, означает побочный эффект чтения из глобальной конфигурации. Пока же, мы рассмотрим функтор `Maybe`.
 
 If the functor `f` represents this larger programming language with effects, then the `Apply` and `Applicative` instances allow us to lift values and function applications from our smaller programming language (PureScript) into the new language.
 
+Если функтор `f` этот расширенный язык программирования с эффектами, тогда экземпляры `Apply` и `Applicative` позволяют нам поднять значения и функции из малого языка программирования (PureScript) в новый язык.
+
 `pure` lifts pure (side-effect free) values into the larger language, and for functions, we can use `map` and `apply` as described above.
+
+`pure` поднимает чистые (без побочных эффектов) значения в расширенный язык, а для функций мы можем использовать `map` и `apply`, как было описано выше.
 
 This raises a question: if we can use `Applicative` to embed PureScript functions and values into this new language, then how is the new language any larger? The answer depends on the functor `f`. If we can find expressions of type `f a` which cannot be expressed as `pure x` for some `x`, then that expression represents a term which only exists in the larger language.
 
+Отсюда возникает вопрос: если мы можем использовать `Applicative` для встраивания функций и значений в новый язык, то насколько этот язык расширяется? Ответ зависит от функтора `f`. Если мы можем найти выражения типа `f a`, которые не могут быть выражены как `pure x` для некоторого `x`, тогда данные выражения представляют терм, который может существовать только в расширенном языке.
+
 When `f` is `Maybe`, an example is the expression `Nothing`: we cannot write `Nothing` as `pure x` for any `x`. Therefore, we can think of PureScript as having been enlarged to include the new term `Nothing`, which represents a missing value.
+
+Когда `f` является `Maybe` в примере выражения - `Nothing`: мы не можем написать что `Nothing` это `pure x` для любого `x`. Следовательно мы можем думать, что PureScript был расширен для включения нового терма `Nothing`, который означает отсутствующее значение.
 
 ## More Effects
 
