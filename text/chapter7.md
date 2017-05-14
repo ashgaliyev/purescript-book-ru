@@ -286,10 +286,15 @@ When `f` is `Maybe`, an example is the expression `Nothing`: we cannot write `No
 Когда `f` является `Maybe` в примере выражения - `Nothing`: мы не можем написать что `Nothing` это `pure x` для любого `x`. Следовательно мы можем думать, что PureScript был расширен для включения нового терма `Nothing`, который означает отсутствующее значение.
 
 ## More Effects
+## Больше эффектов
 
 Let's see some more examples of lifting functions over different `Applicative` functors.
 
+Давайте рассмотрим больше примеров поднятия функций над различными `Applicative` функторами.
+
 Here is a simple example function defined in PSCi, which joins three names to form a full name:
+
+Вот простой пример функции определённой в PSCi, которая соединяет три имени, чтобы создать полное имя:
 
 ```text
 > import Prelude
@@ -301,6 +306,8 @@ Freeman, Phillip A
 ```
 
 Now suppose that this function forms the implementation of a (very simple!) web service with the three arguments provided as query parameters. We want to make sure that the user provided each of the three parameters, so we might use the `Maybe` type to indicate the presence or otherwise of a parameter. We can lift `fullName` over `Maybe` to create an implementation of the web service which checks for missing parameters:
+
+Теперь предположим, что данная функция формирует реализацию (очень простого!) веб-сервиса с тремя аргументами, предоставленными параметрами запроса. Мы хотим убедиться, что пользователь предоставил каждый из трех параметров, поэтому мы можем использовать тип `Maybe` для указания наличия или отсуствия параметра. Мы можем поднять `fullName` над `Maybe` для создания реализации веб-сервиса для проверки отсутствующих параметров:
 
 ```text
 > import Data.Maybe
@@ -314,9 +321,15 @@ Nothing
 
 Note that the lifted function returns `Nothing` if any of the arguments was `Nothing`.
 
+Обратите внимание, что поднятая функция возвращает `Nothing`, если любой из трёх аргументов был  `Nothing`.
+
 This is good, because now we can send an error response back from our web service if the parameters are invalid. However, it would be better if we could indicate which field was incorrect in the response.
 
+Это хорошо, так как теперь мы можем отправить ответ с ошибкой от нашего веб-сервиса, если параметры некорректны. Однако, было бы лучше, если мы могли бы обозначить в ответе, какие поля были некорректны.
+
 Instead of lifting over `Maybe`, we can lift over `Either String`, which allows us to return an error message. First, let's write an operator to convert optional inputs into computations which can signal an error using `Either String`:
+
+Вместо поднятия над `Maybe`, мы можем поднять над `Either String`, который позволит нам возвращать сообщение об ошибке.
 
 ```text
 > :paste
@@ -327,7 +340,11 @@ Instead of lifting over `Maybe`, we can lift over `Either String`, which allows 
 
 _Note_: In the `Either err` applicative functor, the `Left` constructor indicates an error, and the `Right` constructor indicates success.
 
+_Подсказка_: В аппликативном функторе `Either err` конструктор `Left` обозначает ошибку, а конструктор `Right` - успех.
+
 Now we can lift over `Either String`, providing an appropriate error message for each parameter:
+
+Теперь мы можем подняться над `Either String`, предоставив соответсвующее сообщение об ошибке для каждого из параметров:
 
 ```text
 > :paste
@@ -343,7 +360,11 @@ Maybe String -> Maybe String -> Maybe String -> Either String String
 
 Now our function takes three optional arguments using `Maybe`, and returns either a `String` error message or a `String` result.
 
+Теперь наша функция принимает три опциональных аргумента, используя `Maybe`, и возвращает либо сообщение об ошибке типа `String`, либо успешный результат типа `String`.
+
 We can try out the function with different inputs:
+
+Мы можем проверить функцию на различных входных данных:
 
 ```text
 > fullNameEither (Just "Phillip") (Just "A") (Just "Freeman")
@@ -358,12 +379,16 @@ We can try out the function with different inputs:
 
 In this case, we see the error message corresponding to the first missing field, or a successful result if every field was provided. However, if we are missing multiple inputs, we still only see the first error:
 
+В данном случае мы видим сообщение об ошибке для первого попавшегося отсутствующего значание, или успешный результат, если поле было заполнено. Однако, если мы пропустим множество полей, мы всё-равно увидем ошибку для первого поля:
+
 ```text
 > fullNameEither Nothing Nothing Nothing
 (Left "First name was missing")
 ```
 
 This might be good enough, but if we want to see a list of _all_ missing fields in the error, then we need something more powerful than `Either String`. We will see a solution later in this chapter.
+
+Этого может быть достаточно, но если мы хотим видеть список _всех_ пропущенных полей в ошибке, тогда нам нужно что-то более мощное, чем `Either String`. Мы увидем в дальнейшем в главе.
 
 ## Combining Effects
 
