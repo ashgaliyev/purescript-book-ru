@@ -391,14 +391,23 @@ This might be good enough, but if we want to see a list of _all_ missing fields 
 Этого может быть достаточно, но если мы хотим видеть список _всех_ пропущенных полей в ошибке, тогда нам нужно что-то более мощное, чем `Either String`. Мы увидем в дальнейшем в главе.
 
 ## Combining Effects
+## Комбинирование эффектов
 
 As an example of working with applicative functors abstractly, this section will show how to write a function which will generically combine side-effects encoded by an applicative functor `f`.
 
+В качестве примера работы с аппликативным функтором абстрактно, в данном разделе будет показано как написать функцию, которая будет обобщенно сочетать побочные эффекты, закодированные аппликативным функтором `f`.
+
 What does this mean? Well, suppose we have a list of wrapped arguments of type `f a` for some `a`. That is, suppose we have an list of type `List (f a)`. Intuitively, this represents a list of computations with side-effects tracked by `f`, each with return type `a`. If we could run all of these computations in order, we would obtain a list of results of type `List a`. However, we would still have side-effects tracked by `f`. That is, we expect to be able to turn something of type `List (f a)` into something of type `f (List a)` by "combining" the effects inside the original list.
+
+Что это значит? Ну, допустим у нас есть список упакованных аргументов `f a` для некоторого типа `a`. То есть мы имеем список типа `List (f a)`. Интуитивно это можно представить как список вычислений с побочными эффектами, отслеживаемыми `f`, каждый из которых имеет тип возвращаемого значения `a`. Если бы мы могли выполнить все эти вычисления по-порядку, мы могли бы получить список результатов типа `List a`. Однако, у нас всё-равно будут побочные эффекты, отслеживаемые `f`. То есть, мы ожидаем, что можем превратить что-то из типа `List (f a)`, во что-то типа `f (List a)` путём "комбинирования" эффектов внутри исходного списка.
 
 For any fixed list size `n`, there is a function of `n` arguments which builds a list of size `n` out of those arguments. For example, if `n` is `3`, the function is `\x y z -> x : y : z : Nil`. This function has type `a -> a -> a -> List a`. We can use the `Applicative` instance for `List` to lift this function over `f`, to get a function of type `f a -> f a -> f a -> f (List a)`. But, since we can do this for any `n`, it makes sense that we should be able to perform the same lifting for any _list_ of arguments.
 
+Для любого списка фиксированного размера `n`, существует функция `n` аргументов, которая строит список аргументов размера `n`. Например, если `n` это 3, тогда функцией будет `\x y z -> x : y : z : Nil`. Данная функция имеет тип `a -> a -> a -> List a`. Мы можем использовать экземпляр `Applicative` для `List`, для поднятия функции над `f`, чтобы получить функцию `f a -> f a -> f a -> f (List a)`. Но, поскольку мы можем делать это для любого `n`, имеет смысл, что мы должны иметь возможность делать такое же поднятие для любого _списка_ аргументов.
+
 That means that we should be able to write a function
+
+Это означает, что мы должны иметь возможность написать функцию
 
 ```haskell
 combineList :: forall f a. Applicative f => List (f a) -> f (List a)
@@ -406,7 +415,11 @@ combineList :: forall f a. Applicative f => List (f a) -> f (List a)
 
 This function will take a list of arguments, which possibly have side-effects, and return a single wrapped list, applying the side-effects of each.
 
+Данная функция принимает список аргументов, которые возможно имеют побочные эффекты, и возвращает одиночный упакованный список, применяя эффекты каждого из них.
+
 To write this function, we'll consider the length of the list of arguments. If the list is empty, then we do not need to perform any effects, and we can use `pure` to simply return an empty list:
+
+Для написания данной функции, давайте рассмотрим длину списка аргументов. Если список пуст, тогда нам не нужно выполнять никаких побочных эффектов, и мы можем использовать `pure` для простого возврата пустого списка:
 
 ```haskell
 combineList Nil = pure Nil
@@ -414,7 +427,11 @@ combineList Nil = pure Nil
 
 In fact, this is the only thing we can do!
 
+На самом деле это единственное, что мы можем сделать!
+
 If the list is non-empty, then we have a head element, which is a wrapped argument of type `f a`, and a tail of type `List (f a)`. We can recursively combine the effects in the tail, giving a result of type `f (List a)`. We can then use `<$>` and `<*>` to lift the `Cons` constructor over the head and new tail:
+
+Если список непустой, тогда у нас есть головной элемент, который является упакованным аргументом типа `f a`, и хвост типа `List (f a)`. Мы можем рекурсивно комбинировать эффекты хвоста, что даст нам результат типа `f (List a)`. Затем мы можем использовать `<$>` и `<*>` для поднятия конструктора `Cons` над головой и новым хвостом:
 
 ```haskell
 combineList (Cons x xs) = Cons <$> x <*> combineList xs
@@ -422,7 +439,11 @@ combineList (Cons x xs) = Cons <$> x <*> combineList xs
 
 Again, this was the only sensible implementation, based on the types we were given.
 
+Опять же, это была единственная разумная реализация, основанная на типах, которые нам были даны.
+
 We can test this function in PSCi, using the `Maybe` type constructor as an example:
+
+Мы можем протестировать эту функцию в PSCi, используя конструктор типа `Maybe` в качестве примера:
 
 ```text
 > import Data.List
@@ -437,15 +458,24 @@ Nothing
 
 When specialized to `Maybe`, our function returns a `Just` only if every list element was `Just`, otherwise it returns `Nothing`. This is consistent with our intuition of working in a larger language supporting optional values - a list of computations which return optional results only has a result itself if every computation contained a result.
 
+В примере с `Maybe`, наша функция возвращает `Just` только если каждый элемент был `Just`, иначе она возвращает `Nothing`. Это согласуется с нашим представлением работы в расширенном языке, поддерживающим опциональные значения - список вычислений, возвращающих опциональные результаты, сам вернёт результат только в том случае, если каждое вычисление будет содержать результат.
+
 But the `combineList` function works for any `Applicative`! We can use it to combine computations which possibly signal an error using `Either err`, or which read from a global configuration using `r ->`.
+
+Но функция `combineList` работает для любых `Applicative`! Мы можем использовать её для комбинирования вычислений, которые могут выдать ошибку через `Either err`, или которые могут читать из глобальной конфигурации, используя `r ->`.
 
 We will see the `combineList` function again later, when we consider `Traversable` functors.
 
-X> ## Exercises
+Мы увидем функцию `combineList` опять позже, когда будем рассматривать траверсивные (`Traversable`) функторы.
+
+X> ## Упражнения
 X>
 X> 1. (Easy) Use `lift2` to write lifted versions of the numeric operators `+`, `-`, `*` and `/` which work with optional arguments.
+X> 1. (Лёгкое) Используйте `lift2` для написания поднятых версий числовых операторов `+`, `-`, `*` и `/`, которые работают с опциональными аргументами.
 X> 1. (Medium) Convince yourself that the definition of `lift3` given above in terms of `<$>` and `<*>` does type check.
+X> 1. (Среднее) Убедите себя в том, что определение `lift3`, данное выше в терминах `<$>` и `<*>` проходит проверку типов.
 X> 1. (Difficult) Write a function `combineMaybe` which has type `forall a f. Applicative f => Maybe (f a) -> f (Maybe a)`. This function takes an optional computation with side-effects, and returns a side-effecting computation which has an optional result.
+X> 1. (Сложное) Напишите функию `combineMaybe`, которая имеет тип `forall a f. Applicative f => Maybe (f a) -> f (Maybe a)`. Данная функция берёт опциональные вычисления с побочными эффектами и возращает вычисление с побочным эффектом, которое имеет опциональный результат.
 
 ## Applicative Validation
 
