@@ -5,40 +5,40 @@
 
 In this chapter, we will look at how recursive functions can be used to structure algorithms. Recursion is a basic technique used in functional programming, which we will use throughout this book.
 
-В этой главе мы увидим как работает рекурсия и как она может быть использована для построения алгоритмов. Рекурсия - это основная техника, используемая в функциональном программировании, которую мы будем использовать на протяжение всей книги.
+В этой главе мы увидим как задавать алгоритмы при помощи рекурсивных функций. Рекурсия - одна из основных техник функционального программирования, которую мы будем использовать на протяжение всей книги.
 
 We will also cover some standard functions from PureScript's standard libraries. We will see the `map` and `fold` functions, as well as some useful special cases, like `filter` and `concatMap`.
 
-Мы также рассмотрим некоторые стандартные функции из стандартных библиотек PureScript. Мы увидем функции `map`, `fold`, а также некоторые специальные, такие как `filter` и `concatMap`.
+Мы также рассмотрим некоторые стандартные функции из стандартных библиотек PureScript. Мы увидим такие функции как `map` и `fold`, и их частные случаи, как `filter` и `concatMap`.
 
 The motivating example for this chapter is a library of functions for working with a virtual filesystem. We will apply the techniques learned in this chapter to write functions which compute properties of the files represented by a model of a filesystem.
 
-Движущий пример для этой главы - это библиотека функций для работы с виртуальной системой. Техники, которые мы изучим в это главе мы применим для написания функций, вычисляющих свойства файлов представленных моделью файловой системы.
+Мотивирующий пример данной главы - библиотека функций для работы с виртуальной файловой системой. Техники этой главы мы применим для написания функций, вычисляющих свойства файлов, представленных моделью файловой системы.
 
 ## Project Setup
 ## Настройка проекта
 
-Исходный код данной главы содержится в двух файлах - `src/Data/Path.purs` и `src/FileOperations.purs`.
+Исходный код примеров этой главы содержится в двух файлах - `src/Data/Path.purs` и `src/FileOperations.purs`.
 Модуль `Data.Path` содержит модель виртуальной файловой системы. Вам не нужно изменять содержимое этого модуля.
-Модуль `FileOperations` содержит функции, которые используют API `Data.Path`. Решения к упражнениям могут быть выполнены в этом модуле.
+Модуль `FileOperations` содержит функции, которые используют API `Data.Path`. Решения к упражнениям могут быть добавлены к этому модулю.
 
 Проект имеет следующие зависимости Bower:
 
-- `purescript-maybe`, который определяет конструктор типа `Maybe`
+- `purescript-maybe`, который определяет тип `Maybe`
 - `purescript-arrays`, определяющий функции для работы с массивами
 - `purescript-strings`, содержащий функции для работы со строками Javascript
 - `purescript-foldable-traversable`, который содержит функции для свертки массивов и других структур данных 
-- `purescript-console`, определяющий функции для печатания в консоли
+- `purescript-console`, предоставляющий функции печати в консоль
 
 ## Введение
 
 Recursion is an important technique in programming in general, but particularly common in pure functional programming, because, as we will see in this chapter, recursion helps to reduce the mutable state in our programs.
 
-Рекурсия - это важная техника в программировании в общем, но особенно в чистом функциональном программировании, потому что, как мы увидем в этой главе, она помогает сократить мутацию состояния наших программ.
+Рекурсия является важной техникой для программирования вообще, но особенно часто встречается в чистом функциональном программировании, потому что, как мы увидем в этой главе, она помогает сократить количество изменяемого состояния в наших программах.
 
 Recursion is closely linked to the _divide and conquer_ strategy: to solve a problem on certain inputs, we can break down the inputs into smaller parts, solve the problem on those parts, and then assemble a solution from the partial solutions.
 
-Рекурсия тесно связана со стратегией _разделяй и властвуй_: чтобы решить задачу с множеством входных данных, мы разбиваем входные данные на меньшие части, решаем задачу в этих частях, а потом собираем решение из меньших решений.
+Рекурсия тесно связана со стратегией _разделяй и властвуй_: чтобы решить задачу на некоторых входных данных, мы разбиваем данные на меньшие части, решаем задачу на этих частичных данных, а потом собираем общее решение из частных решений.
 
 Давайте рассмотрим простые примеры рекурсии в PureScript.
 
@@ -52,11 +52,11 @@ fact n = n * fact (n - 1)
 
 Here, we can see how the factorial function is computed by reducing the problem to a subproblem - that of computing the factorial of a smaller integer. When we reach zero, the answer is immediate.
 
-Тут мы видем как функция факториала вычисляется путем редуцирования задачи на подзадачу - которая вычисляет факториал меньшего целого. Когда мы достигнем нуля, ответ тут же выдается.
+Тут мы видим как функция факториала вычисляется путем сведения задачи к более простой - вычисления факториала меньшего числа. Когда мы достигаем нуля, ответ очевиден.
 
 Here is another common example, which computes the _Fibonnacci function_:
 
-Вот еще один общий пример - _функция вычисляющая число Фибоначчи_:
+Вот еще один распространённый пример - _функция вычисляющая число Фибоначчи_:
 
 ```haskell
 fib :: Int -> Int
@@ -67,7 +67,7 @@ fib n = fib (n - 1) + fib (n - 2)
 
 Again, this problem is solved by considering the solutions to subproblems. In this case, there are two subproblems, corresponding to the expressions `fib (n - 1)` and `fib (n - 2)`. When these two subproblems are solved, we assemble the result by adding the partial results.
 
-И опять, задача решается путем рассмотрения решений в позадачах (?). В данном случае, здесь две подзадачи, соответствующие выражениям `fib (n - 1)` и `fib (n - 2)`. Когда две эти задачи решены, мы собираем результат путем сложения частичных результатов.
+И снова задача решается путем разбиения на позадачи. В данном случае, есть две подзадачи, соответствующие выражениям `fib (n - 1)` и `fib (n - 2)`. Когда две эти задачи решены, мы собираем результат путем сложения частичных результатов.
 
 
 ## Recursion on Arrays
