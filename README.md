@@ -12,8 +12,8 @@
 - _Глава 4_  _(требует вычитки)_
 - __Глава 5__  [@kika](https://github.com/kika)
 - _Глава 6_ _(требует вычитки)_
-- __Глава 7__ [@ashgaliyev](https://github.com/ashgaliyev)
-- Глава 8
+- _Глава 7_ _(требует вычитки)_
+- __Глава 8__  [@ashgaliyev](https://github.com/ashgaliyev)
 - Глава 9
 - Глава 10
 - Глава 11
