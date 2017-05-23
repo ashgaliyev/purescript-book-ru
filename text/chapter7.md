@@ -478,8 +478,11 @@ X> 1. (Difficult) Write a function `combineMaybe` which has type `forall a f. Ap
 X> 1. (Сложное) Напишите функию `combineMaybe`, которая имеет тип `forall a f. Applicative f => Maybe (f a) -> f (Maybe a)`. Данная функция берёт опциональные вычисления с побочными эффектами и возращает вычисление с побочным эффектом, которое имеет опциональный результат.
 
 ## Applicative Validation
+## Аппликативная валидация
 
 The source code for this chapter defines several data types which might be used in an address book application. The details are omitted here, but the key functions which are exported by the `Data.AddressBook` module have the following types:
+
+Исходный код данной главы содержит несколько типов данных, которые могут быть использованы в приложении адресной книги. Здесь опущены детали, но ключевые функции, которые экспортируются из модуля `Data.AddressBook` имеют следующие типы:
 
 ```haskell
 address :: String -> String -> String -> Address
@@ -491,11 +494,15 @@ person :: String -> String -> Address -> Array PhoneNumber -> Person
 
 where `PhoneType` is defined as an algebraic data type:
 
+где `PhoneType` определён как алгебраический тип данных:
+
 ```haskell
 data PhoneType = HomePhone | WorkPhone | CellPhone | OtherPhone
 ```
 
 These functions can be used to construct a `Person` representing an address book entry. For example, the following value is defined in `Data.AddressBook`:
+
+Эти функции могут быть использованы для создания `Person`, являющейся записью в адресной книге. Например, следующее значение содержится в `Data.AddressBook`:
 
 ```haskell
 examplePerson :: Person
@@ -508,6 +515,8 @@ examplePerson =
 ```
 
 Test this value in PSCi (this result has been formatted):
+
+Проверим значение в PSCi (результат был отформатирован):
 
 ```text
 > import Data.AddressBook
@@ -535,6 +544,8 @@ Person
 
 We saw in a previous section how we could use the `Either String` functor to validate a data structure of type `Person`. For example, provided functions to validate the two names in the structure, we might validate the entire data structure as follows:
 
+Мы уже видели в прошлом разделе как мы можем использовать функтор `Either String` для валидации структуры данных типа `Person`. Например, предоставив функции для валидации двух имён в структуре, мы можем провалидировать структуру данных целиком следующим образом:
+
 ```haskell
 nonEmpty :: String -> Either String Unit
 nonEmpty "" = Left "Field cannot be empty"
@@ -550,9 +561,15 @@ validatePerson (Person o) =
 
 In the first two lines, we use the `nonEmpty` function to validate a non-empty string. `nonEmpty` returns an error (indicated with the `Left` constructor) if its input is empty, or a successful empty value (`unit`) using the `Right` constructor otherwise. We use the sequencing operator `*>` to indicate that we want to perform two validations, returning the result from the validator on the right. In this case, the validator on the right simply uses `pure` to return the input unchanged.
 
+В первых двух строках мы использовали функцию `nonEmpty` для валидации непустых строк. `nonEmpty` возвращает ошибку (обозначенную конструктором `Left`), если аргумент-строка пустая, иначе - успешное пустое значение (`unit`), используя конструктор `Right`. Мы используем оператор последовательности `*>` (?)  для обозначение намерения сделать две валидации, возвращая результат от валидатора справа. В данном случае, в качестве правого валидатора просто используется `pure` для возврата аргумента без изменений.
+
 The final lines do not perform any validation but simply provide the `address` and `phones` fields to the `person` function as the remaining arguments.
 
+Последние строки не производят никакой валидации, а просто предоставляют поля `address` и `phones` функции `person` в качестве оставшихся аргументов.
+
 This function can be seen to work in PSCi, but has a limitation which we have seen before:
+
+Данную функцию можно проверить в работе в PSCi, но у неё есть ограничение, которое мы уже видели до этого:
 
 ```haskell
 > validatePerson $ person "" "" (address "" "" "") []
@@ -561,11 +578,19 @@ This function can be seen to work in PSCi, but has a limitation which we have se
 
 The `Either String` applicative functor only provides the first error encountered. Given the input here, we would prefer to see two errors - one for the missing first name, and a second for the missing last name.
 
+Аппликативный функтор `Either String` возвращает только первую попавшуюся ошибку. Учитывая предоставленные тут входные данные, мы хотели бы увидеть две ошибки - одну для пропущенного имени, а вторую для пропущенной фамилии.
+
 There is another applicative functor which is provided by the `purescript-validation` library. This functor is called `V`, and it provides the ability to return errors in any _semigroup_. For example, we can use `V (Array String)` to return an array of `String`s as errors, concatenating new errors onto the end of the array.
+
+Существует другой аппликативный функтор, предоставленный библиотекой `purescript-validation`. Данный функтор называется `V`, и даёт возможность возвращать ошибки в любой _полугруппе_. Например, мы можем использовать `V (Array String)` для возвращения массива ошибок типа `String`, прикрепляя новые ошибки в конец массива.
 
 The `Data.AddressBook.Validation` module uses the `V (Array String)` applicative functor to validate the data structures in the `Data.AddressBook` module.
 
+Модуль `Data.AddressBook.Validation` использует аппликативный функтор `V (Array String)` для валидации структур данных в модуле `Data.AddressBook`.
+
 Here is an example of a validator taken from the `Data.AddressBook.Validation` module:
+
+Вот пример валидации, взятой из модуля `Data.AddressBook.Validation`:
 
 ```haskell
 type Errors = Array String
@@ -589,9 +614,15 @@ validateAddress (Address o) =
 
 `validateAddress` validates an `Address` structure. It checks that the `street` and `city` fields are non-empty, and checks that the string in the `state` field has length 2.
 
+`validateAddress` валидирует структуру `Address`. Она проверяет поля `street` и `city` на пустоту, а также проверяет строку в поле `state` на минимальную длину, равной 2.
+
 Notice how the `nonEmpty` and `lengthIs` validator functions both use the `invalid` function provided by the `Data.Validation` module to indicate an error. Since we are working in the `Array String` semigroup, `invalid` takes an array of strings as its argument.
 
+Обратите внимание как обе функции валидации `nonEmpty` и `lengthIs` используют функцию `invalid`, предоставленную модулем `Data.Validation` для обозначения ошибок. Поскольку мы работаем в полугруппе `Array String`, `invalid` принимает массив строк в качестве аргумента.
+
 We can try this function in PSCi:
+
+Мы можем попробовать функцию в PSCi:
 
 ```text
 > import Data.AddressBook
@@ -611,9 +642,14 @@ We can try this function in PSCi:
 
 This time, we receive an array of all validation errors.
 
+В этот раз мы получаем массив со всеми ошибками валидации.
+
 ## Regular Expression Validators
+## Валидаторы на регулярных выражениях
 
 The `validatePhoneNumber` function uses a regular expression to validate the form of its argument. The key is a `matches` validation function, which uses a `Regex` from the `Data.String.Regex` module to validate its input:
+
+Функция `validatePhoneNumber` использует регулярное выражение для валидации формы её аргумента. Ключевой функцией является `matches`, которая использует `Regex` из модуля `Data.String.Regex` для валидации входного параметра:
 
 ```haskell
 matches :: String -> R.Regex -> String -> V Errors Unit
@@ -625,7 +661,11 @@ matches field _     _     =
 
 Again, notice how `pure` is used to indicate successful validation, and `invalid` is used to signal an array of errors.
 
+И снова, обратите внимание, что для успешной валидации используется `pure`, а для сигнализации массива ошибок используется `invalid`.
+
 `validatePhoneNumber` is built from the `matches` function in the same way as before:
+
+`validatePhoneNumber` строится при помощи функции `matches` таким же образом, как и до этого:
 
 ```haskell
 validatePhoneNumber :: PhoneNumber -> V Errors PhoneNumber
@@ -636,6 +676,8 @@ validatePhoneNumber (PhoneNumber o) =
 
 Again, try running this validator against some valid and invalid inputs in PSCi:
 
+И опять, попробуйте запустить валидатор на некоторых правильных и неправильных входных данных в PSCi:
+
 ```text
 > validatePhoneNumber $ phoneNumber HomePhone "555-555-5555"
 Valid (PhoneNumber { type: HomePhone, number: "555-555-5555" })
@@ -644,14 +686,19 @@ Valid (PhoneNumber { type: HomePhone, number: "555-555-5555" })
 Invalid (["Field 'Number' did not match the required format"])
 ```
 
-X> ## Exercises
+X> ## Упражнения
 X>
 X> 1. (Easy) Use a regular expression validator to ensure that the `state` field of the `Address` type contains two alphabetic characters. _Hint_: see the source code for `phoneNumberRegex`.
+X> 1. (Лёгкое) Используйте валидатор на регулярных выражения для проверки поля `state` в типа `Address`, чтобы оно содержало две буквы. _Подсказка_: посмотрите исходный код для `phoneNumberRegex`.
 X> 1. (Medium) Using the `matches` validator, write a validation function which checks that a string is not entirely whitespace. Use it to replace `nonEmpty` where appropriate.
+X> 1. (Среднее) Используя валидатор `matches`, напишите функцию валидации, которая проверяет, состоит ли строка полностью из пробельных символов. Используйте её для замены `nonEmpty`, где это уместно.
 
 ## Traversable Functors
+## Траверсивные функторы
 
 The remaining validator is `validatePerson`, which combines the validators we have seen so far to validate an entire `Person` structure:
+
+Оставшийся валидатор это `validatePerson`, который комбинирует валидаторы, что мы уже рассмотрели, для валидации структуры `Person` целиком:
 
 ```haskell
 arrayNonEmpty :: forall a. String -> Array a -> V Errors Unit
@@ -673,7 +720,11 @@ validatePerson (Person o) =
 
 There is one more interesting function here, which we haven't seen yet - `traverse`, which appears in the final line.
 
+Тут есть одна интересная функция, которую мы пока еще не рассматривали до этого - `traverse`, которая появилась в последней строке.
+
 `traverse` is defined in the `Data.Traversable` module, in the `Traversable` type class:
+
+`traverse` определена в модуле `Data.Traversable`, в классе типов `Traversable`:
 
 ```haskell
 class (Functor t, Foldable t) <= Traversable t where
@@ -683,9 +734,15 @@ class (Functor t, Foldable t) <= Traversable t where
 
 `Traversable` defines the class of _traversable functors_. The types of its functions might look a little intimidating, but `validatePerson` provides a good motivating example.
 
+`Traversable` определяет класс _траверсивных функторов_. Типы его функций могут выглядеть немного пугающими, но `validatePerson` даёт хороший мотивирующий пример.
+
 Every traversable functor is both a `Functor` and `Foldable` (recall that a _foldable functor_ was a type constructor which supported a fold operation, reducing a structure to a single value). In addition, a traversable functor provides the ability to combine a collection of side-effects which depend on its structure.
 
+Каждый траверсивный функтор это одновременно и `Functor`, и `Foldable` (напомним, что _свёртываемым функтором_ был конструктор типа, который поддерживал операцию свёртки (fold), сводя структуру к одному значению). Кроме того, траверсивный функтор обеспечивает возможность комбинирования набора побочных эффектов, которые зависят от его структуры.
+
 This may sound complicated, but let's simplify things by specializing to the case of arrays. The array type constructor is traversable, which means that there is a function:
+
+Это может звучать запутанно, но давайте упростим вещи, специализируясь на случае с массивами. Конструктор типа массива является траверсивным, что означает, что существует функция:
 
 ```haskell
 traverse :: forall a b f. Applicative f => (a -> f b) -> Array a -> f (Array b)
@@ -693,7 +750,11 @@ traverse :: forall a b f. Applicative f => (a -> f b) -> Array a -> f (Array b)
 
 Intuitively, given any applicative functor `f`, and a function which takes a value of type `a` and returns a value of type `b` (with side-effects tracked by `f`), we can apply the function to each element of an array of type `Array a` to obtain a result of type `Array b` (with side-effects tracked by `f`).
 
+Интуитивно, для любого аппликативного функтора `f`, а также функции, принимающей значение `a` и возвращающей значение `b` (с побочными эффектами, отслеживаемыми `f`), мы можем применить функцию к каждому элементу массива типа `Array a`, чтобы получить результат `Array b` (с побочными эффектами, отслеживаемыми `f`).
+
 Still not clear? Let's specialize further to the case where `m` is the `V Errors` applicative functor above. Now, we have a function of type
+
+Всё еще непонятно? Давайте специализируемся еще подробнее на случае, когда `f` это аппликативный функтор `V Errors`. Теперь, у нас есть функция типа
 
 ```haskell
 traverse :: forall a b. (a -> V Errors b) -> Array a -> V Errors (Array b)
@@ -701,9 +762,15 @@ traverse :: forall a b. (a -> V Errors b) -> Array a -> V Errors (Array b)
 
 This type signature says that if we have a validation function `f` for a type `a`, then `traverse f` is a validation function for arrays of type `Array a`. But that's exactly what we need to be able to validate the `phones` field of the `Person` data structure! We pass `validatePhoneNumber` to `traverse` to create a validation function which validates each element successively.
 
+Сигнатура типа говорит, что если у нас есть функция валидации `f` для типа `a`, тогда `traverse f` - это функция валидации для массивов типа `Array a`. Но это как раз то, что нам нужно, для валидации поля `phones` в структуре `Person`! Мы передаём `validatePhoneNumber` в `traverse` для создания функции валидации, которая проверяет каждый элемент последовательно.
+
 In general, `traverse` walks over the elements of a data structure, performing computations with side-effects and accumulating a result.
 
+В общем, `traverse` проходит по каждому элементу структуры данных, выполняя вычисления с побочными эффектами, накапливая результат.
+
 The type signature for `Traversable`'s other function `sequence` might look more familiar:
+
+Сигнатура типа для другой функции `Traversable` - `sequence` может показаться похожей:
 
 ```haskell
 sequence :: forall a f. Applicative m => t (f a) -> f (t a)
@@ -711,13 +778,19 @@ sequence :: forall a f. Applicative m => t (f a) -> f (t a)
 
 In fact, the `combineList` function that we wrote earlier is just a special case of the `sequence` function from the `Traversable` type class. Setting `t` to be the type constructor `List`, we recover the type of the `combineList` function:
 
+На самом деле, функция `combineList`, которую мы написали ранее является частным случаем функции `sequence` класса типов `Traversable`.
+
 ```haskell
 combineList :: forall f a. Applicative f => List (f a) -> f (List a)
 ```
 
 Traversable functors capture the idea of traversing a data structure, collecting a set of effectful computations, and combining their effects. In fact, `sequence` and `traverse` are equally important to the definition of `Traversable` - each can be implemented in terms of each other. This is left as an exercise for the interested reader.
 
+Траверсивные функторы реализуют идею обхода структуры данных, собирания набор вычислений с эффектами, и комбинирования этих эффектов. На самом деле, `sequence` и `traverse` в равной степени важны для определения `Traversable` - каждый из них может быть определён в терминах друг друга. Это оставлено в качестве упражнения для заинтересованного читателя.
+
 The `Traversable` instance for lists is given in the `Data.List` module. The definition of `traverse` is given here:
+
+Экземпляр `Traversable` для списков содержится в модуле `Data.List`. Его определение выглядит следующим образом:
 
 ```haskell
 -- traverse :: forall a b f. Applicative f => (a -> f b) -> List a -> f (List b)
@@ -727,7 +800,11 @@ traverse f (Cons x xs) = Cons <$> f x <*> traverse f xs
 
 In the case of an empty list, we can simply return an empty list using `pure`. If the list is non-empty, we can use the function `f` to create a computation of type `f b` from the head element. We can also call `traverse` recursively on the tail. Finally, we can lift the `Cons` constructor over the applicative functor `f` to combine the two results.
 
+В случае пустого списка, мы можем просто вернуть пустой список, используя `pure`. Если список непустой, тогда мы можем использовать функцию `f`, чтобы создать вычисление типа `f b` на головном элементе, а затем вызвать `traverse` рекурсивно на хвосте списка. Наконец, мы можем поднять конструктор `Cons` над аппликативным функтором `f` для комбинирования двух результатов.
+
 But there are more examples of traversable functors than just arrays and lists. The `Maybe` type constructor we saw earlier also has an instance for `Traversable`. We can try it in PSCi:
+
+Но существуют еще примеры траверсивных функторов, помимо массивов и списков. Тип `Maybe`, что мы видели раньше, так же имеет экземпляр `Traversable`. Мы можем проверить это в PSCi:
 
 ```text
 > import Data.Maybe
@@ -745,9 +822,13 @@ But there are more examples of traversable functors than just arrays and lists. 
 
 These examples show that traversing the `Nothing` value returns `Nothing` with no validation, and traversing `Just x` uses the validation function to validate `x`. That is, `traverse` takes a validation function for type `a` and returns a validation function for `Maybe a`, i.e. a validation function for optional values of type `a`.
 
+Данные примеры показывают, что при проходе по `Nothing` возвращается `Nothing` без валидации, а при проходе по `Just x` используется функция для валидации `x`. То есть, `traverse` берёт функцию валидации для типа `a` и возвращает функцию валидации для `Maybe a`, то есть функцию валидации для опциональных значений типа `a`.
+
 Other traversable functors include `Array`, and `Tuple a` and `Either a` for any type `a`. Generally, most "container" data type constructors have `Traversable` instances. As an example, the exercises will include writing a `Traversable` instance for a type of binary trees.
 
-X> ## Exercises
+Другие траверсивные функторы включают `Array`, `Tuple a` и `Either a` для любого типа `a`. Как правило, большинство "контейнерных" конструкторов типов данных имееют экземпляры `Traversable`. В качестве примера, в упражнениях есть задание для написания экземпляра `Traversable` для типа двоичных деревьев.
+
+X> ## Упражнения
 X>
 X> 1. (Medium) Write a `Traversable` instance for the following binary tree data structure, which combines side-effects from left-to-right:
 X>
@@ -757,18 +838,37 @@ X>     ```
 X>
 X>     This corresponds to an in-order traversal of the tree. What about a preorder traversal? What about reverse order?
 X>
+X> 1. (Среднее) Напишите экземпляр `Traversable` для следующей структуры двоичных деревьев, который комбинирует побочные эффекты слева направо:
+X>
+X>     ```haskell
+X>     data Tree a = Leaf | Branch (Tree a) a (Tree a)
+X>     ```
+X>
+X>     Это соответствует прямому обходу дерева. Что насчет (preorder) обхода? Что насчет обратного порядка?
+X>
 X> 1. (Medium) Modify the code to make the `address` field of the `Person` type optional using `Data.Maybe`. _Hint_: Use `traverse` to validate a field of type `Maybe a`.
+X> 1. (Среднее) Измените код, чтобы сделать поле `address` типа `Person` опциональным, используя `Data.Maybe`. _Подсказка_: Используйте `traverse` для валидации поля типа `Maybe a`.
 X> 1. (Difficult) Try to write `sequence` in terms of `traverse`. Can you write `traverse` in terms of `sequence`?
+X> 1. (Сложное) Попробуйте написать `sequence` в терминах `traverse`. Сможете ли вы написать `traverse` при помощи `sequence`?
 
 ## Applicative Functors for Parallelism
+## Аппликативные функторы для параллелизма
 
 In the discussion above, I chose the word "combine" to describe how applicative functors "combine side-effects". However, in all the examples given, it would be equally valid to say that applicative functors allow us to "sequence" effects. This would be consistent with the intuition that traversable functors provide a `sequence` function to combine effects in sequence based on a data structure.
 
+В приведённом выше обсуждении я выбрал слово "комбинировать", чтобы описать, как аппликативные функторы "комбинируют побочные эффекты". Однако, во всех данных примерах справедливо было бы сказать, что аппликативные функторы позволяют нам "упорядочивать" эффекты. Это согласовывалось бы с интуицией, что траверсивные функторы предоставляют функцию `sequence` для комбинирования эффектов в порядке, основанной на структуре данных.
+
 However, in general, applicative functors are more general than this. The applicative functor laws do not impose any ordering on the side-effects that their computations perform. In fact, it would be valid for an applicative functor to perform its side-effects in parallel.
+
+Однако, в целом, аппликативные функторы более общие. Законы аппликативных функторов не накладывают порядок на вычисления с побочными эффектами. Фактически, для аппликативного функтора было бы правильнее выполнять свои побочные эффекты параллельно.
 
 For example, the `V` validation functor returned an _array_ of errors, but it would work just as well if we picked the `Set` semigroup, in which case it would not matter what order we ran the various validators. We could even run them in parallel over the data structure!
 
+Например, функтор валидации `V` возвращал _массив_ ошибок, он работал бы также хорошо, если бы мы взяли полугруппу `Set`, и в этом случае не имело бы значения, в каком порядке мы запускали различные валидаторы. Мы могли бы даже запустить их параллельно над структурой данных!
+
 As a second example, the `purescript-parallel` package provides a type class `Parallel` which supports _parallel computations_. `Parallel` provides a function `parallel` which uses some `Applicative` functor to compute the result of its input computation _in parallel_:
+
+В качестве второго примера - пакет `purescript-parallel` предоставляет класс типов `Parallel`, который поддерживает _параллельные вычисления_. `Parallel` предоставляет функцию `parallel`, которая использует аппликативный функтор для вычисления результата на входных данных _параллельно_:
 
 ```haskell
 f <$> parallel computation1
@@ -777,18 +877,33 @@ f <$> parallel computation1
 
 This computation would start computing values asynchronously using `computation1` and `computation2`. When both results have been computed, they would be combined into a single result using the function `f`.
 
+Данное вычисление начнет вычисляться асинхронно, используя `computation1` и `computation2`. Когда оба под-результата будут вычислены, они скомбинируются в единый результат при помощи функции `f`.
+
 We will see this idea in more detail when we apply applicative functors to the problem of _callback hell_ later in the book.
+
+Мы рассмотрим эту идею более детальнее, когда применим аппликативные функторы для решения проблемы _callback hell_ позднее в книге.
 
 Applicative functors are a natural way to capture side-effects which can be combined in parallel.
 
-## Conclusion
+Аппликативные функторы являются естестенным способом захвата побочных эффектов, которые можно скомбинировать для параллельного выполнения.
+
+## Заключение
 
 In this chapter, we covered a lot of new ideas:
 
+В данной главе мы рассмотрели множество новых идей:
+
 - We introduced the concept of an _applicative functor_ which generalizes the idea of function application to type constructors which capture some notion of side-effect.
+- Мы ввели понятие _аппликативного функтора_, который обобщает идею применения функции к типу, содержащему понятие побочного эффекта.
 - We saw how applicative functors gave a solution to the problem of validating data structures, and how by switching the applicative functor we could change from reporting a single error to reporting all errors across a data structure.
+- Мы увидели как аппликативные функторы дали решенее проблемы валидации структуры данных, и как при помощи переключения на аппликативный функтор мы можем изменить отчёт, выводящий одну ошибку, на отчёт, выводящий все ошибки в структуре данных.
 - We met the `Traversable` type class, which encapsulates the idea of a _traversable functor_, or a container whose elements can be used to combine values with side-effects.
+- Мы познакомились с классом типов `Traversable`, который инкапсулирует идею _траверсивного функтора_, или контейнера, чьи элементы могут быть использованы для комбинирования значений с побочными эффектами.
 
 Applicative functors are an interesting abstraction which provide neat solutions to a number of problems. We will see them a few more times throughout the book. In this case, the validation applicative functor provided a way to write validators in a declarative style, allowing us to define _what_ our validators should validate and not _how_ they should perform that validation. In general, we will see that applicative functors are a useful tool for the design of _domain specific languages_.
 
+Аппликативные функторы представляют собой интересную абстракцию, которая предоставляет аккуратные решения для ряда проблем. Мы увидем их еще несколько раз на протяжении книги. В данном случае, аппликативный функтор предоставил способ написания валидаторов в декларативном стиле, что позволило нам определить _что_ валидаторы должны проверять, а не _как_ они должны это делать. В общем, мы увидим, что аппликативные функторы являются полезным инструментом для разработки _предметно-ориентированных языков_.
+
 In the next chapter, we will see a related idea, the class of _monads_, and extend our address book example to run in the browser!
+
+В следующей главе мы увидим родственную идею - класс _монад_, и расширим наш пример с адресной книгой для запуска в браузере!
