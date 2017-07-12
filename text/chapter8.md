@@ -1,35 +1,62 @@
 # The Eff Monad
+# Монада Eff
 
 ## Chapter Goals
+## Цели главы
 
 In the last chapter, we introduced applicative functors, an abstraction which we used to deal with _side-effects_: optional values, error messages and validation. This chapter will introduce another abstraction for dealing with side-effects in a more expressive way: _monads_.
 
+В прошлой главе мы ввели понятие аппликативных функторов, абстракции, которую мы использовали для взаимодействия с _побочными эффектами_: опциональными значениями, сообщениями об ошибках и валидацией. В этой главе мы познакомимся еще с одной абстракцией для работой с побочными эффектами в более выразительном виде: _монадами_.
+
 The goal of this chapter is to explain why monads are a useful abstraction, and their connection with _do notation_. We will build upon the address book example of the previous chapters, by using a particular monad to handle the side-effects of building a user interface in the browser. The monad we will use is an important monad in PureScript - the `Eff` monad - used to encapsulate so-called _native_ effects.
 
-## Project Setup
+Цель этой главы - объяснить почему монады являются полезной формой абстракции, а также их связь с _do-нотацией_. Мы будем создавать пользовательский интерфейс в браузере, основываясь на примере адресной книги из предыдущих глав, используя определённую монаду для обработки побочных эффектов. Монада, которую мы будем использовать, является важной в PureScript. Монада `Eff` используется для инкапсуляции так называемых _нативных_ эффектов.
+
+## Настройка проекта
 
 The source code for this project builds on the source for the previous chapter. The modules from the previous project are included in the `src` directory for this project.
 
+Исходный код для данного проекта создан на основе исходников предыдущей главы. Модули из предыдущего проекта содержаться в директории `src` в данном проекте.
+
 The project adds the following Bower dependencies:
+
+В проекте добавлены следующие Bower зависимости:
 
 - `purescript-eff`, which defines the `Eff` monad, the subject of the second half of the chapter.
 - `purescript-react`, a set of bindings to the React user interface library, which we will use to build a user interface for our address book application.
 
+- `purescript-eff`, который содержит определение монады `Eff` - тема второй части главы.
+- `purescript-react`, набор обвязок к UI библиотеке React, который мы будем использовать для создания пользовательского интерфейса для нашего приложения адресной книги.
+
 In addition to the modules from the previous chapter, this chapter's project adds a `Main` module, which provides the entry point to the application, and functions to render the user interface.
+
+В дополнение к модулям из предыдущей главы, данная глава добавляет модуль `Main`, который предоставляет точку входа, а также функции для рендера пользовательского интерфейса.
 
 To compile this project, first install React using `npm install`, and then build and bundle the JavaScript source with `pulp browserify --to dist/Main.js`. To run the project, open the `html/index.html` file in your web browser.
 
-## Monads and Do Notation
+Чтобы скомпилировать проект, для начала установите React, используя `npm install`, а затем соберите бандл из JavaScript исходников с помощью `pulp browserify --o dist/Main.js`. Для запуска проекта откройте файл `html/index.html` в браузере.
+
+## Монады и Do-нотация
 
 Do notation was first introduced when we covered _array comprehensions_. Array comprehensions provide syntactic sugar for the `concatMap` function from the `Data.Array` module.
 
+Do-нотация была впервые представлена, когда мы рассматривали _генераторы мыссивов (array comprehensions)_. Генераторы массивов предоставляют синтаксический сахар для функции `concatMap` модуля `Data.Array`.
+
 Consider the following example. Suppose we throw two dice and want to count the number of ways in which we can score a total of `n`. We could do this using the following non-deterministic algorithm:
+
+Рассмотрим следующий пример. Предположим, что мы бросаем две кости и хотим посчитать число способов, которыми мы можем набрать в общей сложности `n`.  Мы можем сделать это, воспользовавшись следующим недетерминированным алгоритмом:
 
 - _Choose_ the value `x` of the first throw.
 - _Choose_ the value `y` of the second throw.
 - If the sum of `x` and `y` is `n` then return the pair `[x, y]`, else fail.
 
+- _Выбрать_ значение `x` первой кости.
+- _Выбрать_ значение `y` второй кости.
+- Если сумма `x` и `y` равна `n`, тогда вернуть пару `[x, y]`, иначе провал (fail).
+
 Array comprehensions allow us to write this non-deterministic algorithm in a natural way:
+
+Генераторы массивов позволяют нам записать данный недетерминированый алгоритм в естественном виде:
 
 ```haskell
 import Prelude
@@ -48,6 +75,8 @@ countThrows n = do
 
 We can see that this function works in PSCi:
 
+Мы можем увидеть работу данной функции в PSCi:
+
 ```text
 > countThrows 10
 [[4,6],[5,5],[6,4]]
@@ -58,9 +87,15 @@ We can see that this function works in PSCi:
 
 In the last chapter, we formed an intuition for the `Maybe` applicative functor, embedding PureScript functions into a larger programming language supporting _optional values_. In the same way, we can form an intuition for the _array monad_, embedding PureScript functions into a larger programming language supporting _non-deterministic choice_.
 
+В последней главе мы сформировали интуицию для аппликативного функтора `Maybe`, встроив функции PureScript в более крупный язык программирования, поддерживающий _опциональные значения_. Таким же образом мы можем сформировать интуицию для _монады массива_, встраивая функции PureScipt  в больший язык программировния для поддержки _недетерминированного выбора_.
+
 In general, a _monad_ for some type constructor `m` provides a way to use do notation with values of type `m a`. Note that in the array comprehension above, every line contains a computation of type `Array a` for some type `a`. In general, every line of a do notation block will contain a computation of type `m a` for some type `a` and our monad `m`. The monad `m` must be the same on every line (i.e. we fix the side-effect), but the types `a` can differ (i.e. individual computations can have different result types).
 
+В общем, _монада_ для некоторого конструктора типа `m` предоставляет способ использования do-нотации со значениями типа `m a`. Обратите внимание, что в генераторе массива выше, каждая строка содержит вычисление типа `Array a` для типа `a`. В целом, каждая строка блока с do-нотацией содержит вычисление типа `m a` для некоторого типа `a` и нашей монады `m`. Монада `m` должна быть одной и той же на каждой строке (то есть, мы фиксируем побочный эффект), однако типы `a` могут различаться (то есть индивидуальные вычисления могут иметь разные типы результатов).
+
 Here is another example of do notation, this type applied to the type constructor `Maybe`. Suppose we have some type `XML` representing XML nodes, and a function
+
+Вот еще один пример do-нотации, где тип применяется к конструктору типа `Maybe`. Допустим, у нас есть некоторый тип `XML` представляющий узлы XML, а так же функция
 
 ```haskell
 child :: XML -> String -> Maybe XML
@@ -68,7 +103,11 @@ child :: XML -> String -> Maybe XML
 
 which looks for a child element of a node, and returns `Nothing` if no such element exists.
 
+которая ищет дочерний элемент узла и возвращает `Nothing`, если такого элемента не существует.
+
 In this case, we can look for a deeply-nested element by using do notation. Suppose we wanted to read a user's city from a user profile which had been encoded as an XML document:
+
+В нашем случае мы можем искать глубоко-вложенный элемент, используя do-нотацию. Допустим, мы хотим прочитать название города в профиле пользователя, который был закодирован как XML документ:
 
 ```haskell
 userCity :: XML -> Maybe XML
@@ -81,7 +120,11 @@ userCity root = do
 
 The `userCity` function looks for a child element `profile`, an element `address` inside the `profile` element, and finally an element `city` inside the `address` element. If any of these elements are missing, the return value will be `Nothing`. Otherwise, the return value is constructed using `Just` from the `city` node.
 
+Функция `userCity` ищет дочерний элемент `profile`, элемент `address` внутри элемента `profile`, и наконец, элемент `city` внутри элемента `address`. Если любой из этих элементов будет отсутствовать, возвращаемым значением будет `Nothing`. Иначе, возвращаемое значение будет сконструировано при помощи `Just` из узла `city`.
+
 Remember, the `pure` function in the last line is defined for every `Applicative` functor. Since `pure` is defined as `Just` for the `Maybe` applicative functor, it would be equally valid to change the last line to `Just city`.
+
+Помните, что функция `pure` в последней строке определена для каждого функтора `Applicative`. Поскольку `pure` определён как `Just` для функтора `Maybe`, не было бы разницы, если бы мы заменили последнюю строку на `Just city`.
 
 ## The Monad Type Class
 
