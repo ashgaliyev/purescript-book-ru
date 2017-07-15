@@ -127,8 +127,11 @@ Remember, the `pure` function in the last line is defined for every `Applicative
 Помните, что функция `pure` в последней строке определена для каждого функтора `Applicative`. Поскольку `pure` определён как `Just` для функтора `Maybe`, не было бы разницы, если бы мы заменили последнюю строку на `Just city`.
 
 ## The Monad Type Class
+## Класс типов Monad
 
 The `Monad` type class is defined as follows:
+
+Класс типов `Monad` определён следующим образом:
 
 ```haskell
 class Apply m <= Bind m where
@@ -139,9 +142,15 @@ class (Applicative m, Bind m) <= Monad m
 
 The key function here is `bind`, defined in the `Bind` type class. Just like for the `<$>` and `<*>` operators in the `Functor` and `Apply` type classes, the Prelude defines an infix alias `>>=` for the `bind` function.
 
+Ключевой функцией здесь является функция `bind`, определённая в классе типов `Bind`. Так же как и для классов типов `Functor` и `Apply` есть операторы `<$>` и `<*>`, в Prelude существует инфиксный псевдоним `>>=` для функции `bind`.
+
 The `Monad` type class extends `Bind` with the operations of the `Applicative` type class that we have already seen.
 
+Класс типов `Monad` расширяет `Bind` операциями класса типов `Applicative`, который мы уже видели ранее.
+
 It will be useful to see some examples of the `Bind` type class. A sensible definition for `Bind` on arrays can be given as follows:
+
+Будет полезно рассмотреть некоторые примеры класса типов `Bind`. Разумным примером определения `Bind` на массивах может быть задано следующим образом:
 
 ```haskell
 instance bindArray :: Bind Array where
@@ -150,7 +159,11 @@ instance bindArray :: Bind Array where
 
 This explains the connection between array comprehensions and the `concatMap` function that has been alluded to before.
 
+Это объясняет связь между генераторами массива и функцией `concatMap`, о которой упоминалось ранее.
+
 Here is an implementation of `Bind` for the `Maybe` type constructor:
+
+Вот реализация `Bind` для конструктора типа `Maybe`:
 
 ```haskell
 instance bindMaybe :: Bind Maybe where
@@ -160,7 +173,11 @@ instance bindMaybe :: Bind Maybe where
 
 This definition confirms the intuition that missing values are propagated through a do notation block.
 
+Это определение подтверждает интуицию, что отсутствующие значения передаются сквозь блок do-нотации.
+
 Let's see how the `Bind` type class is related to do notation. Consider a simple do notation block which starts by binding a value from the result of some computation:
+
+Давайте посмотрим как класс типов `Bind` относится к do-нотации. Рассмотрим простой блок do-нотации, который начинается со связки value с результатом некоторого вычисления:
 
 ```haskell
 do value <- someComputation
@@ -169,11 +186,15 @@ do value <- someComputation
 
 Every time the PureScript compiler sees this pattern, it replaces the code with this:
 
+Каждый раз, когда компилятор PureScript видит эту структуру, он заменяет данный код на следующий:
+
 ```haskell
 bind someComputation \value -> whatToDoNext
 ```
 
 or, written infix:
+
+или, запись в инфиксном стиле:
 
 ```haskell
 someComputation >>= \value -> whatToDoNext
@@ -181,7 +202,11 @@ someComputation >>= \value -> whatToDoNext
 
 The computation `whatToDoNext` is allowed to depend on `value`.
 
+Вычисление `whatToDoNext` может зависеть от `value`.
+
 If there are multiple binds involved, this rule is applied multiple times, starting from the top. For example, the `userCity` example that we saw earlier gets desugared as follows:
+
+Если задействовано несколько связываний, это правило применяется несколько раз, начиная с вершины. Например, пример `userCity`, который мы видели ранее, выглядит следующим образом:
 
 ```haskell
 userCity :: XML -> Maybe XML
@@ -194,13 +219,21 @@ userCity root =
 
 It is worth noting that code expressed using do notation is often much clearer than the equivalent code using the `>>=` operator. However, writing binds explicitly using `>>=` can often lead to opportunities to write code in _point-free_ form - but the usual warnings about readability apply.
 
+Стоит отметить, что код, выраженный с использованием do-нотации, часто намного яснее, чем эквивалентный код, использующий оператор `>>=`. Тем не менее, написание связок (binds) явным образом, с использованием `>>=` часто может привести к возможности писать код в _бесточечном стиле_, но не стоит так же забывать о правилах удобства читаемости.
+
 ## Monad Laws
+## Законы Monad
 
 The `Monad` type class comes equipped with three laws, called the _monad laws_. These tell us what we can expect from sensible implementations of the `Monad` type class.
 
+Класс типов `Monad` имеет три закона, называемыми _законами monad_. Они говорят нам, чего мы можем ожидать от разумных реализаций класса типов `Monad`.
+
 It is simplest to explain these laws using do notation.
 
+Проще всего объяснить эти законы, используя do-нотацию.
+
 ### Identity Laws
+### Законы идентичности
 
 The _right-identity_ law is the simplest of the three laws. It tells us that we can eliminate a call to `pure` if it is the last expression in a do notation block:
 
