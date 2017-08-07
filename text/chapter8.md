@@ -237,6 +237,8 @@ It is simplest to explain these laws using do notation.
 
 The _right-identity_ law is the simplest of the three laws. It tells us that we can eliminate a call to `pure` if it is the last expression in a do notation block:
 
+Закон _правой идентичности_ самый простой из трёх законов. Он говорит нам, что мы можем исключить вызов `pure`, если данное выражение является последним в блоке do-нотации:
+
 ```haskell
 do
   x <- expr
@@ -245,7 +247,11 @@ do
 
 The right-identity law says that this is equivalent to just `expr`.
 
+Закон правой идентичности говорит, что данное выражение является эквивалентом просто `expr`.
+
 The _left-identity_ law states that we can eliminate a call to `pure` if it is the first expression in a do notation block:
+
+Закон _левой идентичности_ состоит в том, что мы можем вызывать `pure`, если данное выражение является первым в блоке do-нотации:
 
 ```haskell
 do
@@ -255,7 +261,11 @@ do
 
 This code is equivalent to `next`, after the name `x` has been replaced with the expression `y`.
 
+Этот код эквивалентен `next`, после того как имя `x` было заменено выражением `y`.
+
 The last law is the _associativity law_. It tells us how to deal with nested do notation blocks. It states that the following piece of code:
+
+Последний закон - _закон ассоциативности_. Он сообщает нам как обращаться со вложенными блоками do-нотации. В нём говориться что следующий кусок кода:
 
 ```haskell
 c1 = do
@@ -267,6 +277,8 @@ c1 = do
 
 is equivalent to this code:
 
+эквивалентен этому коду:
+
 ```haskell  
 c2 = do
   x <- m1
@@ -276,13 +288,23 @@ c2 = do
 
 Each of these computations involves three monadic expression `m1`, `m2` and `m3`. In each case, the result of `m1` is eventually bound to the name `x`, and the result of `m2` is bound to the name `y`.
 
+Каждое из этих вычислений включает в себя три монадический выражения `m1`, `m2` и `m3`. В каждом случае, в конечном итоге результат `m1` привязывается к имени `x` а результат `m2` привязывается к `y`.
+
 In `c1`, the two expressions `m1` and `m2` are grouped into their own do notation block.
+
+В `c1` два выражения `m1` и `m2` находятся в собственных блоках do-нотации.
 
 In `c2`, all three expressions `m1`, `m2` and `m3` appear in the same do notation block.
 
+В `c2` все три выражения `m1`, `m2` и `m3` находятся в одном блоке.
+
 The associativity law tells us that it is safe to simplify nested do notation blocks in this way.
 
+Закон ассоциативности сообщает, что вложенные блоки do-нотации можно упростить подобным образом.
+
 _Note_ that by the definition of how do notation gets desugared into calls to `bind`, both of `c1` and `c2` are also equivalent to this code:
+
+_Обратите внимание_ что по определению того, как do-нотация рассахаривается в вызовы `bind`, оба варианта `c1` и `c2`, также эквивалентны данному коду:
 
 ```haskell  
 c3 = do
