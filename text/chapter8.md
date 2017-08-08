@@ -316,9 +316,15 @@ c3 = do
 
 ## Folding With Monads
 
+## Свёртки с монадами
+
 As an example of working with monads abstractly, this section will present a function which works with any type constructor in the `Monad` type class. This should serve to solidify the intuition that monadic code corresponds to programming "in a larger language" with side-effects, and also illustrate the generality which programming with monads brings.
 
+В качестве примера работы с монадами абстрактно, в данной секции будет представлена функция, которая работает с любым конструктором типа класса типов `Monad`. Это послужит укреплением интуиции о том, что монадический код соответствует программированию "в расширенном языке" с побочными эффектами, а также проиллюстрирует общность, которую приносит программирование с монадами.
+
 The function we will write is called `foldM`. It generalizes the `foldl` function that we met earlier to a monadic context. Here is its type signature:
+
+Функцию, которую мы напишем, называется `foldM`. Она обобщает функцию `foldl`, которую мы встречали ранее, в монадическом контексте. Вот сигнатура её типа:
 
 ```haskell
 foldM :: forall m a b
@@ -331,6 +337,8 @@ foldM :: forall m a b
 
 Notice that this is the same as the type of `foldl`, except for the appearance of the monad `m`:
 
+Обратите внимание, что она похожа на тип `foldl`, за исключением появления монады `m`:
+
 ```haskell
 foldl :: forall a b
        . (a -> b -> a)
@@ -341,9 +349,15 @@ foldl :: forall a b
 
 Intuitively, `foldM` performs a fold over a list in some context supporting some set of side-effects.
 
+Интуитивно, `foldM` производит свертку над списком некоторого контекста, поддерживающего набор побочных эффектов.
+
 For example, if we picked `m` to be `Maybe`, then our fold would be allowed to fail by returning `Nothing` at any stage - every step returns an optional result, and the result of the fold is therefore also optional.
 
+Например, если для `m` мы выбирем `Maybe`, тогда для нашей свёртки будет возможна неудача, путём возврата `Nothing` на любом шаге - каждый шаг возвращает необязательный результат, и результат свёртки также может быть необязательным.
+
 If we picked `m` to be the `Array` type constructor, then every step of the fold would be allowed to return zero or more results, and the fold would proceed to the next step independently for each result. At the end, the set of results would consist of all folds over all possible paths. This corresponds to a traversal of a graph!
+
+Если мы выбирем в качестве `m` конструктор типа `Array`, тогда для каждого шага свёртки допустимым результатом будет 0 и более результатов, и свёртка будет производиться на следующем шаге независимо от каждого результата результата. В конце, набор результатов будет состоять из свёрток всех возможных вариантов проходов. Это соответствует обходу графа!
 
 To write `foldM`, we can simply break the input list into cases.
 
