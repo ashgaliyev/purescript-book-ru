@@ -361,7 +361,11 @@ If we picked `m` to be the `Array` type constructor, then every step of the fold
 
 To write `foldM`, we can simply break the input list into cases.
 
+Чтобы написать `foldM` мы можем просто представить различные случаи входного списка.
+
 If the list is empty, then to produce the result of type `a`, we only have one option: we have to return the second argument:
+
+Если список пуст, тогда для получения результата типа `a`, у нас есть только один вариант: мы должны вернуть второй аргумент:
 
 ```haskell
 foldM _ a Nil = pure a
@@ -369,9 +373,15 @@ foldM _ a Nil = pure a
 
 Note that we have to use `pure` to lift `a` into the monad `m`.
 
+Обратите внимание, что мы должны использовать `pure` для поднятия `a` в монаду `m`.
+
 What if the list is non-empty? In that case, we have a value of type `a`, a value of type `b`, and a function of type `a -> b -> m a`. If we apply the function, we obtain a monadic result of type `m a`. We can bind the result of this computation with a backwards arrow `<-`.
 
+Что, если список непустой? В данном случае, у нас есть значение типа `a`, значение типа `b`, а также функция типа `a -> b -> m a`. Если мы применим данную функцию, то получим монадический результат типа `m a`. Мы можем связать результат вычисления при помощи обратной стрелки `<-`.
+
 It only remains to recurse on the tail of the list. The implementation is simple:
+
+Останется только сделать рекурсию на хвосте списка. Реализация простая:
 
 ```haskell
 foldM f a (b : bs) = do
@@ -381,7 +391,11 @@ foldM f a (b : bs) = do
 
 Note that this implementation is almost identical to that of `foldl` on lists, with the exception of do notation.
 
+Обратите внимание, что реализация почти идентична `foldl` на списках, за исключением do-нотации.
+
 We can define and test this function in PSCi. Here is an example - suppose we defined a "safe division" function on integers, which tested for division by zero and used the `Maybe` type constructor to indicate failure:
+
+Мы можем определить и протестировать данную функцию в PSCi. Вот пример - допустим, мы определили функцию для "безопасного деления", которая проверяет деление на ноль и использует конструктор типа `Maybe` для обозначения ошибки:
 
 ```haskell
 safeDivide :: Int -> Int -> Maybe Int
@@ -389,7 +403,9 @@ safeDivide _ 0 = Nothing
 safeDivide a b = Just (a / b)
 ```
 
-Then we can use `foldM` to express iterated safe division:  
+Then we can use `foldM` to express iterated safe division:
+
+Тогда мы можем использовать `foldM` для выражения итерационного безопасного деления:
 
 ```text
 > import Data.List
@@ -403,9 +419,15 @@ Nothing
 
 The `foldM safeDivide` function returns `Nothing` if a division by zero was attempted at any point. Otherwise it returns the result of repeatedly dividing the accumulator, wrapped in the `Just` constructor.
 
+Функция `foldM safeDivide` возвращает `Nothing` если произошла попытка деления на ноль на любом этапе. Иначе, она возвращает результат многократного деления аккумулятора, упакованного в конструктор `Just`.
+
 ## Monads and Applicatives
 
+## Монады и Аппликативы
+
 Every instance of the `Monad` type class is also an instance of the `Applicative` type class, by virtue of the superclass relationship between the two classes.
+
+Каждый экземпляр класса типов `Monad`, также является экземпляром класса типов `Applicative`, в силу отношений суперкласса между двумя классами.
 
 However, there is also an implementation of the `Applicative` type class which comes "for free" for any instance of `Monad`, given by the `ap` function:
 
