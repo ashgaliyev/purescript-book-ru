@@ -431,6 +431,8 @@ Every instance of the `Monad` type class is also an instance of the `Applicative
 
 However, there is also an implementation of the `Applicative` type class which comes "for free" for any instance of `Monad`, given by the `ap` function:
 
+Однако, существует еще одна реализация класса типов `Applicative`, которая дается "бесплатно" для любого экземпляра `Monad`, предоставленная функцией `ap`: 
+
 ```haskell
 ap :: forall m a b. Monad m => m (a -> b) -> m a -> m b
 ap mf ma = do
@@ -441,11 +443,19 @@ ap mf ma = do
 
 If `m` is a law-abiding member of the `Monad` type class, then there is a valid `Applicative` instance for `apply` is given by `ap`.
 
+Если `m` является членом класса типов `Monad` и соблюдает все его законы, тогда существует действительный экземпляр `Applicative` для `apply`, предоставленный `ap`.
+
 The interested reader can check that `ap` agrees with `apply` for the monads we have already encountered: `Array`, `Maybe` and `Either e`.
+
+(TODO: ap согласовывается с apply для монад? WTF?)
 
 If every monad is also an applicative functor, then we should be able to apply our intuition for applicative functors to every monad. In particular, we can reasonably expect a monad to correspond, in some sense, to programming "in a larger language" augmented with some set of additional side-effects. We should be able to lift functions of arbitrary arities, using `map` and `apply`, into this new language.
 
+Если каждая монада также является апликативным функтором, тогда мы должны иметь возможность применить нашу интуицию для апликативных функторов к каждой монаде. В частности, мы можем обоснованно предполагать, что монада будет в некоторм смысле соответсвовать программированию в "расширенном языке", дополненном некоторым набором побочных эффектов. Мы должны иметь возможность поднимать функции любой арности в этот новый язык, используя функции `map` и `apply`.
+
 But monads allow us to do more than we could do with just applicative functors, and the key difference is highlighted by the syntax of do notation. Consider the `userCity` example again, in which we looked for a user's city in an XML document which encoded their user profile:
+
+Но монады позволяют нам делать больше, чем мы могли бы делать используя только аппликативные функторы, а ключевое различие подчеркивается синтаксисом do-нотации. Рассмотрим ещё раз пример с `userCity`, где мы искали город пользователя в XML документе, в котором закодирован профиль пользователя.
 
 ```haskell
 userCity :: XML -> Maybe XML
@@ -458,13 +468,20 @@ userCity root = do
 
 Do notation allows the second computation to depend on the result `prof` of the first, and the third computation to depend on the result `addr` of the second, and so on. This dependence on previous values is not possible using only the interface of the `Applicative` type class.
 
+Do-нотация позволяет второму вычислению зависеть от результата `prof` первого вычисления, а третьему вычислению зависеть от результата `addr` второго вычисления, и так далее. Эта зависимость от предыдущих значений невозможна при использовании только лишь интерфейса класса типов `Applicative`.
+
 Try writing `userCity` using only `pure` and `apply`: you will see that it is impossible. Applicative functors only allow us to lift function arguments which are independent of each other, but monads allow us to write computations which involve more interesting data dependencies.
+
+Попробуйте написать `userCity` используя только `pure` и `apply`, вы увидите, что так не получится. Апликативные функторы позволяют нам только поднимать функциональные аргументы, которые не зависят друг от друга. Однако монады позволяют нам писать вычисления с более интересными зависимостями данных.
 
 In the last chapter, we saw that the `Applicative` type class can be used to express parallelism. This was precisely because the function arguments being lifted were independent of one another. Since the `Monad` type class allows computations to depend on the results of previous computations, the same does not apply - a monad has to combine its side-effects in sequence.
 
-X> ## Exercises
+В прошлой главе мы видели, что класс типов `Applicative` может быть использован для выражения параллелизма. Это было именно потому, что функциональные аргументы, став поднятыми, стали независимыми друг от друга. Поскольку класс типов `Monad` позволяет вычислениям зависеть от результатов предыдущих вычислений, то же самое не применяется - монада должна вычислять свои побочные эффекты последовательно.
+
+X> ## Упражнения
 X>
 X> 1. (Easy) Look up the types of the `head` and `tail` functions from the `Data.Array` module in the `purescript-arrays` package. Use do notation with the `Maybe` monad to combine these functions into a function `third` which returns the third element of an array with three or more elements. Your function should return an appropriate `Maybe` type.
+X> 1. (Лёгкое) 
 X> 1. (Medium) Write a function `sums` which uses `foldM` to determine all possible totals that could be made using a set of coins. The coins will be specified as an array which contains the value of each coin. Your function should have the following result:
 X>
 X>     ```text
