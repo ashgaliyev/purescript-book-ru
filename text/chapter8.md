@@ -481,7 +481,9 @@ In the last chapter, we saw that the `Applicative` type class can be used to exp
 X> ## Упражнения
 X>
 X> 1. (Easy) Look up the types of the `head` and `tail` functions from the `Data.Array` module in the `purescript-arrays` package. Use do notation with the `Maybe` monad to combine these functions into a function `third` which returns the third element of an array with three or more elements. Your function should return an appropriate `Maybe` type.
-X> 1. (Лёгкое) 
+
+X> 1. (Лёгкое) Посмотрите на типы функций `head` и `tail` из модуля `Data.Array` в пакете `purescript-arrays`. Используя do-нотация и монаду `Maybe`, скомбинируйте данные функции в функцию `third`, которая возвращает третий элемент массива из трёх и более элементов. Ваша функция должна возвращать соответствующий тип `Maybe`.
+
 X> 1. (Medium) Write a function `sums` which uses `foldM` to determine all possible totals that could be made using a set of coins. The coins will be specified as an array which contains the value of each coin. Your function should have the following result:
 X>
 X>     ```text
@@ -493,8 +495,27 @@ X>     [0,1,2,3,10,11,12,13]
 X>     ```
 X>
 X>     _Hint_: This function can be written as a one-liner using `foldM`. You might want to use the `nub` and `sort` functions to remove duplicates and sort the result respectively.
+
+X> 1. (Среднее) Напишите функцию `sum`, с использованием `foldM` для определения всех возможных итоговых значений, которые могут быть на заданном наборе монет. Монеты определены как массив, содержащий достоинство каждой монеты. Ваша функция должны выводить следующие результаты:
+X>
+X>     ```text
+X>     > sums []
+X>     [0]
+X>
+X>     > sums [1, 2, 10]
+X>     [0,1,2,3,10,11,12,13]
+X>     ```
+X>
+X>     _Подсказка_: Данная функция может быть записана одной строкой, используя `foldM`. Вам могут пригодиться функции `nub` и `sort` для удаления дубликатов и сортировки результатов соответственно.
+
 X> 1. (Medium) Confirm that the `ap` function and the `apply` operator agree for the `Maybe` monad.
+
+X> 1. (Среднее) Докажите, что функция `ap` и оператор `apply` согласованы для монады `Maybe`.
+
 X> 1. (Medium) Verify that the monad laws hold for the `Monad` instance for the `Maybe` type, as defined in the `purescript-maybe` package.
+
+X> 1. (Среднее). Проверьте придерживаемость законом монад экземпляр `Monad` для типа `Maybe`, который определён в пакете `purescript-maybe`.
+
 X> 1. (Medium) Write a function `filterM` which generalizes the `filter` function on lists. Your function should have the following type signature:
 X>
 X>     ```haskell
@@ -502,6 +523,7 @@ X>     filterM :: forall m a. Monad m => (a -> m Boolean) -> List a -> m (List a
 X>     ```
 X>
 X>     Test your function in PSCi using the `Maybe` and `Array` monads.
+
 X> 1. (Difficult) Every monad has a default `Functor` instance given by:
 X>
 X>     ```haskell
@@ -523,33 +545,89 @@ X>     lift2 :: forall f a b c. Applicative f => (a -> b -> c) -> f a -> f b -> 
 X>     lift2 f a b = f <$> a <*> b
 X>     ```
 
+X> 1. (Среднее) Напишите функцию `filterM`, которая обобщает функцию `filter` для списков. Ваша функция должна иметь следующую сигнатуру типа:
+X>
+X>     ```haskell
+X>     filterM :: forall m a. Monad m => (a -> m Boolean) -> List a -> m (List a)
+X>     ```
+X>
+X>     Протестируйте вашу функцию в PSCi, используя монады `Maybe` и `Array`.
+
+X> 1. (Сложное) Каждая монада имеет экземпляр по умолчанию `Functor`, заданный:
+X>
+X>     ```haskell
+X>     map f a = do
+X>       x <- a
+X>       pure (f x)
+X>     ```
+X>
+X>     Используя законы монад, докажите, что для любой монады справедливо следующее:
+X>
+X>     ```haskell
+X>     lift2 f (pure a) (pure b) = pure (f a b)
+X>     ```
+X>     
+X>     где экземпляр `Applicative` использует функцию `ap`, определённую выше. Напомним, что `lift2` была определена следующим образом:
+X>    
+X>     ```haskell
+X>     lift2 :: forall f a b c. Applicative f => (a -> b -> c) -> f a -> f b -> f c
+X>     lift2 f a b = f <$> a <*> b
+X>     ```
+
 ## Native Effects
+## Нативные эффекты
 
 We will now look at one particular monad which is of central importance in PureScript - the `Eff` monad.
 
+Теперь мы рассмотрим одну конкретную монаду, которая имеет центральное значение в PureScript - монаду `Eff`.
+
 The `Eff` monad is defined in the Prelude, in the `Control.Monad.Eff` module. It is used to manage so-called _native_ side-effects.
 
+Монада `Eff` определена в Prelude, в модуле `Control.Monad.Eff`. Она используется для управления так называемых _нативных_ побочных эффектов.
+
 What are native side-effects? They are the side-effects which distinguish JavaScript expressions from idiomatic PureScript expressions, which typically are free from side-effects. Some examples of native effects are:
+
+Что такое нативные побочные эффекты? Это такие побочные эффекты, которые отделяют выражения JavaScript от идеоматических PureScript выражений, которые обычно не имеют побочных эффектов. Вот некоторые примеры нативных эффектов:
 
 - Console IO
 - Random number generation
 - Exceptions
 - Reading/writing mutable state
 
+- Консольный Ввод/Вывод
+- Генерация случайных чисел
+- Исключения
+- Чтение/запись изменяемого состояния
+
 And in the browser:
+
+А также в браузере:
 
 - DOM manipulation
 - XMLHttpRequest / AJAX calls
 - Interacting with a websocket
 - Writing/reading to/from local storage
 
+- Манипуляции с DOM
+- Вызовы XMLHttpRequest / AJAX
+- Взаимодействие с websocket
+- Чтение/запись local storage
+
 We have already seen plenty of examples of "non-native" side-effects:
+
+Мы уже видели множество примеров "ненативных" побочных эффектов:
 
 - Optional values, as represented by the `Maybe` data type
 - Errors, as represented by the `Either` data type
 - Multi-functions, as represented by arrays or lists
 
+- Опциоальные значения, представленные типом `Maybe`
+- Ошибки, представленные типом `Either`
+- Многофункциональные функции, представленные массивами или списками
+
 Note that the distinction is subtle. It is true, for example, that an error message is a possible side-effect of a JavaScript expression, in the form of an exception. In that sense, exceptions do represent native side-effects, and it is possible to represent them using `Eff`. However, error messages implemented using `Either` are not a side-effect of the JavaScript runtime, and so it is not appropriate to implement error messages in that style using `Eff`. So it is not the effect itself which is native, but rather how it is implemented at runtime.
+
+Обратите внимание, что различие является тонким. Верно, например, что сообщение об ошибке является возможным побочным эффектом выражения JavaScript, в формате исключения. В этом смысле, исключения представляют собой нативные побочные эффекты, и их можно представить, используя `Eff`. Однако, сообщения об ошибках, реализованные при помощи `Either` не являются побочными эффектами среды исполнения JavaScript, поэтому не рекомендуется реализовывать сообщения об ошибках в данном стиле, используя `Eff`. Таким образом, сам по себе эффект не является нативным, а скорее как он реализован в runtime.
 
 ## Side-Effects and Purity
 
