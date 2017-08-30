@@ -630,24 +630,41 @@ Note that the distinction is subtle. It is true, for example, that an error mess
 Обратите внимание, что различие является тонким. Верно, например, что сообщение об ошибке является возможным побочным эффектом выражения JavaScript, в формате исключения. В этом смысле, исключения представляют собой нативные побочные эффекты, и их можно представить, используя `Eff`. Однако, сообщения об ошибках, реализованные при помощи `Either` не являются побочными эффектами среды исполнения JavaScript, поэтому не рекомендуется реализовывать сообщения об ошибках в данном стиле, используя `Eff`. Таким образом, сам по себе эффект не является нативным, а скорее как он реализован в runtime.
 
 ## Side-Effects and Purity
+## Побочные эффекты и чистота
 
 In a pure language like PureScript, one question which presents itself is: without side-effects, how can one write useful real-world code?
 
+В чистом языке программирования, таком как PureScript, есть вопрос возникающий сам собой: как мы можем писать полезный код для реального мира без побочных эффектов?
+
 The answer is that PureScript does not aim to eliminate side-effects. It aims to represent side-effects in such a way that pure computations can be distinguished from computations with side-effects in the type system. In this sense, the language is still pure.
+
+Ответ в том, что PureScript не преследует цели исключить побочные эффекты. Он нацелен на то, чтобы представить побочные эффекты таким образом, чтобы чистые вычисления были отделены от побочных эффектов в системе типов. В этом смысле язык по-прежнему чист.
 
 Values with side-effects have different types from pure values. As such, it is not possible to pass a side-effecting argument to a function, for example, and have side-effects performed unexpectedly.
 
+Значения с побочными эффектами и чистые значения имеют различные типы. Таким образом, невозможно передать аргумент с побочным эффектом функции, и получить, к примеру, неожиданный побочный эффект.
+
 The only way in which side-effects managed by the `Eff` monad will be presented is to run a computation of type `Eff eff a` from JavaScript.
+
+Единственным способом, при котором побочные эффекты, управляемые монадой `Eff`, будут реализованы, это запуск вычисления с типом `Eff eff a`.
 
 The Pulp build tool (and other tools) provide a shortcut, by generating additional JavaScript to invoke the `main` computation when the application starts. `main` is required to be a computation in the `Eff` monad.
 
+Средство для сборки Pulp (а также другие инструменты) предоставляют шорткат(?), генерируя дополнительный JavaScript код для вызова вычисления `main`, когда приложение запускается. `main` должен быть вычислением в монаде `Eff`.
+
 In this way, we know exactly what side-effects to expect: exactly those used by `main`. In addition, we can use the `Eff` monad to restrict what types of side-effects `main` is allowed to have, so that we can say with certainty for example, that our application will interact with the console, but nothing else.
 
-## The Eff Monad
+Таким образом, мы точно знаем какие побочные эффекты ожидать: только те, которые используются `main`. Кроме того, мы можем использовать монаду `Eff` чтобы ограничить типы побочных эффектов, которые может иметь `main`. Поэтому мы можем с уверенностью сказать, к примеру, что наше приложение взаимодействует с консолью и ничем больше. 
+
+## Монада Eff
 
 The goal of the `Eff` monad is to provide a well-typed API for computations with side-effects, while at the same time generating efficient Javascript. It is also called the monad of _extensible effects_, which will be explained shortly.
 
+Цель монады `Eff` - предоставить хорошо типизированный API для вычислений с побочными эффектами и в тоже время генерировать эффективный Javascript. Её также называет монадой _расширяемых эффектов_, что скоро будет объяснено.
+
 Here is an example. It uses the `purescript-random` package, which defines functions for generating random numbers:
+
+Вот пример. В нём использован пакет `purescript-random`, в котором определены функции для генерации случайных чисел:
 
 ```haskell
 module Main where
@@ -664,17 +681,26 @@ main = do
 
 If this file is saved as `src/Main.purs`, then it can be compiled and run using Pulp:
 
+Если файл сохранён как `src/Main.purs`, тогда он может быть скомпилирован и запущен, используя Pulp:
+
 ```text
 $ pulp run
 ```
 
 Running this command, you will see a randomly chosen number between `0` and `1` printed to the console.
 
+Запустив эту команду, вы увидите случайно выбранное число между `0` и `1`, напечатанное в консоли.
+
 This program uses do notation to combine two types of native effects provided by the Javascript runtime: random number generation and console IO.
 
+Данная программа использует do-нотацию для комбинирования двух типов нативных эффектов, предоставленных средой выполнения Javascript: генерации случайного числа и консольного ввода/вывода.
+
 ## Extensible Effects
+## Расширяемые эффекты
 
 We can inspect the type of main by opening the module in PSCi:
+
+Мы можем проверить тип main, открыв модуль в PSCi:
 
 ```text
 > import Main
@@ -685,7 +711,11 @@ forall eff. Eff (console :: CONSOLE, random :: RANDOM | eff) Unit
 
 This type looks quite complicated, but is easily explained by analogy with PureScript’s records.
 
+Тип выглядит немного замысловатым, но его можно легко объяснить по аналогии с записями PureScript.
+
 Consider a simple function which uses a record type:
+
+Рассмотрим простую функцию, использующую тип записи:
 
 ```haskell
 fullName person = person.firstName <> " " <> person.lastName
@@ -693,13 +723,19 @@ fullName person = person.firstName <> " " <> person.lastName
 
 This function creates a full name string from a record containing `firstName` and `lastName` properties. If you find the type of this function in PSCi as before, you will see this:
 
+Данная функция возвращает полное имя строкой из записи, содержащей свойства `firstName` и `lastName`. Если посмотрите на тип данной функции в PSCi, то увидите следующее:
+
 ```haskell
 forall r. { firstName :: String, lastName :: String | r } -> String
 ```
 
 This type reads as follows: “`fullName` takes a record with `firstName` and `lastName` fields _and any other properties_ and returns a `String`”.
 
+Данный тип читается следующим образом “`firstName` принимает запись с полями `firstName` и `lastName`, а также _любыми другими свойствами_, и возвращает `String`”.
+
 That is, `fullName` does not care if you pass a record with more fields, as long as the `firstName` and `lastName` properties are present:
+
+Вот и всё. `fullname` не волнует, если вы передадите запись с большим числом полей, до тех пор, пока свойства `firstName` и `lastName` присутствуют:
 
 ```text
 > firstName { firstName: "Phil", lastName: "Freeman", location: "Los Angeles" }
@@ -708,7 +744,11 @@ Phil Freeman
 
 Similarly, the type of `main` above can be interpreted as follows: “`main` is a _computation with side-effects_, which can be run in any environment which supports random number generation and console IO, _and any other types of side effect_, and which returns a value of type `Unit`”.
 
+Аналогично, тип `main` выше может быть интерпретирован следующим образом: “`main` - это _вычисление с побочными эффектами_, которое может быть запущено в любом окружении, поддерживающем генерацию случайных чисел и консольный ввод/вывод, _где также могут присутствовать и другие типы побочных эффектов_, возвращающее значение типа `Unit`”.
+
 This is the origin of the name “extensible effects”: we can always extend the set of side-effects, as long as we can support the set of effects that we need.
+
+Это источник названия “расширенные эффекты”: мы всегда можем расширить набор побочных эффектов, до тех пока мы можем поддерживать набор эффектов, который нам нужен.
 
 ## Interleaving Effects
 
