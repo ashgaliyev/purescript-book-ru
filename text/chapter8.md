@@ -751,10 +751,15 @@ This is the origin of the name “extensible effects”: we can always extend th
 Это источник названия “расширенные эффекты”: мы всегда можем расширить набор побочных эффектов, до тех пока мы можем поддерживать набор эффектов, который нам нужен.
 
 ## Interleaving Effects
+## Чередование эффектов
 
 This extensibility allows code in the `Eff` monad to _interleave_ different types of side-effect.
 
+Расширяемость позволяет коду в монаде `Eff` _чередовать_ различные типы побочных эффектов.
+
 The `random` function which we used has the following type:
+
+Функция `random`, которую мы использовали, имеет следующий тип:
 
 ```haskell
 forall eff1. Eff (random :: RANDOM | eff1) Number
@@ -762,9 +767,15 @@ forall eff1. Eff (random :: RANDOM | eff1) Number
 
 The set of effects `(random :: RANDOM | eff1)` here is _not_ the same as those appearing in `main`.
 
+Набор эффектов `(random :: RANDOM | eff1)` не такой, какой возникает у `main`.
+
 However, we can _instantiate_ the type of `random` in such a way that the effects do match. If we choose `eff1` to be `(console :: CONSOLE | eff)`, then the two sets of effects become equal, up to reordering.
 
+Однако, мы можем _инстанциировать_ тип `random` таким образом, что эти эффекты будут совпадать. Если для `eff1` мы выберем тип `(console :: CONSOLE | eff)`, тогда два набора эффектов станут равными, вплоть до порядка.
+
 Similarly, `logShow` has a type which can be specialized to match the effects of `main`:
+
+Аналогично, `logShow` имеет тип, который может быть специализирован для соответствия эффектам `main`:
 
 ```haskell
 forall eff2. Show a => a -> Eff (console :: CONSOLE | eff2) Unit
@@ -772,9 +783,15 @@ forall eff2. Show a => a -> Eff (console :: CONSOLE | eff2) Unit
 
 This time we have to choose `eff2` to be `(random :: RANDOM | eff)`.
 
+В этот раз для `eff2` мы должны указать `(random :: RANDOM | eff)`.
+
 The point is that the types of `random` and `logShow` indicate the side-effects which they contain, but in such a way that other side-effects can be _mixed-in_, to build larger computations with larger sets of side-effects.
 
+Дело в том, что типы `random` и `logShow` указывают на побочные эффекты, которые они содержат, но таким образом, что другие побочные эффекты могут быть _примешаны_, для построения бОльших вычислений с широким набором побочных эффектов.
+
 Note that we don't have to give a type for `main`. `psc` will find a most general type for `main` given the polymorphic types of `random` and `logShow`.
+
+Обратите внимание, что нам не нужно задавать тип для `main`. `psc` найдёт наиболее общий тип для `main` на основе полиморфных типов `random` и `logShow`.
 
 ## The Kind of Eff
 
