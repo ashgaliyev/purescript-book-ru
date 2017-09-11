@@ -794,10 +794,16 @@ Note that we don't have to give a type for `main`. `psc` will find a most genera
 Обратите внимание, что нам не нужно задавать тип для `main`. `psc` найдёт наиболее общий тип для `main` на основе полиморфных типов `random` и `logShow`.
 
 ## The Kind of Eff
+## Род Eff
 
 The type of `main` is unlike other types we've seen before. To explain it, we need to consider the _kind_ of `Eff`. Recall that types are classified by their kinds just like values are classified by their types. So far, we've only seen kinds built from `*` (the kind of types) and `->` (which builds kinds for type constructors).
 
+Тип `main` отличается от других типов, которые мы видели ранее. Чтобы это объяснить, нам нужно рассмотреть _род_ `Eff`. Вспомним, что типы классифицируются по их родам, так же как и значения классифицируются по их типам. До сих пор мы видели только рода построенные из `*` (род типов) и `->` (что строит род для конструктора типов).
+
+
 To find the kind of `Eff`, use the `:kind` command in PSCi:
+
+Чтобы найти род `Eff`, используйте команду `:kind` в PSCi:
 
 ```text
 > import Control.Monad.Eff
@@ -808,7 +814,11 @@ To find the kind of `Eff`, use the `:kind` command in PSCi:
 
 There are two symbols here that we have not seen before.
 
+Тут есть два символа, которые мы раньше не видели.
+
 `!` is the kind of _effects_, which represents _type-level labels_ for different types of side-effects. To understand this, note that the two labels we saw in `main` above both have kind `!`:
+
+`!` это род _эффектов_, который представляет _метки уровня типов_ для различных типов побочных эффектов. Чтобы это понять, обратите внимание, что две метки, которые мы видели в `main` выше, обе имеют род `!`:
 
 ```text
 > import Control.Monad.Eff.Console
@@ -823,9 +833,15 @@ There are two symbols here that we have not seen before.
 
 The `#` kind constructor is used to construct kinds for _rows_, i.e. unordered, labelled sets.
 
+Конструктор рода `#` используется для построения родов для _рядов_, то есть неупорядоченных, размеченных множеств.
+
 So `Eff` is parameterized by a row of effects, and its return type. That is, the first argument to `Eff` is an unordered, labelled set of effect types, and the second argument is the return type.
 
+Таким образом, `Eff` параметризуется рядом эффектов и его возвращаемым типом. То есть, первым аргументом `Eff` является неупорядоченный, размеченный набор типов эффектов, а вторым аргументом является тип возвращаемого значения.
+
 We can now read the type of `main` above:
+
+Теперь мы можем прочитать тип `main` выше:
 
 ```text
 forall eff. Eff (console :: CONSOLE, random :: RANDOM | eff) Unit
@@ -833,9 +849,15 @@ forall eff. Eff (console :: CONSOLE, random :: RANDOM | eff) Unit
 
 The first argument to `Eff` is `(console :: CONSOLE, random :: RANDOM | eff)`. This is a row which contains the `CONSOLE` effect and the `RANDOM` effect. The pipe symbol `|` separates the labelled effects from the _row variable_ `eff` which represents _any other side-effects_ we might want to mix in.
 
+Первым аргументом `Eff` является `(console :: CONSOLE, random :: RANDOM | eff)`. Это ряд, содержащий эффекты `CONSOLE` и `RANDOM`. Вертикальной чертой `|` отделяются размеченные эффекты от _переменной ряда_ `eff`, которая означает _любые другие
+побочные эффекты_, которые могут быть добавлены.
+
 The second argument to `Eff` is `Unit`, which is the return type of the computation.
 
+Вторым аргементом `Eff` является `Unit` -- возвращаемый тип вычисления.
+
 ## Objects And Rows
+## Объекты и ряды
 
 Considering the kind of `Eff` allows us to make a deeper connection between extensible effects and records.
 
