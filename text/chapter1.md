@@ -165,3 +165,5 @@ $ pulp build
 Логотип PureScript на обложке книги был создан Gareth Hughes, с благодарностью здесь использован под лицензией [Creative Commons Attribution 4.0 license](https://creativecommons.org/licenses/by/4.0/).
 
 Наконец, хотелось бы поблагодарить всех, кто снабжал меня обратной связью и исправлениями по содержанию этой книги.
+
+[<=](https://github.com/ashgaliyev/purescript-book-ru/blob/master/README.md "Предыдущая глава")                                        [=>](https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter2.md "Следующая глава")
