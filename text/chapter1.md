@@ -168,5 +168,5 @@ $ pulp build
 
 <p align="center">
     <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/README.md" title="Предыдущая глава">&#129092</a>
-    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter2.md" title = "Следующая глава">=></a>
+    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter2.md" title = "Следующая глава">&#129094</a>
 </p>
