@@ -980,3 +980,8 @@ In this chapter, we've been introduced to _type classes_, a type-oriented form o
 This chapter also gave an introduction to the notion of type class laws, a technique for proving properties about code which uses type classes for abstraction. Type class laws are part of a larger subject called _equational reasoning_, in which the properties of a programming language and its type system are used to enable logical reasoning about its programs. This is an important idea, and will be a theme which we will return to throughout the rest of the book.
 
 Данная глава также дала введение в понятие законов классов типов - методом доказательства свойств кода, который использует классы типов для абстракции. Законы классов типов являются частью более крупного предмета под названием _эквациональные рассуждения_, в котором свойства языка программирования и его система типов используются для логического обоснования его программ. Это важная идея, и она станет темой, к которой мы вернёмся в оставшейся части книги.
+
+<p align="center">
+    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter5.md" title="Предыдущая глава">&#129092</a>
+    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter7.md" title = "Следующая глава">&#129094</a>
+</p>

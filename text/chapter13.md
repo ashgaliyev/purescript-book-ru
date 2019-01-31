@@ -408,3 +408,8 @@ In this chapter, we met the `purescript-quickcheck` package, which can be used t
 - We saw how to write properties as functions, and how to use the `<?>` operator to improve error messages.
 - We saw how the `Arbitrary` and `Coarbitrary` type classes enable generation of boilerplate testing code, and how they allow us to test higher-order properties.
 - We saw how to implement custom `Arbitrary` and `Coarbitrary` instances for our own data types.
+
+<p align="center">
+    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter12.md" title="Предыдущая глава">&#129092</a>
+    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter14.md" title = "Следующая глава">&#129094</a>
+</p>

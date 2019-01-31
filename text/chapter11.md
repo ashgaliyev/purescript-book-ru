@@ -1041,3 +1041,8 @@ We have seen how monad transformers allow us to write safe code in an imperative
 Monad transformers are an excellent demonstration of the sort of expressive code that can be written by relying on advanced type system features such as higher-kinded polymorphism and multi-parameter type classes.
 
 In the next chapter, we will see how monad transformers can be used to give an elegant solution to a common complaint when working with asynchronous JavaScript code - the problem of _callback hell_.
+
+<p align="center">
+    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter10.md" title="Предыдущая глава">&#129092</a>
+    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter12.md" title = "Следующая глава">&#129094</a>
+</p>
