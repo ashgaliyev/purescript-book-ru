@@ -166,4 +166,4 @@ $ pulp build
 
 Наконец, хотелось бы поблагодарить всех, кто снабжал меня обратной связью и исправлениями по содержанию этой книги.
 
-[<=](https://github.com/ashgaliyev/purescript-book-ru/blob/master/README.md "Предыдущая глава")                                        [=>](https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter2.md "Следующая глава")
+<p style="text-align: center;"> [<=](https://github.com/ashgaliyev/purescript-book-ru/blob/master/README.md "Предыдущая глава")                                        [=>](https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter2.md "Следующая глава") </p>
