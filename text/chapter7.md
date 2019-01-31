@@ -907,3 +907,8 @@ Applicative functors are an interesting abstraction which provide neat solutions
 In the next chapter, we will see a related idea, the class of _monads_, and extend our address book example to run in the browser!
 
 В следующей главе мы увидим родственную идею - класс _монад_, и расширим наш пример с адресной книгой для запуска в браузере!
+
+<p align="center">
+    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter6.md" title="Предыдущая глава">&#129092</a>
+    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter8.md" title = "Следующая глава">&#129094</a>
+</p>

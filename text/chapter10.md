@@ -802,3 +802,8 @@ In this chapter, we've learned how to work with foreign JavaScript code from Pur
 - We saw how to safely deserialize JSON data using the `IsForeign` type class.
 
 For more examples, the `purescript`, `purescript-contrib` and `purescript-node` GitHub organizations provide plenty of examples of libraries which use the FFI. In the remaining chapters, we will see some of these libraries put to use to solve real-world problems in a type-safe way.
+
+<p align="center">
+    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter9.md" title="Предыдущая глава">&#129092</a>
+    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter11.md" title = "Следующая глава">&#129094</a>
+</p>
