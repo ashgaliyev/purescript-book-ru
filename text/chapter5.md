@@ -567,3 +567,8 @@ This chapter also introduced algebraic data types, which are closely related to 
 Finally, we covered _row polymorphism_, a powerful type of abstraction which allows many idiomatic JavaScript functions to be given a type. We will see this idea again later in the book.
 
 In the rest of the book, we will use ADTs and pattern matching extensively, so it will pay dividends to become familiar with them now. Try creating your own algebraic data types and writing functions to consume them using pattern matching.
+
+<p align="center">
+    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter4.md" title="Предыдущая глава">&#129092</a>
+    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter6.md" title = "Следующая глава">&#129094</a>
+</p>
