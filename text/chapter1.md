@@ -167,6 +167,6 @@ $ pulp build
 Наконец, хотелось бы поблагодарить всех, кто снабжал меня обратной связью и исправлениями по содержанию этой книги.
 
 <p align="center">
-    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/README.md" title="Оглавление">&#129092</a>
-    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter2.md" title = "Следующая глава">&#129094</a>
+    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/README.md" title="Оглавление">&larr;</a>
+    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter2.md" title = "Следующая глава">&rarr;</a>
 </p>

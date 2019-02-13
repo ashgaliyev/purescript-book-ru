@@ -982,6 +982,6 @@ This chapter also gave an introduction to the notion of type class laws, a techn
 Данная глава также дала введение в понятие законов классов типов - методом доказательства свойств кода, который использует классы типов для абстракции. Законы классов типов являются частью более крупного предмета под названием _эквациональные рассуждения_, в котором свойства языка программирования и его система типов используются для логического обоснования его программ. Это важная идея, и она станет темой, к которой мы вернёмся в оставшейся части книги.
 
 <p align="center">
-    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter5.md" title="Предыдущая глава">&#129092</a>
-    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter7.md" title = "Следующая глава">&#129094</a>
+    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter5.md" title="Предыдущая глава">&larr;</a>
+    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter7.md" title = "Следующая глава">&rarr;</a>
 </p>

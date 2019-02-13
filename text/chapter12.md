@@ -469,6 +469,6 @@ In this chapter, we have seen a practical demonstration of monad transformers:
 - We used `ExceptT` to express _asynchronous errors_.
 
 <p align="center">
-    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter11.md" title="Предыдущая глава">&#129092</a>
-    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter13.md" title = "Следующая глава">&#129094</a>
+    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter11.md" title="Предыдущая глава">&larr;</a>
+    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter13.md" title = "Следующая глава">&rarr;</a>
 </p>

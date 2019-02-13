@@ -700,6 +700,6 @@ This approach is taken in the `purescript-drawing` package, and it brings the fl
 In the next chapter, we will see how to implement libraries like `purescript-canvas` which wrap existing JavaScript functionality, by using PureScript's _foreign function interface_.
 
 <p align="center">
-    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter8.md" title="Предыдущая глава">&#129092</a>
-    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter10.md" title = "Следующая глава">&#129094</a>
+    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter8.md" title="Предыдущая глава">&larr;</a>
+    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter10.md" title = "Следующая глава">&rarr;</a>
 </p>

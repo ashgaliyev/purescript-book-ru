@@ -734,5 +734,5 @@ These techniques all leverage PureScript's module and type systems, either to pr
 The implementation of domain-specific languages in functional programming languages is an area of active research, but hopefully this provides a useful introduction some simple techniques, and illustrates the power of working in a language with expressive types.
 
 <p align="center">
-    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter13.md" title="Предыдущая глава">&#129092</a>
+    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter13.md" title="Предыдущая глава">&larr;</a>
 </p>

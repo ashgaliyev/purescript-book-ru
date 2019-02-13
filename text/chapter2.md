@@ -300,6 +300,6 @@ X> 1. (Средне) Используя `bower install` установите п�
 Мы будем использовать эту рабочую конфигурацию в последующих главах для компиляции, отладки и запуска нашего кода, поэтому вы должны убедиться, что чувствуете себя комфортно с используемыми инструментами и техниками.
 
 <p align="center">
-    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter1.md" title="Предыдущая глава">&#129092</a>
-    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter3.md" title = "Следующая глава">&#129094</a>
+    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter1.md" title="Предыдущая глава">&larr;</a>
+    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter3.md" title = "Следующая глава">&rarr;</a>
 </p>

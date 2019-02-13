@@ -410,6 +410,6 @@ In this chapter, we met the `purescript-quickcheck` package, which can be used t
 - We saw how to implement custom `Arbitrary` and `Coarbitrary` instances for our own data types.
 
 <p align="center">
-    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter12.md" title="Предыдущая глава">&#129092</a>
-    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter14.md" title = "Следующая глава">&#129094</a>
+    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter12.md" title="Предыдущая глава">&larr;</a>
+    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter14.md" title = "Следующая глава">&rarr;</a>
 </p>

@@ -958,6 +958,6 @@ In this chapter, we covered the basics of recursion in PureScript, as a means of
 В этой главе мы рассмотрели основы рекурсии в PureScript, как средство лаконичного выражения алгоритмов. Мы также ознакомились с определяемыми пользователем инфиксными операторами, стандартными функции на массивах, такие как отображения, фильтры и свёртки, а также с генераторами массивов, которые комбинируют данные идеи. Наконец, мы показали важность использования хвостовой рекурсии, чтобы избежать ошибок переполнения стека, и как использовать аккумуляторный параметр для преобразования функции в хвостовую рекурсию.
 
 <p align="center">
-    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter3.md" title="Предыдущая глава">&#129092</a>
-    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter5.md" title = "Следующая глава">&#129094</a>
+    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter3.md" title="Предыдущая глава">&larr;</a>
+    <a href = "https://github.com/ashgaliyev/purescript-book-ru/blob/master/text/chapter5.md" title = "Следующая глава">&rarr;</a>
 </p>
